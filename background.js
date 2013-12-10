@@ -5,7 +5,8 @@ function startRequest() {
   window.setTimeout(startRequest, 60000);
 }
 
-SetInitalOption("ESM.RequestInterval", 1200000);
+// 150000 = 2.5 minutes in milliseconds
+SetInitalOption("ESM.RequestInterval", 150000);
 SetInitalOption("ESM.BackgroundTabs", false);
 
 startRequest();
