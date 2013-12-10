@@ -59,14 +59,33 @@ function parseTickets(json) {
     // console.log(item.key);
     esmTicket.key = item.key;
     esmTicket.link = "http://www.jira.gwn/browse/" + item.key;
-    console.log(esmTicket.link);
+    //console.log(esmTicket.link);
     // Get Summary
     // console.log(item.summary);
     esmTicket.summary = item.summary;
+    // Get time
+    esmTicket.time = getTime(esmTicket.key);
     links.push(esmTicket);
   }
   console.log(links);
   return links;
+}
+
+function getTime(ticket) {
+  var jiraCon = 'http://services.hq/jira_connector/rest/gwnjc/issue/data?server=http://jira.gwn&issue=';
+  var ticketTime = [];
+  $.ajax({ 
+    url: jiraCon + ticket,
+    async: false,
+    dataType: 'json',
+    success: function(json) {
+    var numComments = json.comments.length;
+    var commentDate = json.comments[numComments-1].date;
+    var dateFormatted=new Date(commentDate.split(' ')[0].split('-').join(',') + ',' + commentDate.split(' ')[1].split('-').join(','));
+    ticketTime = $.timeago(dateFormatted);
+    }
+  });
+  return ticketTime;
 }
 
 function SaveTicketsToLocalStorage(tickets) {
