@@ -19,6 +19,5 @@
         "default_icon": "icon.png",
         "default_popup": "popup.html"
     },
-    // dirty hack, needs to be done the "right" way.
     "content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self'"
 }
