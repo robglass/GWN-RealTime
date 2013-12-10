@@ -4,7 +4,7 @@ window.onload = function() {
 }
 
 function setupEvents() {
-  $('a#refresh').click(refreshTickets());
+  $('#refresh').click(refreshTickets);
   $('a#options').click(function() {
     openOptions();
   });
