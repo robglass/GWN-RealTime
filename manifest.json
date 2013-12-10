@@ -2,7 +2,11 @@
     "manifest_version": 2,
     "name": "ESM Chrome Extension",
     "description": "A Chrome Extension for GWN ESM",
-    "version": "0.5.2",
+    "version": "0.5.2.1",
+    "icons": {  "16": "icon.png",
+                "48": "icon.png",
+               "128": "icon.png"
+    },
     "options_page":"popup.html",
     "update_url": "http://shewlayce.com/dev/T2Labs/updates.xml",
     "background": {
