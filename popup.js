@@ -46,8 +46,12 @@ function buildPopup(tickets) {
       summary.innerText = ": " + esmTickets.summary;
       summary.href = esmTickets.link;
       summary.addEventListener('click', openLink);
+    var time = document.createElement('p');
+      time.className = "time";
+      time.innerText = "  |  " + esmTickets.time;
     link_col.appendChild(title);
     link_col.appendChild(summary);
+    link_col.appendChild(time);
     row.appendChild(num);
     row.appendChild(link_col);
     feed.appendChild(row);
