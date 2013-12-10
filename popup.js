@@ -38,19 +38,13 @@ function buildPopup(tickets) {
     var link_col = document.createElement('td');
     var title = document.createElement('a');
       title.classname = 'ticket_number';
-      title.innerText = esmTickets.key;
+      title.innerText = esmTickets.key + " | " + esmTickets.summary;
       title.href = esmTickets.link;
       title.addEventListener('click', openLink);
-    var summary = document.createElement('a');
-      summary.className = "summary";
-      summary.innerText = ": " + esmTickets.summary;
-      summary.href = esmTickets.link;
-      summary.addEventListener('click', openLink);
-    var time = document.createElement('p');
+    var time = document.createElement('span');
       time.className = "time";
       time.innerText = "  |  " + esmTickets.time;
     link_col.appendChild(title);
-    link_col.appendChild(summary);
     link_col.appendChild(time);
     row.appendChild(num);
     row.appendChild(link_col);
@@ -61,9 +55,11 @@ function buildPopup(tickets) {
 }
 
 function refreshTickets() {
-  console.log("Refreshing");
-  var ticketTable = document.getElementById('feed');
-  while(ticketTable.hasChildNodes()) ticketTable.removeChild(ticketTable.firstChild);
+  console.log("refreshing");
+   var ticketTable = document.getElementById('feed');
+  while(ticketTable.hasChildNodes()) {
+    ticketTable.removeChild(ticketTable.firstChild);
+  }
   toggle('container');
   toggle('spinner');
   buildPopupAfterResponce = true;

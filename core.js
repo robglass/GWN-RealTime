@@ -25,6 +25,7 @@ function UpdateIfReady(force) {
 
 // TODO need a way to fail gracefully and notify user if unable to connect to ESM
 function UpdateFeed() {
+  console.log("Updating");
   var jiraCon = 'http://services.hq/jira_connector/rest/gwnjc/issues/data?server=http://jira.gwn&query=';
   var jqlQuery = 'assignee = queuetier2 AND status in (Open, "In Progress", Reopened, "Ready to Test", "Need Information", "Escalate to Tier 2", "Escalate to Tier 3", "Escalate to Client Services", Testing, Validated, HOLD, Scheduled, Revalidate, "Pending Review", "In Review", "Possible Future Release", "Assigned To Release", "Development Complete", "Ready to Schedule", "Ready to Launch", "Post-Launch Support", "In Discovery", "Requires PLC Update", "Pending Schedule Approval", Draft, "Ready to Order", "Partially Shipped", "Order Placed", "Fully Shipped", "To Do") ORDER BY cf[10142] ASC'
   $.getJSON( jiraCon + encodeURIComponent(jqlQuery) , parseJson );
@@ -33,6 +34,7 @@ function UpdateFeed() {
 function parseJson(json) {
   if (!json) {
     // TODO this.
+    console.log("EPIC FAIL");
     return;
   }
   //console.log(json);

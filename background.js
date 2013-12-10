@@ -2,7 +2,7 @@ var firstRequest = true;
 function startRequest() {
   UpdateIfReady(firstRequest);
   firstRequest = false;
-  window.setTimeout(startRequest, 30000);
+  window.setTimeout(startRequest, 5000);
 }
  
 SetInitalOption("ESM.RequestInterval", 60000);
