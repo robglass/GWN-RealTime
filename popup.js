@@ -4,7 +4,7 @@ window.onload = function() {
 }
 
 function setupEvents() {
-  $('#refresh').click(refreshTickets);
+  $('a#refresh').click(refreshTickets());
   $('a#options').click(function() {
     openOptions();
   });
@@ -57,8 +57,9 @@ function buildPopup(tickets) {
 }
 
 function refreshTickets() {
+  console.log("Refreshing");
   var ticketTable = document.getElementById('feed');
-  while(ticketTable.hasChildNodes()) linkTable.removeChild(linkTable.firstChild);
+  while(ticketTable.hasChildNodes()) ticketTable.removeChild(ticketTable.firstChild);
   toggle('container');
   toggle('spinner');
   buildPopupAfterResponce = true;
