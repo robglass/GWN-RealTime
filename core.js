@@ -1,4 +1,5 @@
 var buildPopupAfterResponce = false;
+var retryMilliseconds = 120000;
 
 function SetInitalOption(key, value) {
     localStorage[key] = value;
@@ -25,7 +26,17 @@ function UpdateIfReady(force) {
 function UpdateFeed() {
   var jiraCon = 'http://services.hq/jira_connector/rest/gwnjc/issues/data?server=http://jira.gwn&query=';
   var jqlQuery = 'assignee = queuetier2 AND status in (Open, "In Progress", Reopened, "Ready to Test", "Need Information", "Escalate to Tier 2", "Escalate to Tier 3", "Escalate to Client Services", Testing, Validated, HOLD, Scheduled, Revalidate, "Pending Review", "In Review", "Possible Future Release", "Assigned To Release", "Development Complete", "Ready to Schedule", "Ready to Launch", "Post-Launch Support", "In Discovery", "Requires PLC Update", "Pending Schedule Approval", Draft, "Ready to Order", "Partially Shipped", "Order Placed", "Fully Shipped", "To Do") ORDER BY cf[10142] ASC'
-  $.getJSON( jiraCon + encodeURIComponent(jqlQuery) , ParseJson );
+  $.ajax({ 
+    dataType: "json",
+         url:  jiraCon + encodeURIComponent(jqlQuery), 
+     success:  ParseJson,
+       error:  ConnectionError
+  });
+}
+
+function ConnectionError(){
+  localStorage['ESM.error'] = 'Connection to ESM failed, please verify connection to services.hq';
+  localStorage["HN.LastRefresh"] = localStorage["HN.LastRefresh"] + retryMilliseconds;
 }
 
 function CheckTickets(tickets) {
@@ -55,6 +66,7 @@ function ParseJson(json) {
     console.log("EPIC FAIL");
     return;
   }
+  localStorage['ESM.error'] = null;
   var tickets = parseTickets(json);
   CheckTickets(tickets);
   SaveTicketsToLocalStorage(tickets);
@@ -93,7 +105,7 @@ function sendNotification(ticket) {
     ticket.key + " " + ticket.summary
     );
   toast.show();
-  setTimeout(function () { toast.cancel() }, 5000);
+  setTimeout(function () { toast.cancel() }, 10000);
 }
 
 function getTime(ticket) {
@@ -136,7 +148,8 @@ function RetrieveTicketsFromLocalStorage() {
 
 function UpdateLastRefreshTime() {
   localStorage['ESM.LastRefresh'] = (new Date()).getTime();
-  console.log("here");
+  localStorage['ESM.FLastRefresh'] = (new Date().toISOString());
+  console.log(localStorage['ESM.FLastRefresh']);
 }
 
 function openOptions() {

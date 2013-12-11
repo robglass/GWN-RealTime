@@ -8,6 +8,7 @@ function startRequest() {
  
 SetInitalOption("ESM.RequestInterval", 60000);
 SetInitalOption("ESM.BackgroundTabs", false);
+SetInitalOption("ESM.error", null);
 
 
 startRequest();

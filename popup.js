@@ -15,6 +15,13 @@ function main() {
     buildPopupAfterResponce = true;
     UpdateFeed();
   }
+  else if (localStorage['ESM.error'] != "null") { 
+    var feed = document.getElementById('feed');
+    var span = document.createElement('span');
+     span.classname = 'Error';
+     span.innerText = localStorage['ESM.error'];
+    feed.appendChild(span);
+  }
   else {
     buildPopup(RetrieveTicketsFromLocalStorage());
   }
@@ -25,7 +32,12 @@ function buildPopup(tickets) {
   var feed = document.getElementById('feed');
   var ticketLink = document.getElementById('issues');
   ticketLink.addEventListener('click', openLinkFront);
-
+  
+  var timeSince = $.timeago(localStorage['ESM.FLastRefresh']);
+  var addTime = document.createElement('span');
+   addTime.classname = 'timesince';
+   addTime.innerText = timeSince;
+  header.appendChild(addTime);
   var title = document.getElementById('title');
   title.addEventListener('click', openLink);
 
