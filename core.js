@@ -25,10 +25,33 @@ function UpdateIfReady(force) {
 
 // TODO need a way to fail gracefully and notify user if unable to connect to ESM
 function UpdateFeed() {
-  console.log("Updating");
+  timeIs = parseFloat((new Date()).getTime());
+  console.log("Updating at " + timeIs);
   var jiraCon = 'http://services.hq/jira_connector/rest/gwnjc/issues/data?server=http://jira.gwn&query=';
   var jqlQuery = 'assignee = queuetier2 AND status in (Open, "In Progress", Reopened, "Ready to Test", "Need Information", "Escalate to Tier 2", "Escalate to Tier 3", "Escalate to Client Services", Testing, Validated, HOLD, Scheduled, Revalidate, "Pending Review", "In Review", "Possible Future Release", "Assigned To Release", "Development Complete", "Ready to Schedule", "Ready to Launch", "Post-Launch Support", "In Discovery", "Requires PLC Update", "Pending Schedule Approval", Draft, "Ready to Order", "Partially Shipped", "Order Placed", "Fully Shipped", "To Do") ORDER BY cf[10142] ASC'
   $.getJSON( jiraCon + encodeURIComponent(jqlQuery) , parseJson );
+  console.log("API connection");
+}
+
+function checkTickets(tickets) {
+  var oldTickets = RetrieveTicketsFromLocalStorage();
+  if (localStorage["ESM.NumTickets"] != 0) {
+    for (var i=0; i<tickets.length; i++){
+      var ticketExists = false
+      for (var j=0; j<oldTickets.length; j++){
+        if (tickets[i].key == oldTickets[j].key ) {
+                  ticketExists = true;
+        } 
+      }
+        if (!ticketExists)
+          sendNotification(tickets[i]);       
+    }
+  }
+  else{
+    for (var i=0; i<tickets.length; i++){
+      sendNotification(tickets[i]);
+    }
+  }
 }
 
 function parseJson(json) {
@@ -39,21 +62,7 @@ function parseJson(json) {
   }
   //console.log(json);
   var tickets = parseTickets(json);
-  var oldTickets = RetrieveTicketsFromLocalStorage();
-  if (localStorage["ESM.NumTickets"] != 0) {
-    for (var i=0; i<tickets.length; i++){
-      //console.log(tickets[i].key);
-      //console.log(oldTickets[i].key);
-      if (tickets[i].key != oldTickets[i].key ) {
-          sendNotification(tickets[i]);        
-      }
-    }
-  }
-  else{
-    for (var i=0; i<tickets.length; i++){
-      sendNotification(tickets[i]);
-    }
-  }
+  checkTickets(tickets);
   SaveTicketsToLocalStorage(tickets);
   if (buildPopupAfterResponce == true) {
       buildPopup(tickets);
@@ -84,13 +93,12 @@ function parseTickets(json) {
     esmTicket.time = getTime(esmTicket.key);
     links.push(esmTicket);
   }
-  //console.log(links);
   return links;
 }
 
 function sendNotification(ticket) {
   var toast = webkitNotifications.createNotification(
-    '/icon.png',
+    'icon.png',
     "New Ticket in the Queue",
     ticket.key + " " + ticket.summary
     );
