@@ -1,9 +1,7 @@
 var buildPopupAfterResponce = false;
 
 function SetInitalOption(key, value) {
-  if (localStorage[key] == null) {
     localStorage[key] = value;
-  }
 }
 
 function UpdateIfReady(force) {
@@ -25,15 +23,12 @@ function UpdateIfReady(force) {
 
 // TODO need a way to fail gracefully and notify user if unable to connect to ESM
 function UpdateFeed() {
-  timeIs = parseFloat((new Date()).getTime());
-  console.log("Updating at " + timeIs);
   var jiraCon = 'http://services.hq/jira_connector/rest/gwnjc/issues/data?server=http://jira.gwn&query=';
   var jqlQuery = 'assignee = queuetier2 AND status in (Open, "In Progress", Reopened, "Ready to Test", "Need Information", "Escalate to Tier 2", "Escalate to Tier 3", "Escalate to Client Services", Testing, Validated, HOLD, Scheduled, Revalidate, "Pending Review", "In Review", "Possible Future Release", "Assigned To Release", "Development Complete", "Ready to Schedule", "Ready to Launch", "Post-Launch Support", "In Discovery", "Requires PLC Update", "Pending Schedule Approval", Draft, "Ready to Order", "Partially Shipped", "Order Placed", "Fully Shipped", "To Do") ORDER BY cf[10142] ASC'
-  $.getJSON( jiraCon + encodeURIComponent(jqlQuery) , parseJson );
-  console.log("API connection");
+  $.getJSON( jiraCon + encodeURIComponent(jqlQuery) , ParseJson );
 }
 
-function checkTickets(tickets) {
+function CheckTickets(tickets) {
   var oldTickets = RetrieveTicketsFromLocalStorage();
   if (localStorage["ESM.NumTickets"] != 0) {
     for (var i=0; i<tickets.length; i++){
@@ -54,15 +49,14 @@ function checkTickets(tickets) {
   }
 }
 
-function parseJson(json) {
+function ParseJson(json) {
   if (!json) {
     // TODO this.
     console.log("EPIC FAIL");
     return;
   }
-  //console.log(json);
   var tickets = parseTickets(json);
-  checkTickets(tickets);
+  CheckTickets(tickets);
   SaveTicketsToLocalStorage(tickets);
   if (buildPopupAfterResponce == true) {
       buildPopup(tickets);
@@ -74,7 +68,6 @@ function parseJson(json) {
 function parseTickets(json) {
   // get the number of ticket and update the badge.
   var ticketCount = json.length;
-  //console.log(json.length);
   chrome.browserAction.setBadgeText({text: ticketCount.toString()});
   
   var links = new Array();
@@ -82,12 +75,9 @@ function parseTickets(json) {
     item = json[i];
     var esmTicket= new Object();
     // Get ticket#
-    // console.log(item.key);
     esmTicket.key = item.key;
     esmTicket.link = "http://www.jira.gwn/browse/" + item.key;
-    //console.log(esmTicket.link);
     // Get Summary
-    // console.log(item.summary);
     esmTicket.summary = item.summary;
     // Get time
     esmTicket.time = getTime(esmTicket.key);
@@ -98,7 +88,7 @@ function parseTickets(json) {
 
 function sendNotification(ticket) {
   var toast = webkitNotifications.createNotification(
-    'icon.png',
+    '/icon.png',
     "New Ticket in the Queue",
     ticket.key + " " + ticket.summary
     );
@@ -144,8 +134,9 @@ function RetrieveTicketsFromLocalStorage() {
   }
 }
 
-function updateLastRefreshTime() {
+function UpdateLastRefreshTime() {
   localStorage['ESM.LastRefresh'] = (new Date()).getTime();
+  console.log("here");
 }
 
 function openOptions() {

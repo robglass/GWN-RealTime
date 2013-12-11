@@ -55,7 +55,6 @@ function buildPopup(tickets) {
 }
 
 function refreshTickets() {
-  console.log("refreshing");
    var ticketTable = document.getElementById('feed');
   while(ticketTable.hasChildNodes()) {
     ticketTable.removeChild(ticketTable.firstChild);
@@ -64,5 +63,5 @@ function refreshTickets() {
   toggle('spinner');
   buildPopupAfterResponce = true;
   UpdateFeed();
-  updateLastRefreshTime();
+  UpdateLastRefreshTime();
 }
