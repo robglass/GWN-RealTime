@@ -41,7 +41,7 @@ function ConnectionError(){
 
 function CheckTickets(tickets) {
   var oldTickets = RetrieveTicketsFromLocalStorage();
-  if (localStorage["ESM.NumTickets"] != 0) {
+  if ((localStorage["ESM.NumTickets"] != 0) && (typeof localStorage["ESM.NumTickets"] !== 'undefined')) {
     for (var i=0; i<tickets.length; i++){
       var ticketExists = false
       for (var j=0; j<oldTickets.length; j++){

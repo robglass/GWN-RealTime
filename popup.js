@@ -33,11 +33,13 @@ function buildPopup(tickets) {
   var ticketLink = document.getElementById('issues');
   ticketLink.addEventListener('click', openLinkFront);
   
-  var timeSince = $.timeago(localStorage['ESM.FLastRefresh']);
-  var addTime = document.createElement('span');
-   addTime.classname = 'timesince';
-   addTime.innerText = timeSince;
-  header.appendChild(addTime);
+  if (typeof localStorage['ESM.FLastRefresh'] !== 'undefined') {
+    var timeSince = $.timeago(localStorage['ESM.FLastRefresh']);
+    var addTime = document.createElement('span');
+      addTime.classname = 'timesince';
+      addTime.innerText = timeSince;
+    header.appendChild(addTime);
+  }
   var title = document.getElementById('title');
   title.addEventListener('click', openLink);
 
