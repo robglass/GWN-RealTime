@@ -38,7 +38,22 @@ function parseJson(json) {
     return;
   }
   //console.log(json);
-  tickets = parseTickets(json);
+  var tickets = parseTickets(json);
+  var oldTickets = RetrieveTicketsFromLocalStorage();
+  if (localStorage["ESM.NumTickets"] != 0) {
+    for (var i=0; i<tickets.length; i++){
+      //console.log(tickets[i].key);
+      //console.log(oldTickets[i].key);
+      if (tickets[i].key != oldTickets[i].key ) {
+          sendNotification(tickets[i]);        
+      }
+    }
+  }
+  else{
+    for (var i=0; i<tickets.length; i++){
+      sendNotification(tickets[i]);
+    }
+  }
   SaveTicketsToLocalStorage(tickets);
   if (buildPopupAfterResponce == true) {
       buildPopup(tickets);
@@ -69,8 +84,18 @@ function parseTickets(json) {
     esmTicket.time = getTime(esmTicket.key);
     links.push(esmTicket);
   }
-  console.log(links);
+  //console.log(links);
   return links;
+}
+
+function sendNotification(ticket) {
+  var toast = webkitNotifications.createNotification(
+    '/icon.png',
+    "New Ticket in the Queue",
+    ticket.key + " " + ticket.summary
+    );
+  toast.show();
+  setTimeout(function () { toast.cancel() }, 5000);
 }
 
 function getTime(ticket) {
