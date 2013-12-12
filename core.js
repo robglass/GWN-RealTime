@@ -22,7 +22,6 @@ function UpdateIfReady(force) {
   }
 }
 
-// TODO need a way to fail gracefully and notify user if unable to connect to ESM
 function UpdateFeed() {
   var jiraCon = 'http://services.hq/jira_connector/rest/gwnjc/issues/data?server=http://jira.gwn&query=';
   var jqlQuery = 'assignee = queuetier2 AND status in (Open, "In Progress", Reopened, "Ready to Test", "Need Information", "Escalate to Tier 2", "Escalate to Tier 3", "Escalate to Client Services", Testing, Validated, HOLD, Scheduled, Revalidate, "Pending Review", "In Review", "Possible Future Release", "Assigned To Release", "Development Complete", "Ready to Schedule", "Ready to Launch", "Post-Launch Support", "In Discovery", "Requires PLC Update", "Pending Schedule Approval", Draft, "Ready to Order", "Partially Shipped", "Order Placed", "Fully Shipped", "To Do") ORDER BY cf[10142] ASC'
@@ -35,7 +34,8 @@ function UpdateFeed() {
 }
 
 function ConnectionError(){
-  localStorage['GWNRT.error'] = 'Connection to ESM failed, please verify connection to services.hq';
+  localStorage.clear();
+  buildPopupE('Connection to ESM failed, please verify connection to services.hq');
   localStorage["GWNRT.LastRefresh"] = localStorage["GWNRT.LastRefresh"] + retryMilliseconds;
 }
 
@@ -74,7 +74,7 @@ function ParseJson(json) {
       buildPopup(tickets);
       buildPopupAfterResponce = false;
     }
-  localStorage['GWNRT.LastRefresh'] = (new Date()).getTime();
+  UpdateLastRefreshTime();
 }
 
 function parseTickets(json) {
@@ -101,7 +101,7 @@ function parseTickets(json) {
 function sendNotification(ticket) {
   var toast = webkitNotifications.createNotification(
     'icon.png',
-    "New Ticket in the Queue",
+    "New Ticket",
     ticket.key + " " + ticket.summary
     );
   toast.show();

@@ -15,16 +15,19 @@ function main() {
     buildPopupAfterResponce = true;
     UpdateFeed();
   }
-  else if (localStorage['GWNRT.error'] != "null") { 
-    var feed = document.getElementById('feed');
-    var span = document.createElement('span');
-     span.classname = 'Error';
-     span.innerText = localStorage['GWNRT.error'];
-    feed.appendChild(span);
-  }
   else {
     buildPopup(RetrieveTicketsFromLocalStorage());
   }
+}
+
+function buildPopupE(error) {
+  var feed = document.getElementById('feed');
+  var span = document.createElement('span');
+    span.className = 'error';
+    span.innerText = error;
+  feed.appendChild(span);
+  showElement('container');
+  hideElement('spinner');
 }
 
 function buildPopup(tickets) {
@@ -70,7 +73,14 @@ function buildPopup(tickets) {
 
 function refreshTickets() {
   var ticketTable = document.getElementById('feed');
-  document.getElementsByClassName('timesince')[0].remove();
+  var timeUp = document.getElementsByClassName('timesince');
+  var errorDiv = document.getElementsByClassName('error');
+  if(timeUp.length!=0) {
+    timeUp[0].remove();
+  }
+  if(errorDiv.length != 0) {
+    errorDiv[0].remove();
+  }
   while(ticketTable.hasChildNodes()) {
     ticketTable.removeChild(ticketTable.firstChild);
   }
@@ -78,6 +88,6 @@ function refreshTickets() {
   toggle('spinner');
   console.log('cleared');
   buildPopupAfterResponce = true;
-  UpdateLastRefreshTime();
   UpdateFeed();
+  UpdateLastRefreshTime();
 }

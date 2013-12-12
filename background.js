@@ -6,6 +6,7 @@ function startRequest() {
   window.setTimeout(startRequest, 5000);
 }
  
+localStorage.clear();
 SetInitalOption("GWNRT.RequestInterval", 60000);
 SetInitalOption("GWNRT.BackgroundTabs", false);
 SetInitalOption("GWNRT.error", null);
