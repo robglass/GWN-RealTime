@@ -1,6 +1,5 @@
-QueueBacca
+GWN RealTime
 ============
-
 A simple Chrome Extension to keep T2's current.
 
 
