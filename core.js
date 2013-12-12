@@ -6,12 +6,12 @@ function SetInitalOption(key, value) {
 }
 
 function UpdateIfReady(force) {
-  var lastRefresh = parseFloat(localStorage["ESM.LastRefresh"]);
-  var interval = parseFloat(localStorage["ESM.RequestInterval"]);
+  var lastRefresh = parseFloat(localStorage["GWNRT.LastRefresh"]);
+  var interval = parseFloat(localStorage["GWNRT.RequestInterval"]);
   var nextRefresh = lastRefresh +interval;
   var currTime = parseFloat((new Date()).getTime());
   var isReady = (currTime > nextRefresh);
-  var isNull = (localStorage["ESM.LastRefresh"] == null);
+  var isNull = (localStorage["GWNRT.LastRefresh"] == null);
   if ((force == true) || isNull) {
     UpdateFeed();
   }
@@ -35,13 +35,13 @@ function UpdateFeed() {
 }
 
 function ConnectionError(){
-  localStorage['ESM.error'] = 'Connection to ESM failed, please verify connection to services.hq';
-  localStorage["HN.LastRefresh"] = localStorage["HN.LastRefresh"] + retryMilliseconds;
+  localStorage['GWNRT.error'] = 'Connection to ESM failed, please verify connection to services.hq';
+  localStorage["GWNRT.LastRefresh"] = localStorage["GWNRT.LastRefresh"] + retryMilliseconds;
 }
 
 function CheckTickets(tickets) {
   var oldTickets = RetrieveTicketsFromLocalStorage();
-  if ((localStorage["ESM.NumTickets"] != 0) && (typeof localStorage["ESM.NumTickets"] !== 'undefined')) {
+  if ((localStorage["GWNRT.NumTickets"] != 0) && (typeof localStorage["GWNRT.NumTickets"] !== 'undefined')) {
     for (var i=0; i<tickets.length; i++){
       var ticketExists = false
       for (var j=0; j<oldTickets.length; j++){
@@ -66,7 +66,7 @@ function ParseJson(json) {
     console.log("EPIC FAIL");
     return;
   }
-  localStorage['ESM.error'] = null;
+  localStorage['GWNRT.error'] = null;
   var tickets = parseTickets(json);
   CheckTickets(tickets);
   SaveTicketsToLocalStorage(tickets);
@@ -74,7 +74,7 @@ function ParseJson(json) {
       buildPopup(tickets);
       buildPopupAfterResponce = false;
     }
-  localStorage['ESM.LastRefresh'] = (new Date()).getTime();
+  localStorage['GWNRT.LastRefresh'] = (new Date()).getTime();
 }
 
 function parseTickets(json) {
@@ -126,30 +126,30 @@ function getTime(ticket) {
 }
 
 function SaveTicketsToLocalStorage(tickets) {
-  localStorage["ESM.NumTickets"] = tickets.length;
+  localStorage["GWNRT.NumTickets"] = tickets.length;
   for (var i=0; i<tickets.length; i++) {
-   localStorage["ESM.Ticket"+ i] = JSON.stringify(tickets[i]); 
+   localStorage["GWNRT.Ticket"+ i] = JSON.stringify(tickets[i]); 
   }
 }
 
 function RetrieveTicketsFromLocalStorage() {
-  var numTickets = localStorage['ESM.NumTickets'];
+  var numTickets = localStorage['GWNRT.NumTickets'];
   if (numTickets == null) {
     return null;
   }
   else {
     var tickets = new Array();
     for (var i=0; i<numTickets; i++) {
-      tickets.push(JSON.parse(localStorage['ESM.Ticket'+i]));
+      tickets.push(JSON.parse(localStorage['GWNRT.Ticket'+i]));
     }
     return tickets;
   }
 }
 
 function UpdateLastRefreshTime() {
-  localStorage['ESM.LastRefresh'] = (new Date()).getTime();
-  localStorage['ESM.FLastRefresh'] = (new Date().toISOString());
-  console.log(localStorage['ESM.FLastRefresh']);
+  localStorage['GWNRT.LastRefresh'] = (new Date()).getTime();
+  localStorage['GWNRT.FLastRefresh'] = (new Date().toISOString());
+  console.log(localStorage['GWNRT.FLastRefresh']);
 }
 
 function openOptions() {
@@ -158,7 +158,7 @@ function openOptions() {
 }
 
 function openLink() {
-  openUrl(this.href, (localStorage['ESM.BackgroundTabs'] == 'false'));
+  openUrl(this.href, (localStorage['GWNRT.BackgroundTabs'] == 'false'));
 }
 
 function openLinkFront() {
@@ -181,7 +181,7 @@ function showElement(id){
   var e = document.getElementById(id);
   e.style.display = 'block';
 }
-function toggle(id) {
+function toggle(id) {;
   var e= document.getElementById(id);
   if(e.style.display == 'block')
     e.style.display = 'none';
