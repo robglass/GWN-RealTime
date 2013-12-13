@@ -31,42 +31,71 @@ function buildPopupE(error) {
 }
 
 function buildPopup(tickets) {
-  var header = document.getElementById('header');
   var feed = document.getElementById('feed');
-  var ticketLink = document.getElementById('issues');
-  ticketLink.addEventListener('click', openLinkFront);
   
+  var title = document.getElementById('queuetitle');
+  var addtitle = document.createElement('span');
+      addtitle.innerText = 'T2 Queue';
+  var addnum = document.createElement('span');
+      addnum.className = 'unreadCount';
+      addnum.innerText = '  (' + localStorage['GWNRT.NumTickets'] + ')';
+    title.appendChild(addtitle);
+  title.appendChild(addnum);
   if (typeof localStorage['GWNRT.FLastRefresh'] !== 'undefined') {
     var timeSince = $.timeago(localStorage['GWNRT.FLastRefresh']);
     var addTime = document.createElement('span');
-      addTime.className = 'timesince';
+      addTime.className = 'timesince emailDetailsTopRight';
       addTime.innerText = timeSince;
-    header.appendChild(addTime);
+    title.appendChild(addTime);
   }
-  var title = document.getElementById('title');
-  title.addEventListener('click', openLink);
 
-  for (var i=0; i<tickets.length; i++) {
-    esmTickets = tickets[i];
-    var row = document.createElement('tr');
-    row.classname = "ticket";
-    var num = document.createElement('td');
-    num.innerText = i+1;
-    var link_col = document.createElement('td');
-    var title = document.createElement('a');
-      title.className = 'ticket_number';
-      title.innerText = esmTickets.key + " | " + esmTickets.summary;
-      title.href = esmTickets.link;
-      title.addEventListener('click', openLink);
-    var time = document.createElement('span');
-      time.className = "time";
-      time.innerText = "  |  " + esmTickets.time;
-    link_col.appendChild(title);
-    link_col.appendChild(time);
-    row.appendChild(num);
-    row.appendChild(link_col);
-    feed.appendChild(row);
-  }
+
+
+  
+    
+    for (var i=0; i<tickets.length; i++) {
+      esmTickets = tickets[i];
+      var ticketblock = document.createElement('div');
+      ticketblock.className = "mail vbox hideScrollbars";
+      var box = document.createElement('div');
+      box.className = 'hbox wide';
+      var img = document.createElement('div');
+      img.className = 'imageArea vbox';
+      var details = document.createElement('div');
+      details.className = 'emailDetails vbox wide';
+      var unread = document.createElement('span');
+      unread.className = 'unread';
+      unread.innerText = esmTickets.key;
+      var tickettime = document.createElement('div');
+      tickettime.className = 'emailDetailsTopRight';
+      var date = document.createElement('div');
+      date.className = 'date';
+      date.innerText = 'TIME';
+      var timeago = document.createElement('span');
+      timeago.className = 'timeAgo';
+      timeago.innerText =  ' (' + esmTickets.time + ')';
+      var box2 = document.createElement('div');
+      box2.className = 'hbox';
+      var subject = document.createElement('div');
+      subject.className = 'subject';
+      subject.innerText = esmTickets.summary;
+      var notes = document.createElement('div');
+      notes.className = 'summary vbox';
+      notes.innerText = "Soon with notes!!";
+    
+      ticketblock.appendChild(box);
+      box.appendChild(img);
+      img.appendChild(details);
+      details.appendChild(unread);
+      details.appendChild(tickettime);
+      details.appendChild(box2);
+      box2.appendChild(subject);
+      details.appendChild(notes);
+      tickettime.appendChild(date);
+      date.appendChild(timeago);
+      feed.appendChild(ticketblock);
+    }
+
   hideElement('spinner');
   showElement('container');
 }

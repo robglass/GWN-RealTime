@@ -149,7 +149,7 @@ function RetrieveTicketsFromLocalStorage() {
 function UpdateLastRefreshTime() {
   localStorage['GWNRT.LastRefresh'] = (new Date()).getTime();
   localStorage['GWNRT.FLastRefresh'] = (new Date().toISOString());
-  console.log(localStorage['GWNRT.FLastRefresh']);
+  console.log('Updated');
 }
 
 function openOptions() {
