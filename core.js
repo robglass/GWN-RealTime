@@ -126,7 +126,12 @@ function getTime(ticket) {
     var dateFormatted=new Date(commentDate.split(' ')[0].split('-').join(',') + ',' + commentDate.split(' ')[1].split('-').join(','));
     ticketTime = $.timeago(dateFormatted);
     refcomment = lastcomment.replace(/[\n\r]/g, '');
+    if (refcomment.length>'120') {
     ticketDetail.comment = refcomment.substring(0,120) + '...';
+    }
+    else {
+    ticketDetail.comment = refcomment;
+    }
     ticketDetail.timeago = ticketTime;
     ticketDetail.time = commentDate;
     }
