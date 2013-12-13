@@ -102,13 +102,18 @@ function buildPopup(tickets) {
 
 function refreshTickets() {
   var ticketTable = document.getElementById('feed');
+  var queueTitle = document.getElementById('queuetitle');
   var timeUp = document.getElementsByClassName('timesince');
   var errorDiv = document.getElementsByClassName('error');
+  
   if(timeUp.length!=0) {
     timeUp[0].remove();
   }
   if(errorDiv.length != 0) {
     errorDiv[0].remove();
+  }
+  while(queueTitle.hasChildNodes()) {
+    queueTitle.removeChild(ticketTable.firstChild);
   }
   while(ticketTable.hasChildNodes()) {
     ticketTable.removeChild(ticketTable.firstChild);
