@@ -81,7 +81,6 @@ function parseTickets(json) {
   // get the number of ticket and update the badge.
   var ticketCount = json.length;
   chrome.browserAction.setBadgeText({text: ticketCount.toString()});
-  
   var links = new Array();
   for (var i=0; i< ticketCount; i++) {
     item = json[i];
@@ -92,7 +91,11 @@ function parseTickets(json) {
     // Get Summary
     esmTicket.summary = item.summary;
     // Get time
-    esmTicket.time = getTime(esmTicket.key);
+    parseMe = getTime(esmTicket.key)
+    comment = parseMe.comment;
+    esmTicket.comment = comment;
+    esmTicket.time = parseMe.time;
+    esmTicket.timeago = parseMe.timeago;
     links.push(esmTicket);
   }
   return links;
@@ -110,19 +113,25 @@ function sendNotification(ticket) {
 
 function getTime(ticket) {
   var jiraCon = 'http://services.hq/jira_connector/rest/gwnjc/issue/data?server=http://jira.gwn&issue=';
-  var ticketTime = [];
+  var ticketDetail = new Object();
   $.ajax({ 
     url: jiraCon + ticket,
     async: false,
     dataType: 'json',
     success: function(json) {
+
     var numComments = json.comments.length;
     var commentDate = json.comments[numComments-1].date;
+    var lastcomment = json.comments[numComments-1].body;
     var dateFormatted=new Date(commentDate.split(' ')[0].split('-').join(',') + ',' + commentDate.split(' ')[1].split('-').join(','));
     ticketTime = $.timeago(dateFormatted);
+    refcomment = lastcomment.replace(/[\n\r]/g, '');
+    ticketDetail.comment = refcomment.substring(0,120) + '...';
+    ticketDetail.timeago = ticketTime;
+    ticketDetail.time = commentDate;
     }
   });
-  return ticketTime;
+  return ticketDetail;
 }
 
 function SaveTicketsToLocalStorage(tickets) {

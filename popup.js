@@ -5,8 +5,11 @@ window.onload = function() {
 
 function setupEvents() {
   $('#refresh').click(refreshTickets);
-  $('a#options').click(function() {
+  $('#options').click(function() {
     openOptions();
+  });
+  $("#close").click(function() {
+    window.close();
   });
 }
 
@@ -70,10 +73,10 @@ function buildPopup(tickets) {
       tickettime.className = 'emailDetailsTopRight';
       var date = document.createElement('div');
       date.className = 'date';
-      date.innerText = 'TIME';
+      date.innerText = esmTickets.time;
       var timeago = document.createElement('span');
       timeago.className = 'timeAgo';
-      timeago.innerText =  ' (' + esmTickets.time + ')';
+      timeago.innerText =  ' (' + esmTickets.timeago + ')';
       var box2 = document.createElement('div');
       box2.className = 'hbox';
       var subject = document.createElement('div');
@@ -81,7 +84,7 @@ function buildPopup(tickets) {
       subject.innerText = esmTickets.summary;
       var notes = document.createElement('div');
       notes.className = 'summary vbox';
-      notes.innerText = "Soon with notes!!";
+      notes.innerText = esmTickets.comment;
     
       ticketblock.appendChild(box);
       box.appendChild(img);
@@ -113,7 +116,7 @@ function refreshTickets() {
     errorDiv[0].remove();
   }
   while(queueTitle.hasChildNodes()) {
-    queueTitle.removeChild(ticketTable.firstChild);
+    queueTitle.removeChild(queueTitle.firstChild);
   }
   while(ticketTable.hasChildNodes()) {
     ticketTable.removeChild(ticketTable.firstChild);
