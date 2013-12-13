@@ -2,7 +2,7 @@
     "manifest_version": 2,
     "name": "GWN RealTime",
     "description": "A Jira notification and auto-updater.",
-    "version": "0.9.2.1",
+    "version": "0.9.5",
     "icons": {  "16": "icon.png",
                 "48": "icon.png",
                "128": "icon.png"
