@@ -88,19 +88,19 @@ function parseTickets(json) {
   var links = new Array();
   for (var i=0; i< ticketCount; i++) {
     item = json[i];
-    var esmTicket= new Object();
+    ticket= new Object();
     // Get ticket#
-    esmTicket.key = item.key;
-    esmTicket.link = "http://www.jira.gwn/browse/" + item.key;
+    ticket.key = item.key;
+    ticket.link = "http://www.jira.gwn/browse/" + item.key;
     // Get Summary
-    esmTicket.summary = item.summary;
+    ticket.summary = item.summary;
     // Get time
-    parseMe = getTime(esmTicket.key)
+    parseMe = getTime(ticket.key);
     comment = parseMe.comment;
-    esmTicket.comment = comment;
-    esmTicket.time = parseMe.time;
-    esmTicket.timeago = parseMe.timeago;
-    links.push(esmTicket);
+    ticket.comment = comment;
+    ticket.time = parseMe.time;
+    ticket.timeago = parseMe.timeago;
+    links.push(ticket);
   }
   return links;
 }
@@ -116,7 +116,7 @@ function sendNotification(ticket) {
     window.open(ticket.link);
   });
   toast.show();
-  setTimeout(function () { toast.cancel() }, 10000);
+  setTimeout(function () { toast.cancel() }, 5000);
 }
 
 function getTime(ticket) {
@@ -130,7 +130,7 @@ function getTime(ticket) {
     var numComments = json.comments.length;
     var commentDate = json.comments[numComments-1].date;
     var lastcomment = json.comments[numComments-1].body;
-    var dateFormatted=new Date(commentDate.split(' ')[0].split('-').join(',') + ',' + commentDate.split(' ')[1].split('-').join(','));
+    var dateFormatted=new Date(commentDate);
     ticketTime = $.timeago(dateFormatted);
     refcomment = lastcomment.replace(/[\n\r]/g, '');
     if (refcomment.length>'120') {
@@ -146,10 +146,14 @@ function getTime(ticket) {
   return ticketDetail;
 }
 
-function SaveTicketsToLocalStorage(tickets) {
+function ClearTickets() {
   for (var i=0;i<localStorage['GWNRT.NumTickets']; i++) {
     delete window.localStorage['GWNRT.Ticket'+ i];
-  }
+  } 
+}
+
+function SaveTicketsToLocalStorage(tickets) {
+  ClearTickets();
   localStorage["GWNRT.NumTickets"] = tickets.length;
   for (var i=0; i<tickets.length; i++) {
    localStorage["GWNRT.Ticket"+ i] = JSON.stringify(tickets[i]); 
