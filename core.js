@@ -1,5 +1,5 @@
 var buildPopupAfterResponce = false;
-var retryMilliseconds = 120000;
+var retryMilliseconds = 1000;
 
 function SetInitalOption(key, value) {
     localStorage[key] = value;
@@ -33,10 +33,14 @@ function UpdateFeed() {
   });
 }
 
-function ConnectionError(){
+function ConnectionError() {
   localStorage.clear();
-  buildPopupE('Connection to ESM failed, please verify connection to services.hq');
-  localStorage["GWNRT.LastRefresh"] = localStorage["GWNRT.LastRefresh"] + retryMilliseconds;
+  chrome.browserAction.setBadgeText({text: ''});
+  if (buildPopupAfterResponce) {
+    buildPopupE('Connection to ESM failed, please verify connection to services.hq');
+    buildPopupAfterResponce = false;
+  }
+  //localStorage["GWNRT.LastRefresh"] = localStorage["GWNRT.LastRefresh"] + retryMilliseconds;
 }
 
 function CheckTickets(tickets) {
@@ -107,6 +111,10 @@ function sendNotification(ticket) {
     "New Ticket",
     ticket.key + " " + ticket.summary
     );
+  toast.addEventListener('click', function() {
+    toast.cancel();
+    window.open(ticket.link);
+  });
   toast.show();
   setTimeout(function () { toast.cancel() }, 10000);
 }
@@ -119,7 +127,6 @@ function getTime(ticket) {
     async: false,
     dataType: 'json',
     success: function(json) {
-    console.log(json);
     var numComments = json.comments.length;
     var commentDate = json.comments[numComments-1].date;
     var lastcomment = json.comments[numComments-1].body;
@@ -140,6 +147,9 @@ function getTime(ticket) {
 }
 
 function SaveTicketsToLocalStorage(tickets) {
+  for (var i=0;i<localStorage['GWNRT.NumTickets']; i++) {
+    delete window.localStorage['GWNRT.Ticket'+ i];
+  }
   localStorage["GWNRT.NumTickets"] = tickets.length;
   for (var i=0; i<tickets.length; i++) {
    localStorage["GWNRT.Ticket"+ i] = JSON.stringify(tickets[i]); 

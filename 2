@@ -1,190 +1,137 @@
-var buildPopupAfterResponce = false;
-var retryMilliseconds = 120000;
-
-function SetInitalOption(key, value) {
-    localStorage[key] = value;
+window.onload = function() {
+  main();
+  setupEvents();
 }
 
-function UpdateIfReady(force) {
-  var lastRefresh = parseFloat(localStorage["GWNRT.LastRefresh"]);
-  var interval = parseFloat(localStorage["GWNRT.RequestInterval"]);
-  var nextRefresh = lastRefresh +interval;
-  var currTime = parseFloat((new Date()).getTime());
-  var isReady = (currTime > nextRefresh);
-  var isNull = (localStorage["GWNRT.LastRefresh"] == null);
-  if ((force == true) || isNull) {
+function setupEvents() {
+  $('#refresh').click(refreshTickets);
+  $('#options').click(function() {
+    openOptions();
+  });
+  $("#close").click(function() {
+    window.close();
+  });
+  $(".collapseArrow").click(function() {
+    $(".collapseArrow").addClass('collapsed');
+    $(".email").slideToggle('fast');
+  });
+}
+
+function foldQueue() {
+  
+}
+function main() {
+  if (localStorage['GWNRT.NumTickets'] == null) {
+    buildPopupAfterResponce = true;
     UpdateFeed();
   }
   else {
-    if (isReady) {
-      UpdateFeed();    
-    }
+    buildPopup(RetrieveTicketsFromLocalStorage());
   }
 }
 
-function UpdateFeed() {
-  var jiraCon = 'http://services.hq/jira_connector/rest/gwnjc/issues/data?server=http://jira.gwn&query=';
-  var jqlQuery = 'assignee = queuetier2 AND status in (Open, "In Progress", Reopened, "Ready to Test", "Need Information", "Escalate to Tier 2", "Escalate to Tier 3", "Escalate to Client Services", Testing, Validated, HOLD, Scheduled, Revalidate, "Pending Review", "In Review", "Possible Future Release", "Assigned To Release", "Development Complete", "Ready to Schedule", "Ready to Launch", "Post-Launch Support", "In Discovery", "Requires PLC Update", "Pending Schedule Approval", Draft, "Ready to Order", "Partially Shipped", "Order Placed", "Fully Shipped", "To Do") ORDER BY cf[10142] ASC'
-  $.ajax({ 
-    dataType: "json",
-         url:  jiraCon + encodeURIComponent(jqlQuery), 
-     success:  ParseJson,
-       error:  ConnectionError
-  });
+function buildPopupE(error) {
+  var feed = document.getElementById('feed');
+  var span = document.createElement('span');
+    span.className = 'error';
+    span.innerText = error;
+  feed.appendChild(span);
+  showElement('container');
+  hideElement('spinner');
 }
 
-function ConnectionError(){
-  localStorage.clear();
-  buildPopupE('Connection to ESM failed, please verify connection to services.hq');
-  localStorage["GWNRT.LastRefresh"] = localStorage["GWNRT.LastRefresh"] + retryMilliseconds;
+function buildPopup(tickets) {
+  var feed = document.getElementById('feed');
+  
+  var title = document.getElementById('queuetitle');
+  var addtitle = document.createElement('span');
+      addtitle.innerText = 'T2 Queue';
+  var addnum = document.createElement('span');
+      addnum.className = 'unreadCount';
+      addnum.innerText = '  (' + localStorage['GWNRT.NumTickets'] + ')';
+    title.appendChild(addtitle);
+  title.appendChild(addnum);
+  if (typeof localStorage['GWNRT.FLastRefresh'] !== 'undefined') {
+    var timeSince = $.timeago(localStorage['GWNRT.FLastRefresh']);
+    var addTime = document.createElement('span');
+      addTime.className = 'timesince emailDetailsTopRight';
+      addTime.innerText = timeSince;
+    title.appendChild(addTime);
+  }
+
+
+
+  
+    
+    for (var i=0; i<tickets.length; i++) {
+      esmTickets = tickets[i];
+      var ticketblock = document.createElement('div');
+      ticketblock.className = "mail vbox hideScrollbars";
+      var box = document.createElement('div');
+      box.className = 'hbox wide';
+      var img = document.createElement('div');
+      img.className = 'imageArea vbox';
+      var details = document.createElement('div');
+      details.className = 'emailDetails vbox wide';
+      var unread = document.createElement('span');
+      unread.className = 'unread';
+      unread.innerText = esmTickets.key;
+      var tickettime = document.createElement('div');
+      tickettime.className = 'emailDetailsTopRight';
+      var date = document.createElement('div');
+      date.className = 'date';
+      date.innerText = esmTickets.time;
+      var timeago = document.createElement('span');
+      timeago.className = 'timeAgo';
+      timeago.innerText =  ' (' + esmTickets.timeago + ')';
+      var box2 = document.createElement('div');
+      box2.className = 'hbox';
+      var subject = document.createElement('div');
+      subject.className = 'subject';
+      subject.innerText = esmTickets.summary;
+      var notes = document.createElement('div');
+      notes.className = 'summary vbox';
+      notes.innerText = esmTickets.comment;
+    
+      ticketblock.appendChild(box);
+      box.appendChild(img);
+      img.appendChild(details);
+      details.appendChild(unread);
+      details.appendChild(tickettime);
+      details.appendChild(box2);
+      box2.appendChild(subject);
+      details.appendChild(notes);
+      tickettime.appendChild(date);
+      date.appendChild(timeago);
+      feed.appendChild(ticketblock);
+    }
+
+  hideElement('spinner');
+  showElement('container');
 }
 
-function CheckTickets(tickets) {
-  var oldTickets = RetrieveTicketsFromLocalStorage();
-  if ((localStorage["GWNRT.NumTickets"] != 0) && (typeof localStorage["GWNRT.NumTickets"] !== 'undefined')) {
-    for (var i=0; i<tickets.length; i++){
-      var ticketExists = false
-      for (var j=0; j<oldTickets.length; j++){
-        if (tickets[i].key == oldTickets[j].key ) {
-                  ticketExists = true;
-        } 
-      }
-        if (!ticketExists)
-          sendNotification(tickets[i]);       
-    }
+function refreshTickets() {
+  var ticketTable = document.getElementById('feed');
+  var queueTitle = document.getElementById('queuetitle');
+  var timeUp = document.getElementsByClassName('timesince');
+  var errorDiv = document.getElementsByClassName('error');
+  
+  if(timeUp.length!=0) {
+    timeUp[0].remove();
   }
-  else{
-    for (var i=0; i<tickets.length; i++){
-      sendNotification(tickets[i]);
-    }
+  if(errorDiv.length != 0) {
+    errorDiv[0].remove();
   }
-}
-
-function ParseJson(json) {
-  if (!json) {
-    // TODO this.
-    console.log("EPIC FAIL");
-    return;
+  while(queueTitle.hasChildNodes()) {
+    queueTitle.removeChild(queueTitle.firstChild);
   }
-  localStorage['GWNRT.error'] = null;
-  var tickets = parseTickets(json);
-  CheckTickets(tickets);
-  SaveTicketsToLocalStorage(tickets);
-  if (buildPopupAfterResponce == true) {
-      buildPopup(tickets);
-      buildPopupAfterResponce = false;
-    }
+  while(ticketTable.hasChildNodes()) {
+    ticketTable.removeChild(ticketTable.firstChild);
+  }
+  toggle('container');
+  toggle('spinner');
+  console.log('cleared');
+  buildPopupAfterResponce = true;
+  UpdateFeed();
   UpdateLastRefreshTime();
-}
-
-function parseTickets(json) {
-  // get the number of ticket and update the badge.
-  var ticketCount = json.length;
-  chrome.browserAction.setBadgeText({text: ticketCount.toString()});
-  console.log(json);
-  var links = new Array();
-  for (var i=0; i< ticketCount; i++) {
-    item = json[i];
-    var esmTicket= new Object();
-    // Get ticket#
-    esmTicket.key = item.key;
-    esmTicket.link = "http://www.jira.gwn/browse/" + item.key;
-    // Get Summary
-    esmTicket.summary = item.summary;
-    // Get time
-    esmTicket.time = getTime(esmTicket.key);
-    links.push(esmTicket);
-  }
-  return links;
-}
-
-function sendNotification(ticket) {
-  var toast = webkitNotifications.createNotification(
-    'icon.png',
-    "New Ticket",
-    ticket.key + " " + ticket.summary
-    );
-  toast.show();
-  setTimeout(function () { toast.cancel() }, 10000);
-}
-
-function getTime(ticket) {
-  var jiraCon = 'http://services.hq/jira_connector/rest/gwnjc/issue/data?server=http://jira.gwn&issue=';
-  var ticketTime = [];
-  $.ajax({ 
-    url: jiraCon + ticket,
-    async: false,
-    dataType: 'json',
-    success: function(json) {
-    var numComments = json.comments.length;
-    var commentDate = json.comments[numComments-1].date;
-    var dateFormatted=new Date(commentDate.split(' ')[0].split('-').join(',') + ',' + commentDate.split(' ')[1].split('-').join(','));
-    ticketTime = $.timeago(dateFormatted);
-    }
-  });
-  return ticketTime;
-}
-
-function SaveTicketsToLocalStorage(tickets) {
-  localStorage["GWNRT.NumTickets"] = tickets.length;
-  for (var i=0; i<tickets.length; i++) {
-   localStorage["GWNRT.Ticket"+ i] = JSON.stringify(tickets[i]); 
-  }
-}
-
-function RetrieveTicketsFromLocalStorage() {
-  var numTickets = localStorage['GWNRT.NumTickets'];
-  if (numTickets == null) {
-    return null;
-  }
-  else {
-    var tickets = new Array();
-    for (var i=0; i<numTickets; i++) {
-      tickets.push(JSON.parse(localStorage['GWNRT.Ticket'+i]));
-    }
-    return tickets;
-  }
-}
-
-function UpdateLastRefreshTime() {
-  localStorage['GWNRT.LastRefresh'] = (new Date()).getTime();
-  localStorage['GWNRT.FLastRefresh'] = (new Date().toISOString());
-  console.log('Updated');
-}
-
-function openOptions() {
-  var optionsURL = chrome.extension.getURL('options.html');
-  chrome.tabs.create({url: optionsURL});
-}
-
-function openLink() {
-  openUrl(this.href, (localStorage['GWNRT.BackgroundTabs'] == 'false'));
-}
-
-function openLinkFront() {
-  openUrl(this.href, true);
-}
-
-function openUrl(url, take_focus) {
-  if (url.indexOf("http:") != 0 && url.indexOf("https:") != 0) {
-    return;
-  }
-  chrome.tabs.create({url: url, selected: take_focus});
-}
-
-function hideElement(id){
-  var e = document.getElementById(id);
-  e.style.display = 'none';
-}
-
-function showElement(id){
-  var e = document.getElementById(id);
-  e.style.display = 'block';
-}
-function toggle(id) {;
-  var e= document.getElementById(id);
-  if(e.style.display == 'block')
-    e.style.display = 'none';
-  else
-    e.style.display = 'block';
 }

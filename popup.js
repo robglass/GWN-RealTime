@@ -1,3 +1,5 @@
+var boxOpen= true;
+
 window.onload = function() {
   main();
   setupEvents();
@@ -10,6 +12,10 @@ function setupEvents() {
   });
   $("#close").click(function() {
     window.close();
+  });
+  $(".collapseArrow").click(function() {
+      $(".collapseArrow").toggleClass('collapsed');
+      $(".emails").slideToggle('fast');
   });
 }
 
@@ -33,70 +39,83 @@ function buildPopupE(error) {
   hideElement('spinner');
 }
 
-function buildPopup(tickets) {
-  var feed = document.getElementById('feed');
-  
-  var title = document.getElementById('queuetitle');
+function setQueueHeader(title) {
+  var headerdiv = document.getElementById('queuetitle');
   var addtitle = document.createElement('span');
-      addtitle.innerText = 'T2 Queue';
+      addtitle.innerText = title;
   var addnum = document.createElement('span');
+  if (localStorage['GWNRT.NumTickets']>0) {
       addnum.className = 'unreadCount';
       addnum.innerText = '  (' + localStorage['GWNRT.NumTickets'] + ')';
-    title.appendChild(addtitle);
-  title.appendChild(addnum);
+      }
+  else {
+    $('.collapseArrow').addClass('hidden')
+  }
+  headerdiv.appendChild(addtitle);
+  headerdiv.appendChild(addnum);
   if (typeof localStorage['GWNRT.FLastRefresh'] !== 'undefined') {
     var timeSince = $.timeago(localStorage['GWNRT.FLastRefresh']);
     var addTime = document.createElement('span');
-      addTime.className = 'timesince emailDetailsTopRight';
-      addTime.innerText = timeSince;
-    title.appendChild(addTime);
+      addTime.className = 'timesince timeTopRight';
+      addTime.innerText = 'Updated: '+ timeSince;
+    headerdiv.appendChild(addTime);
   }
+}
 
-
-
-  
-    
-    for (var i=0; i<tickets.length; i++) {
-      esmTickets = tickets[i];
+function buildTicketDiv(ticket) {
       var ticketblock = document.createElement('div');
-      ticketblock.className = "mail vbox hideScrollbars";
+        ticketblock.className = "mail vbox hideScrollbars";
       var box = document.createElement('div');
-      box.className = 'hbox wide';
+        box.className = 'hbox wide';
       var img = document.createElement('div');
-      img.className = 'imageArea vbox';
+        img.className = 'imageArea vbox';
       var details = document.createElement('div');
-      details.className = 'emailDetails vbox wide';
+        details.className = 'emailDetails vbox wide';
       var unread = document.createElement('span');
-      unread.className = 'unread';
-      unread.innerText = esmTickets.key;
+        unread.className = 'unread';
+        unread.innerText = ticket.key;
       var tickettime = document.createElement('div');
-      tickettime.className = 'emailDetailsTopRight';
+        tickettime.className = 'emailDetailsTopRight';
       var date = document.createElement('div');
-      date.className = 'date';
-      date.innerText = esmTickets.time;
+        date.className = 'date';
+        date.innerText = ticket.time;
       var timeago = document.createElement('span');
-      timeago.className = 'timeAgo';
-      timeago.innerText =  ' (' + esmTickets.timeago + ')';
+        timeago.className = 'timeAgo';
+        timeago.innerText =  ' (' + ticket.timeago + ')';
       var box2 = document.createElement('div');
-      box2.className = 'hbox';
+        box2.className = 'hbox';
       var subject = document.createElement('div');
-      subject.className = 'subject';
-      subject.innerText = esmTickets.summary;
+        subject.className = 'subject';
+        subject.innerText = ticket.summary;
       var notes = document.createElement('div');
-      notes.className = 'summary vbox';
-      notes.innerText = esmTickets.comment;
+        notes.className = 'summary vbox';
+        notes.innerText = ticket.comment;
     
       ticketblock.appendChild(box);
-      box.appendChild(img);
-      img.appendChild(details);
-      details.appendChild(unread);
-      details.appendChild(tickettime);
-      details.appendChild(box2);
-      box2.appendChild(subject);
-      details.appendChild(notes);
-      tickettime.appendChild(date);
-      date.appendChild(timeago);
-      feed.appendChild(ticketblock);
+       box.appendChild(img);
+        img.appendChild(details);
+         details.appendChild(unread);
+         details.appendChild(tickettime);
+          tickettime.appendChild(date);
+           date.appendChild(timeago);
+         details.appendChild(box2);
+          box2.appendChild(subject);
+         details.appendChild(notes);
+
+         $(ticketblock).click(function() {
+           openUrl(ticket.link); 
+         });
+
+         return ticketblock;
+}
+
+function buildPopup(tickets) {
+  var feed = document.getElementById('feed');
+  
+  setQueueHeader('T2 Queue');
+    
+    for (var i=0; i<tickets.length; i++) {
+      feed.appendChild(buildTicketDiv(tickets[i]));
     }
 
   hideElement('spinner');

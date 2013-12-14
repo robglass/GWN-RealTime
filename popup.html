@@ -116,7 +116,7 @@
 		
 		.inbox {border: 1px solid #ddd}
 		.inbox, .inboxLabelAreaWrapper {border-radius:6px 0 0 0}
-		.inboxLabelArea, .emailDetails {overflow:hidden;white-space:nowrap;margin-right:3px}
+		.inboxLabelArea, .emailDetails {overflow:hidden;white-space:nowrap;margin-right:3px;margin-top:3px}
 		html.notif .inboxLabelArea, html.notif .emailDetails {xxxoverflow:auto;white-space:normal}
 		
 		.subject {margin:4px 0;display:inline-block}
@@ -267,25 +267,14 @@
 		
 		#inboxes .button {padding:0px 8px}
 		
-		.searchWrapper {display:none;position:absolute;top:1px;right:3px}
-		.button.search {margin-top:1px}
-		.button.search div {opacity:1}
-		.cancelSearch {color:black;text-decoration:underline;margin:0 4px}
 		
-		.labelsDropDownWrapper {z-index:100;display:none;position:absolute;border:1px solid #aaa;padding:2px;box-shadow:2px 2px 5px gray;margin-bottom:5px;background:white}
-		.labelsSearch {width:100px;outline:none;border: 1px solid #bbb;-webkit-appearance:none}
-		.labelsDropDown {overflow-y:scroll;max-height:150px;max-width:272px}
-		.labelsDropDown div {padding:2px 2px;white-space:nowrap}
-		.labelsDropDown div.selected {background:#ddd;cursor:pointer}
-
-		#muteVoiceDropDown {right:23px;max-height:150px;z-index:100;display:none;position:absolute;background:white;border:1px solid #aaa;padding:2px;box-shadow:2px 2px 5px gray;margin-top:-3px;margin-bottom:5px}
-		#muteVoiceDropDown div {padding:2px 2px;white-space:nowrap}
-		#muteVoiceDropDown div:hover {background:#ddd;cursor:pointer}
 		
 		.spaceRight {margin-right:7px}
 		html.notif .spaceRight {margin-right:2px}
 		
-		.markAsUnread {padding-left:5px;padding-right:5px;xxxmax-width:130px}
+		
+		.timeTopRight {z-index:5;white-space:nowrap;position:absolute;right:0px;padding-left:10px;opacity:0.55;margin-top:3px;font-weight:normal;font-size:xx-small;xxxbackground-image: -webkit-gradient(linear, left top, left bottom, color-stop(0.1, rgb(245,	245, 245) ), color-stop(0.8, rgb(255, 255, 255) ) );}
+		.timeDetailsTopRight.fixed {position:fixed;top:129px;xxright:13px}
 		
 		.emailDetailsTopRight {z-index:5;white-space:nowrap;position:absolute;top:-2px;right:0px;padding-left:10px;xxfont-weight:bold;xxxbackground-image: -webkit-gradient(linear, left top, left bottom, color-stop(0.1, rgb(245,	245, 245) ), color-stop(0.8, rgb(255, 255, 255) ) );}
 		.emailDetailsTopRight.fixed {position:fixed;top:129px;xxright:13px}
@@ -297,20 +286,6 @@
 		
 		.inboxLabelArea.hasUnread {font-weight:bold}
 		
-		.inboxLink:hover {cursor:pointer}		
-		.inboxLink .icon {opacity:0}
-		xxx.inboxLink:hover .icon {opacity:1}
-		xxx.inboxLink:hover {color:blue}
-
-		.quickActions {display:inline}
-
-		.inboxActions {position:absolute;top:1px;right:2px}
-		.inboxActions img {opacity:0.5}
-		.inboxActions img:hover {opacity:1;cursor:pointer}
-		.inboxActions .sendPageLink {height:16px}
-		.inboxActions .contactsLink {opacity:0.8;background-size:100%}
-		.inboxActions .sendPageLink:hover, .inboxActions .contactsLink:hover {opacity:1;cursor:pointer}		
-		
 		#inboxes.squished .inboxActions {display:none;opacity:0}
 		
 		#inboxes.squished .quickActions,		
@@ -318,67 +293,6 @@
 		#inboxes.squished .open,
 		#inboxes.squished .reply {display:none}
 		
-		#contacts table {width:100%}
-		#contacts table tr:nth-child(odd) {background:#f1f1f1}
-		#contacts table td {max-width:150px;white-space:nowrap;vertical-align:middle;xxxborder-top:1px solid #ddd;padding:0 5px;overflow-x:hidden;text-overflow:ellipsis}
-		#contacts table td:hover {xxxmax-width:100%;overflow-x:visible}
-		#contacts table td.contactPhotoWrapper {max-width:none;height:32px;width:32px;padding:0}
-		#contacts table td .contactPhoto {-webkit-transition: width 0.5s ease, height 0.5s ease}
-		#contacts table td .contactPhoto:hover {height:96px;width:96px;xxborder:2px solid orange;border-radius:5px;padding:2px;}
-		#contacts table td.title {font-weight:bold}
-		#contacts table td.phoneNumber {max-width:110px}
-		#contacts table td.postalAddress {white-space:normal}
-		.contactDetailsRel {color:#bbb;font-size:11px}
-		
-		#contactsHeader {clear:both;padding-top:10px}
-		#contactsSearch {float:left;outline:none;text-indent:0px}
-		#contactsMessage {float:left;margin-left:140px;margin-top:7px;color:gray;font-size:11px}
-		#contactsHeader .open {float:right;margin-right:5px;padding:0 12px}
-		
-		.fullEmailBody {width:100%}
-		.fullEmailDate {float:right}
-		
-		.fullEmailToCCWrapper {display:none}
-		.fullEmailSenderArea .fullEmailToCCWrapper {display:block}
-		.fullEmailToCC {max-width:300px;opacity:0.5;overflow-x:hidden;display: inline-block;text-overflow: ellipsis;}
-		
-		.fullEmailToCC.showDetails {overflow-x:auto;white-space:normal}
-		html.notif .fullEmailToCC.showDetails {white-space:normal}
-		
-		.fullEmailShowToCC {margin-top: 4px;vertical-align: top;font-size:10px;z-index: 5;display: inline-block;border-radius: 3px;cursor: pointer;height:9px;line-height: 6px;border: 1px solid #aaa;padding: 0 1px;}
-		
-		.message {border-spacing:0}
-		.message:first-child .mail {border-top-color:#efefef}
-		.message:not(:first-child) {margin-top:-1px}
-		
-		.messageContent {margin: 6px 6px 6px 46px}
-		.messageContent > div:first-child {overflow:visible !important}
-				
-		html.notif .messageContent {margin:3px 0 0 8px;xxxpadding:3px 0 0 8px}
-		
-		.message.collapsed .fullEmailSenderArea {border-bottom:1px solid #cfcfcf}
-		
-		.message.collapsed .fullEmailSenderArea {background:#aaa}
-		.message.collapsed .mail .author {background:#f5f5f5} /* i think the superimposed backgrounds are forcing me to make this background a bit lighter: note it's necessary to put a backgound so author covers date */ 
-		
-		.message.collapsed .fullEmailSenderArea .emailDetailsTopRight {background:transparent}
-		.message.collapsed .fullEmailSenderArea .summary {display:block}
-		.message.collapsed .fullEmailSenderArea .fullEmailToCCWrapper {display:none}
-		
-		.message.collapsed .fullEmailSenderArea .open,
-		.message.collapsed .fullEmailSenderArea .reply {display:none}
-		
-		.message.collapsed .messageContent {display:none}
-		
-		.accountError {color:red}
-		xxx.refreshAccount {text-decoration:underline}
-		
-		#eligibleForReducedDonation {-webkit-transition: color 250ms ease-out}
-		#eligibleForReducedDonation:hover {color:blue !important;cursor:pointer}
-		
-		#shareBlurb {display:none}
-		.showTrimmedContent {-webkit-user-select: none;padding:0px 1px;cursor:pointer;margin-top:10px;color:#bbb;background-color: #f1f1f1;border: 1px solid #ddd;clear: both;line-height:0px;outline:none;font-size:18px;height:9px;width:17px;overflow:hidden !important}
-		.showTrimmedContent:hover {background-color:#d8d8d8;color:black}
 		
 </style> 
 	</head>
@@ -391,9 +305,6 @@
   <div id="options" class="icon optionsIcon" msgtitle="options" style="margin-right:2px" title="Options"></div>
   <div id="refresh" class="icon refresh" msgtitle="refreshLinkTitle" title="Refresh"></div>
   <div id="close" class="icon close" msgtitle="close" style="margin-right: 5px" title="Close"></div>
- </div>
- <div id="spinner">
-  <img src="ajax-loader.gif">
  </div>
  <div id="scrollAreaWrapper">
   <div id="scrollArea">
@@ -410,6 +321,9 @@
         </div>
         <div id="container" class="popup-container emails" style="display: block">
 	 <div class="labelGroup">
+	  <div id="spinner">
+	    <img src="ajax-loader.gif">
+	  </div>
 	  <div id="feed" class="labelEmails">
 	  </div>	
 	  </div>	
