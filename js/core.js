@@ -10,6 +10,7 @@ function UpdateIfReady(force) {
   var interval = parseFloat(localStorage["GWNRT.RequestInterval"]);
   var nextRefresh = lastRefresh +interval;
   var currTime = parseFloat((new Date()).getTime());
+  console.log('Updating in: ' + (((parseInt(nextRefresh))-(parseInt(currTime)))));
   var isReady = (currTime > nextRefresh);
   var isNull = (localStorage["GWNRT.LastRefresh"] == null);
   if ((force == true) || isNull) {
