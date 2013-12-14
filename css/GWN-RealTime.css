@@ -198,7 +198,7 @@ a {text-decoration: none;color: #15c}
 				
 		.padded {padding: 2px 4px 2px 4px}
 		.margin {margin-bottom: 5px !important}
-		.collapseArrow {padding:5px;opacity: 0.5;-webkit-transition: opacity 0.05s ease-in;width:11px;height:15px;background-image:url(images/arrow_down.png);background-repeat:no-repeat;background-position: 3px 1px}
+		.collapseArrow {padding:5px;opacity: 0.5;-webkit-transition: opacity 0.05s ease-in;width:11px;height:15px;background-image:url(/images/arrow_down.png);background-repeat:no-repeat;background-position: 3px 1px}
 		.collapseArrow.collapsed {background-image:url(images/arrow_right.png)}
 		.collapseArrow:hover {opacity:1;cursor:pointer}
 		.collapseArrow.hidden {opacity:0}		
