@@ -33,3 +33,16 @@ a {text-decoration: none;color: #15c}
 .dropdownArrow {height:21px;padding:4px 4px !important}
 .dropdownArrow div {display:inline-block}
 .dropdownArrow div:nth-child(2) {background-image:url(/images/sprite_black2.png);background-position:-42px -84px}
+
+.hbox {
+   display: -webkit-box;
+   -webkit-box-orient: horizontal;
+   -webkit-box-align: stretch;
+   position: relative;
+}
+
+.vbox {
+   display: -webkit-box;
+   -webkit-box-orient: vertical;
+   -webkit-box-align: stretch;
+}
