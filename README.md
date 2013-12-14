@@ -6,6 +6,8 @@ A Jira notification and auto-updater.
 Revision History:
 -----------------
 
+* 0.9.9   - Fixed date format bug. Began Code cleanup.
+* 0.9.5   - Butification update !!! 
 * 0.9.2.1 - Minor bug fixes, modified name values.
 * 0.9.2   - Fixed refresh(seriously this time), updated varibles to reflect name.
 * 0.9.1   - Added error checking if localStorage does not exist.

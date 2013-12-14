@@ -107,7 +107,7 @@ function parseTickets(json) {
 
 function sendNotification(ticket) {
   var toast = webkitNotifications.createNotification(
-    'icon.png',
+    'images/icon.png',
     "New Ticket",
     ticket.key + " " + ticket.summary
     );
