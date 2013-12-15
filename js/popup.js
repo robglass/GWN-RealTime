@@ -15,7 +15,7 @@ function setupEvents() {
   });
   $(".collapseArrow").click(function() {
       $(".collapseArrow").toggleClass('collapsed');
-      $(".emails").slideToggle('fast');
+      $(".tickets").slideToggle('fast');
   });
 }
 
@@ -45,7 +45,7 @@ function setQueueHeader(title) {
       addtitle.innerText = title;
   var addnum = document.createElement('span');
   if (localStorage['GWNRT.NumTickets']>0) {
-      addnum.className = 'unreadCount';
+      addnum.className = 'ticketCount';
       addnum.innerText = '  (' + localStorage['GWNRT.NumTickets'] + ')';
       }
   else {
@@ -59,23 +59,27 @@ function setQueueHeader(title) {
       addTime.className = 'timesince timeTopRight';
       addTime.innerText = 'Updated: '+ timeSince;
     headerdiv.appendChild(addTime);
+         
+    $(headerdiv).click(function() {
+           openUrl('http://jira.gwn/secure/IssueNavigator.jspa?mode=hide&requestId=14027'); 
+         });
   }
 }
 
 function buildTicketDiv(ticket) {
       var ticketblock = document.createElement('div');
-        ticketblock.className = "mail vbox hideScrollbars";
+        ticketblock.className = "ticket vbox hideScrollbars";
       var box = document.createElement('div');
         box.className = 'hbox wide';
       var img = document.createElement('div');
         img.className = 'imageArea vbox';
       var details = document.createElement('div');
-        details.className = 'emailDetails vbox wide';
-      var unread = document.createElement('span');
-        unread.className = 'unread';
-        unread.innerText = ticket.key;
+        details.className = 'ticketDetails vbox wide';
+      var ticketNum = document.createElement('span');
+        ticketNum.className = 'ticketnumber';
+        ticketNum.innerText = ticket.key;
       var tickettime = document.createElement('div');
-        tickettime.className = 'emailDetailsTopRight';
+        tickettime.className = 'ticketDetailsTopRight';
       var date = document.createElement('div');
         date.className = 'date';
         date.innerText = ticket.time;
@@ -84,22 +88,22 @@ function buildTicketDiv(ticket) {
         timeago.innerText =  ' (' + ticket.timeago + ')';
       var box2 = document.createElement('div');
         box2.className = 'hbox';
-      var subject = document.createElement('div');
-        subject.className = 'subject';
-        subject.innerText = ticket.summary;
+      var ticketTitle = document.createElement('div');
+        ticketTitle.className = 'ticketTitle';
+        ticketTitle.innerText = ticket.summary;
       var notes = document.createElement('div');
-        notes.className = 'summary vbox';
+        notes.className = 'notes vbox';
         notes.innerText = ticket.comment;
     
       ticketblock.appendChild(box);
        box.appendChild(img);
         img.appendChild(details);
-         details.appendChild(unread);
+         details.appendChild(ticketNum);
          details.appendChild(tickettime);
           tickettime.appendChild(date);
            date.appendChild(timeago);
          details.appendChild(box2);
-          box2.appendChild(subject);
+          box2.appendChild(ticketTitle);
          details.appendChild(notes);
 
          $(ticketblock).click(function() {
