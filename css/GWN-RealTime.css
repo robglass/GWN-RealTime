@@ -1,42 +1,3 @@
-a {text-decoration: none;color: #15c}
-.ticketTitle {font-weight:bold;color:#333}
-.overlay {
-   position: absolute;
-   left: 0;
-   top: 0;
-   width: 100%;
-   height: 100%;
-   background-color: rgba(250, 250, 250, 0.9);
-   display: none;
-}
-.loading {
-   opacity:0.7;
-   background-image: url('/images/ajax-loader.gif');
-   background-position: center center;
-   background-repeat: no-repeat;
-   background-size:34px;
-}
-
-.icon {display:inline-block;opacity:.55;width:21px;height:21px;background-image:url(/images/sprite_black2.png);background-repeat: no-repeat}
-.icon:hover {opacity:1;cursor:pointer}
-.optionsIcon {opacity:0.4;background-image: url('/images/options.png');background-position: 3px 3px;background-size: 16px}
-.refresh {margin-left:2px;background-position:-63px -20px;}
-.close {background-image:url(/images/sprite_black.png) !important;background-position:-118px -117px}
-
-#queues .button {opacity:0.5}
-.hugRight {margin-right:-1px}
-
-.dropdownArrow {height:21px;padding:4px 4px !important}
-.dropdownArrow div {display:inline-block}
-.dropdownArrow div:nth-child(2) {background-image:url(/images/sprite_black2.png);background-position:-42px -84px}
-
-.hbox {
-   display: -webkit-box;
-   -webkit-box-orient: horizontal;
-   -webkit-box-align: stretch;
-   position: relative;
-}
-
 ::-webkit-scrollbar {width:12px;height:8px} /* must balance width with initFixedArea() right */
 ::-webkit-scrollbar:hover, html.notif ::-webkit-scrollbar {border:1px solid #ccc}
 ::-webkit-scrollbar-thumb {background-color:rgba(0,0,0,0.2);-webkit-box-shadow: inset 1px 1px 0 rgba(0,0,0,0.10),inset 0 -1px 0 rgba(0,0,0,0.07);}
@@ -44,266 +5,76 @@ a {text-decoration: none;color: #15c}
 ::-webkit-scrollbar-button {width: 0;height: 0;display: none;}
 ::-webkit-scrollbar-corner {background-color: transparent}
 
-html.notif ::-webkit-scrollbar {width:12px}
-
-body {font-family: arial, sans-serif;font-size: 0.8em;margin:0 0 0 2px}
+a {text-decoration: none;color: #15c}
 a:hover {text-decoration:underline}
+body {font-family: arial, sans-serif;font-size: 0.8em;margin:0 0 0 2px}
+div#menu {float: right;}
+html {overflow:hidden;position:relative}
+html {min-width:631px}
+html.externalPopupWindow {min-width:851px}
+html.externalPopupWindow #queues {width:851px}
 img {vertical-align: text-top}
 
-html {overflow:hidden;position:relative}
 
-html {min-width:631px}
-#queues, #contacts {width:631px}		
-html.externalPopupWindow {min-width:851px}
-html.externalPopupWindow #queues, html.externalPopupWindow #contacts {width:851px}
-
-html.notif #queues {width:298px}
-
-html.notif {min-width:inherit}
-html.notif #header, html.notif #menu {display:none}
-html.notif #scrollAreaWrapper {padding-top:0}
-
-html.notif .queue {margin-top:0}
-html.notif .queuewrapper:first-child .queue {border-top:none}
-
-html.hid.queue .queueLabelAreaWrapper {display:none}
-html.hid.queue .ticket:first-child {border-top:none !important}
-
-html.notif #ful.ticke.ticketTitleArea {display:none}
-
-html.notif .ticket .date {font-weight:normal}
-
-html.notif #queues .ticket .quickActions {opacity:0;-webkit-transition: opacity 250ms ease-out;}
-
-html.notif #queues .ticket .star {position:absolute;right:2px;top:18px;z-index:2;background-color:white}
-html.notif #queues .ticket.read .star {background-color:transparent}
-
-html.alwaysShowActionButtons #queues .ticket .quickActions,
-html.notif #queues .ticket:hover .quickActions {opacity:1;display:inline}
-
-html.alwaysShowActionButtons #queues .ticket .date,
-html.notif #queues .ticket:hover .date {display:none}
-
-html.alwaysShowActionButtons #queues .ticket .star,
-html.notif #queues .ticket:hover .star {display:inline-block}
-
-html.alwaysShowActionButtons #queues .ticket .open,
-html.notif #queues .ticket:hover .open {display:inline-block}
-
-html.alwaysShowActionButtons #queues .ticket .reply,
-html.notif #queues .ticket:hover .reply {display:inline-block}
-
-html.notif .queueActions {display:none}
-
-html.notif .ticket.selected {background:none}
-
-html.notif #ful.ticketActionButtons {padding:4px 5px}
-
-html.notif .labelsDropDown {max-height:60px;max-width:145px}
-
-html.notif .ful.ticketToCC {max-width:170px;white-space:nowrap}
-
-html.notif .ticketDetailsTopRight {padding-left:0}
-
-html.notif #queues .star {display:none}
-html.notif #queues .quickActions {display:none}
-html.notif #queues .open {display:none}
-html.notif #queues .reply {display:none}
-
-html.notif:not(.lotsOfButtons) #queues .button {box-shadow:2px 2px 5px #666}
-html.notif.lotsOfButtons #queues .button, html.notif #ful.ticketActionButtons .button {padding:0px 1px !important}
-html.notif.lotsOfButtons #queues .button div {height:16px;background-size:21px 15px}
-html.notif.lotsOfButtons #queues .button.markAsRead div {overflow:hidden;max-width:72px;padding:0px 3px;line-height:16px}
-html.notif.lotsOfButtons #queues .button.spam div {background-position: 0px 0px}
-
-html.notif .notes {white-space:normal}
-html.notif #queues .ticket:not(.read) .notes {opacity:1}
-html.notif .ticket.selected .notes {xxxwhite-space:nowrap}
-
-
-html.notif #queues {max-height:160px;margin-right:0} 
-html.notif #ful.ticketContent {max-height:125px}
-html.notif #ful.ticketContent a:hover {text-decoration:underline !important}
-
-.inline-block {display:inline-block}
-
-#topRightControls {position:absolute;top:5px;right:5px} /* display:inline-block;float:right */
-
-.listenT.ticket {margin-right:10px;opacity:0.7}
-html.notif .listenT.ticket {margin-right:-2px}
-.listenT.ticket:hover {opacity:1}
-
-.ticketZoom {width:40px;opacity:0.7;height:10px;margin-top:13px}
-.ticketZoom:hover {opacity:1}
-
-html.notif .ticketZoom {width:22px;margin-top:7px} 
-
-#scrollAreaWrapper {width:100%;clear:left;overflow:hidden;padding-top:7px}
-#scrollArea {left:0;position:absolute;width:2200px}
-
-.queue {border: 1px solid #ddd}
-.queue, .queueLabelAreaWrapper {border-radius:6px 0 0 0}
-.queueLabelArea, .ticketDetails {overflow:hidden;white-space:nowrap;margin-right:3px;margin-top:3px}
-html.notif .queueLabelArea, html.notif .ticketDetails {xxxoverflow:auto;white-space:normal}
-
-.ticketTitle {margin:4px 0;display:inline-block}
-xxx.label {display:none;xxxdisplay:inline-block;background:#DDD;color:#666;white-space:nowrap;font:11px arial,sans-serif;margin-left:3px;padding: 0 5px}
-
-.queueLabelAreaWrapper, .labelHeader {background-image: -webkit-gradient(linear, left top, left bottom, from(#fafafa), to(#f3f3f3));xxbackground:#f7f7f7}		
-.queueLabelAreaWrapper:hover, .queueFor, .labelHeader:hover {text-shadow:1px 1px 3px #ccc}		
-
-xxx.ticketsGroup {font-weight:bold}
-.ticketsGroup .collapseArrow, .ticketsGroup .labelTitle {display:inline-block}
-.labelHeader {border-top:1px solid #ccc;white-space:nowrap;font:11px arial,sans-serif;text-align:center}
-.queueLabelAreaWrapper:hover, .labelHeader:hover {cursor:pointer;background-image: -webkit-gradient(linear, left top, left bottom, from(#f3f3f3), to(#fafafa));}
-html.notif .labelHeader {border-bottom:1px solid #ccc}
-
-/* 2 or more.tickets */
-html.notif.compact .ticketTitle {white-space:nowrap;margin:0}
-html.notif.compact #queues .ticket {padding: 3px 5px}
-html.notif.veryCompact .notes {white-space:nowrap}
-html.notif.veryCompact .labelHeader {font-size:10px;line-height:10px}
-html.notif.extremelyCompact .notes {display:none}
-html.notif.extremelyCompact .labelHeader {font-size:9px;line-height:9px}
-
-#by {font-size:11px;color:black;margin-left:2px}
-
-#showAl.tickets {display:none;opacity:0;margin-right:7px;margin-top: 3px;vertical-align: top}
-#showAl.tickets:hover {text-decoration:underline;cursor:pointer}
-
-.alwaysHide {display:none !important}
-
-.queuewrapper {margin-right:2px}
-
-#queues, #contacts {float:left;display:inline-block;overflow-y: auto;margin-right:5px;max-height:500px}
-#contacts::-webkit-scrollbar {width:20px}
-
-.queuewrapper:not(:first-child) .queue {margin-top: 5px}
-
-#ful.ticket {vertical-align:top;float:left;border:1px solid #ddd}
-#ful.ticketContent {max-height:412px;clear:left;overflow-x:auto;overflow-y:auto}
-
-#ful.ticketActionButtons {position:relative;border-bottom:1px solid #ddd}
-#ful.ticketActionButtons, #ful.ticke.ticketTitle {padding:8px 10px}
-
-#ful.ticke.ticketTitle {margin-bottom: 6px;float:left;font-size:18px;font-family: arial,sans-serif;color: #222;width:450px;overflow: hidden;white-space: nowrap;text-overflow: ellipsis;}
-#ful.ticke.ticketTitle.displayImages {width:220px}
-#ful.ticketDisplayImagesWrapper {display:none;background:white;padding:2px;border-radius: 3px;border:1px solid rgb(207, 207, 207);margin-top:5px;margin-right:5px;float:right;text-align:right}
-
-#ful.ticket .quickActions {display:none} 
-		
-.padded {padding: 2px 4px 2px 4px}
-.margin {margin-bottom: 5px !important}
 .collapseArrow {padding:5px;opacity: 0.5;-webkit-transition: opacity 0.05s ease-in;width:11px;height:15px;background-image:url(/images/arrow_down.png);background-repeat:no-repeat;background-position: 3px 1px}
 .collapseArrow.collapsed {background-image:url(/images/arrow_right.png)}
 .collapseArrow:hover {opacity:1;cursor:pointer}
 .collapseArrow.hidden {opacity:0}		
-
-.squished .notes::-webkit-scrollbar, .ticket.read .notes::-webkit-scrollbar {display:none}
-.squished .upArrow, .squished .downArrow, .ticket.read .upArrow, .ticket.read .downArrow {display:none !important}
-
+.close {background-image:url(/images/sprite_black.png) !important;background-position:-118px -117px}
+.date {min-width: 57px;display: inline-block;text-align: right}
+.downArrow {border-top:10px solid #ccc;margin-top:-10px}
+.dropdownArrow {height:21px;padding:4px 4px !important}
+.dropdownArrow div {display:inline-block}
+.dropdownArrow div:nth-child(2) {background-image:url(/images/sprite_black2.png);background-position:-42px -84px}
+.hbox {display: -webkit-box;-webkit-box-orient: horizontal;-webkit-box-align: stretch;position: relative;}
+.icon {display:inline-block;opacity:.55;width:21px;height:21px;background-image:url(/images/sprite_black2.png);background-repeat: no-repeat}
+.icon:hover {opacity:1;cursor:pointer}
+.imageArea {margin-right: 8px}
+.inline-block {display:inline-block}
+.loading {opacity:0.7;background-image: url('/images/ajax-loader.gif');background-position: center center;background-repeat: no-repeat;background-size:34px;}
+.margin {margin-bottom: 5px !important}
+.notes::-webkit-scrollbar {border:1px solid #ccc}
+.notes {opacity:0.55;xxxcolor:#777;cursor:pointer;white-space:normal;overflow-x:hidden;overflow-y:auto;xxoverflow:hidden;xxoverflow-x:hidden;xxoverflow-y:auto}
+.notes.scrollbars  {opacity:1}
+.optionsIcon {opacity:0.4;background-image: url('/images/options.png');background-position: 3px 3px;background-size: 16px}
+.padded {padding: 2px 4px 2px 4px}
+.queue {border: 1px solid #ddd}
+.queue, .queueLabelAreaWrapper {border-radius:6px 0 0 0}
+.queueLabelArea, .ticketDetails {overflow:hidden;white-space:nowrap;margin-right:3px;margin-top:3px}
+.queueLabelAreaWrapper {background-image: -webkit-gradient(linear, left top, left bottom, from(#fafafa), to(#f3f3f3));xxbackground:#f7f7f7}		
+.queueLabelArea, .ha.tickets {font-weight:bold}
+.queueLabelAreaWrapper:hover, .queueFor {text-shadow:1px 1px 3px #ccc}		
+.queueLabelAreaWrapper:hover {cursor:pointer;background-image: -webkit-gradient(linear, left top, left bottom, from(#f3f3f3), to(#fafafa));}
+.queuewrapper {margin-right:2px}
+.queuewrapper:not(:first-child) .queue {margin-top: 5px}
+.refresh {margin-left:2px;background-position:-63px -20px;}
+.ticket {position:relative;padding:4px 5px;border-top:1px solid #ccc}
+.ticket,
+.ticket .author {background:rgba(255,255,255,.9)}
+.ticket .ticketDetails .ticketnumber,
+.ticket .ticketTitle {font-weight:bold}
+.ticketTitle {font-weight:bold;color:#333}
+.ticketTitle {margin:4px 0;display:inline-block}
+.ticketsGroup .collapseArrow, .ticketsGroup {display:inline-block}
 .ticket.hideScrollbars .notes::-webkit-scrollbar {border:none}
 .ticket.hideScrollbars .notes::-webkit-scrollbar-thumb {background:none;-webkit-box-shadow:none}
-.notes::-webkit-scrollbar {border:1px solid #ccc}
-
-.notes {opacity:0.55;xxxcolor:#777;cursor:pointer;white-space:normal;overflow-x:hidden;overflow-y:auto;xxoverflow:hidden;xxoverflow-x:hidden;xxoverflow-y:auto}
-xx.notes > td > table > tbody > tr > td:first-child {padding:3px 0 0 0px}
-.notes.scrollbars  {opacity:1}
-
+.ticketDetails {border-radius:3px}
+.ticketDetails:hover {cursor:pointer}
+.timeTopRight {z-index:5;white-space:nowrap;position:fixed;right:8px;padding-left:10px;opacity:0.55;margin-top:3px;font-weight:normal;font-size:xx-small;xxxbackground-image: -webkit-gradient(linear, left top, left bottom, color-stop(0.1, rgb(245,	245, 245) ), color-stop(0.8, rgb(255, 255, 255) ) );}
+.ticketDetailsTopRight {z-index:5;white-space:nowrap;position:absolute;top:-2px;right:0px;padding-left:10px;xxfont-weight:bold;xxxbackground-image: -webkit-gradient(linear, left top, left bottom, color-stop(0.1, rgb(245,	245, 245) ), color-stop(0.8, rgb(255, 255, 255) ) );}
+.ticketDetailsTopRight .date {padding-right:3px}
 .upArrow, .downArrow {opacity:0.6;display:none;position:absolute;left:44%;width:0;height:0;border-left:50px solid transparent;border-right:50px solid transparent}
-
 .upArrow {border-bottom:10px solid #ccc;margin-bottom:-10px;opacity:0.4}
-html.notif .upArrow {border-bottom:6px solid #ccc;margin-bottom:-6px}
-
-.downArrow {border-top:10px solid #ccc;margin-top:-10px}
-html.notif .downArrow {border-top:6px solid #ccc;margin-top:-6px}
-
 .upArrow:hover, .downArrow:hover {opacity:0.90}
-html.notif .upArrow, html.notif .downArrow {left:40%;border-left:30px solid transparent;border-right:30px solid transparent}
+.vbox {display: -webkit-box;-webkit-box-orient: vertical;-webkit-box-align: stretch;}
 
+#queues {width:631px}		
+#topRightControls {position:absolute;top:5px;right:5px} /* display:inline-block;float:right */
+#scrollAreaWrapper {width:100%;clear:left;overflow:hidden;padding-top:7px}
+#scrollArea {left:0;position:absolute;width:2200px}
 #header {float:left;margin:3px 0 0 3px}
 #logo {display:none;width:32px;margin-top:-8px}		
 #title {color: #666;font-size: 110%;font-weight: bold;text-decoration: none;xxtext-shadow: 1px 1px 1px #000;xxxletter-spacing: 1px;}
 #title:focus {outline:none}
 #title:hover {text-decoration:underline}
-div#menu {float: right;}
 
-
-.ticket {position:relative;padding:4px 5px;border-top:1px solid #ccc}
-
-.ticket,
-.ticket .author {background:rgba(255,255,255,.9)}
-
-.ticket .ticketDetails .ticketnumber,
-.ticket .ticketTitle {font-weight:bold}
-
-.ticket .ticketDetailsTopRight {background:white}
-
-.ticket.read .ticketDetails .ticketnumber,
-.ticket.read .ticketTitle,
-.ticket.read .date {font-weight:normal}
-				
-.ticket.read,
-.ticket.read .ticketDetailsTopRight {background:rgba(243,243,243,.85)}
-
-.ticket.read .notes {-webkit-transition: height 0.5s ease;max-height:32px !important}
-.ticket.read .notes.scrollbars {display:none}
-xx.ticket.read:hover {opacity:1}
-
-.ticket .button.markAsRead {display:inline-block}
-.ticket .button.markA.ticketnumber {display:none}
-
-.ticket.read .button.markAsRead {display:none}
-.ticket.read .button.markA.ticketnumber {display:inline-block}
-
-.date {min-width: 57px;display: inline-block;text-align: right}
-
-.imageArea {margin-right: 8px}
-.ticketDetails {border-radius:3px}
-
-xx.queueLabelArea:hover,
-xx.ticket:hover,
-.ticket.selected,
-.ticket.selected .ticketDetailsTopRight,
-xx.ticket:hover xx.ticketDetailsTopRight {background-color:#F9F9E0 !important}
-
-.ticketDetails:hover {cursor:pointer}
-
-.contactPhoto {display:none;width:32px;height:32px}
-#queues .contactPhoto {width:54px;height:54px}
-html.notif.compact #queues .contactPhoto {width:50px;height:50px}
-html.notif.veryCompact #queues .contactPhoto {width:42px;height:42px}
-html.notif.extremelyCompact #queues .contactPhoto {width:30px;height:30px}
-
-#queues .button {padding:0px 8px}
-
-.spaceRight {margin-right:7px}
-html.notif .spaceRight {margin-right:2px}
-
-.timeTopRight {z-index:5;white-space:nowrap;position:fixed;right:8px;padding-left:10px;opacity:0.55;margin-top:3px;font-weight:normal;font-size:xx-small;xxxbackground-image: -webkit-gradient(linear, left top, left bottom, color-stop(0.1, rgb(245,	245, 245) ), color-stop(0.8, rgb(255, 255, 255) ) );}
-.timeDetailsTopRight.fixed {position:fixed;top:129px;xxright:13px}
-
-.ticketDetailsTopRight {z-index:5;white-space:nowrap;position:absolute;top:-2px;right:0px;padding-left:10px;xxfont-weight:bold;xxxbackground-image: -webkit-gradient(linear, left top, left bottom, color-stop(0.1, rgb(245,	245, 245) ), color-stop(0.8, rgb(255, 255, 255) ) );}
-.ticketDetailsTopRight.fixed {position:fixed;top:129px;xxright:13px}
-
-html.notif .ticketDetailsTopRight.fixed {top:36px}
-html.notif .ticketDetailsTopRight.fixed .date {display:none}
-
-.ticketDetailsTopRight .date {padding-right:3px}
-
-.queueLabelArea, .ha.tickets {font-weight:bold}
-
-#queues.squished .queueActions {display:none;opacity:0}
-
-#queues.squished .quickActions,		
-#queues.squished .timeAgo,
-#queues.squished .open,
-#queues.squished .reply {display:none}
-
-
-
-.vbox {
-   display: -webkit-box;
-   -webkit-box-orient: vertical;
-   -webkit-box-align: stretch;
-}
