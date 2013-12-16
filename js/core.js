@@ -1,5 +1,6 @@
 var buildPopupAfterResponce = false;
-var retryMilliseconds = 1000;
+var updateFailed = false;
+var retryMilliseconds = 10000;
 
 function SetInitalOption(key, value) {
     localStorage[key] = value;
@@ -7,10 +8,18 @@ function SetInitalOption(key, value) {
 
 function UpdateIfReady(force) {
   var lastRefresh = parseFloat(localStorage["GWNRT.LastRefresh"]);
-  var interval = parseFloat(localStorage["GWNRT.RequestInterval"]);
+  
+  if (updateFailed) {
+    var interval = retryMilliseconds;
+  }
+  else {
+      var interval = parseFloat(localStorage["GWNRT.RequestInterval"]);
+  }
+
   var nextRefresh = lastRefresh +interval;
   var currTime = parseFloat((new Date()).getTime());
-  console.log('Updating in: ' + (((parseInt(nextRefresh))-(parseInt(currTime)))));
+  
+  console.log('Updating in: ' + parseInt((((parseInt(nextRefresh)) -(parseInt(currTime)))/1000))+" sec.");
   var isReady = (currTime > nextRefresh);
   var isNull = (localStorage["GWNRT.LastRefresh"] == null);
   if ((force == true) || isNull) {
@@ -35,18 +44,21 @@ function UpdateFeed() {
 }
 
 function ConnectionError() {
-  localStorage.clear();
+  ClearTickets();
+  updateFailed = true;
+  console.log('Update Failed!');
   chrome.browserAction.setBadgeText({text: ''});
   if (buildPopupAfterResponce) {
     buildPopupE('Connection to ESM failed, please verify connection to services.hq');
     buildPopupAfterResponce = false;
   }
+  UpdateLastRefreshTime();
   //localStorage["GWNRT.LastRefresh"] = localStorage["GWNRT.LastRefresh"] + retryMilliseconds;
 }
 
 function CheckTickets(tickets) {
-  var oldTickets = RetrieveTicketsFromLocalStorage();
   if ((localStorage["GWNRT.NumTickets"] != 0) && (typeof localStorage["GWNRT.NumTickets"] !== 'undefined')) {
+    var oldTickets = RetrieveTicketsFromLocalStorage();
     for (var i=0; i<tickets.length; i++){
       var ticketExists = false
       for (var j=0; j<oldTickets.length; j++){
@@ -71,6 +83,8 @@ function ParseJson(json) {
     console.log("EPIC FAIL");
     return;
   }
+  console.log('Update Successful');
+  updateFailed = false;
   localStorage['GWNRT.error'] = null;
   var tickets = parseTickets(json);
   CheckTickets(tickets);
@@ -151,6 +165,7 @@ function ClearTickets() {
   for (var i=0;i<localStorage['GWNRT.NumTickets']; i++) {
     delete window.localStorage['GWNRT.Ticket'+ i];
   } 
+  localStorage['GWNRT.NumTickets'] = null;
 }
 
 function SaveTicketsToLocalStorage(tickets) {
@@ -178,7 +193,6 @@ function RetrieveTicketsFromLocalStorage() {
 function UpdateLastRefreshTime() {
   localStorage['GWNRT.LastRefresh'] = (new Date()).getTime();
   localStorage['GWNRT.FLastRefresh'] = (new Date().toISOString());
-  console.log('Updated');
 }
 
 function openOptions() {
