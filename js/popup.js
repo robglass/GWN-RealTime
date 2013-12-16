@@ -3,8 +3,9 @@ var boxOpen= true;
 window.onload = function() {
   main();
   setupEvents();
-}
 
+  //window.setTimeout(refreshTickets, 30000);
+}
 function setupEvents() {
   $('#refresh').click(refreshTickets);
   $('#options').click(function() {
@@ -20,7 +21,7 @@ function setupEvents() {
 }
 
 function main() {
-  if (localStorage['GWNRT.NumTickets'] == null) {
+  if (localStorage['GWNRT.NumTickets'] == null || localStorage['GWNRT.NumTickets'] == 'null') {
     buildPopupAfterResponce = true;
     UpdateFeed();
   }
