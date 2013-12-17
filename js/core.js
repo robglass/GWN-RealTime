@@ -47,7 +47,7 @@ function ConnectionError() {
   ClearTickets();
   updateFailed = true;
   console.log('Update Failed!');
-  chrome.browserAction.setBadgeText({text: ''});
+  chrome.browserAction.setBadgeText({text: 'X'});
   if (buildPopupAfterResponce) {
     buildPopupE('Connection to ESM failed, please verify connection to services.hq');
     buildPopupAfterResponce = false;
@@ -99,7 +99,12 @@ function ParseJson(json) {
 function parseTickets(json) {
   // get the number of ticket and update the badge.
   var ticketCount = json.length;
-  chrome.browserAction.setBadgeText({text: ticketCount.toString()});
+  if (ticketCount == 0) {
+    chrome.browserAction.setBadgeText({text: ''}); 
+  }
+  else {
+    chrome.browserAction.setBadgeText({text: ticketCount.toString()});
+  }
   var links = new Array();
   for (var i=0; i< ticketCount; i++) {
     item = json[i];
