@@ -45,12 +45,12 @@ function setQueueHeader(title) {
   var addtitle = document.createElement('span');
       addtitle.innerText = title;
   var addnum = document.createElement('span');
-  if (localStorage['GWNRT.NumTickets']>0) {
-      addnum.className = 'ticketCount';
-      addnum.innerText = '  (' + localStorage['GWNRT.NumTickets'] + ')';
-      }
-  else {
+  addnum.className = 'ticketCount';
+  addnum.innerText = '  (' + localStorage['GWNRT.NumTickets'] + ')';
+  if (localStorage['GWNRT.NumTickets'] == 0) {
     $('.collapseArrow').addClass('hidden')
+    $(".collapseArrow").toggleClass('collapsed');
+    $(".tickets").slideToggle('fast'); 
   }
   headerdiv.appendChild(addtitle);
   headerdiv.appendChild(addnum);

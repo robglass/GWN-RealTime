@@ -84,7 +84,10 @@ function ParseJson(json) {
     console.log("EPIC FAIL");
     return;
   }
-  console.log('Update Successful');
+  if (json.length == 0) {
+    console.log("get sum.");
+  }
+  console.log(json);
   updateFailed = false;
   localStorage['GWNRT.error'] = null;
   var tickets = parseTickets(json);
