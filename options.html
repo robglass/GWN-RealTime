@@ -18,45 +18,63 @@
         <div id='contentWrapper'>
 	  <fieldset class='options'>
 	    <legend>
-	      <input type='checkbox' id="refresh"><label class="selection" for='refresh' msg='queues'>Refresh Rates</label>
+	      <input type='checkbox' id="refresh"><label class="selection">Refresh Rates</label>
 	    </legend>
 	      <div class='subOptions'>
 		<span>Check for Updates: </span>
-		<select type='text'>
-		  <option>1 minute (defualt)</option>
-		  <option>5 mintues</option>
-		  <option>10 mintues</option>
-		  <option>15 minutes</option>
-		  <option>30 minutes</option>
-		  <option>Never</option>
+		<select type='text' id='RefreshRate'>
+		  <option value=  60000>1 minute (defualt)</option>
+		  <option value= 300000>5 mintues</option>
+		  <option value= 600000>10 mintues</option>
+		  <option value= 900000>15 minutes</option>
+		  <option value=1800000>30 minutes</option>
+		  <option value=0>Never</option>
 		</select>
 	      </div>
 	  </fieldset>
 	  <fieldset class='options'>
 	    <legend>
-	      <input type='checkbox' id="notifications"><label class="selection" for='notifications' msg='queues'>Notifications</label>
+	      <input type='checkbox' id="notifications"><label class="selection">Notifications</label>
 	    </legend>
 	    <div class='subOptions'>
 	      <div class=''>
-		<input type='radio'><label for=''>Enable Notifications</label>
-	      </div>
-	      <div class=''>
 		<span>Close After: </span>
-		<select type='text'>
-		  <option>30 seconds</option>
-		  <option>20 seconds</option>
-		  <option>15 seconds</option>
-		  <option>10 seconds (defualt)</option>
-		  <option>5 seconds</option>
-		  <option>Never</option>
+		<select type='text' id='NotificationTimeout'>
+		  <option value=30000>30 seconds</option>
+		  <option value=20000>20 seconds</option>
+		  <option value=15000>15 seconds</option>
+		  <option value=10000>10 seconds (defualt)</option>
+		  <option value=5000>5 seconds</option>
+		  <option value=0>Never</option>
 		</select>
 	      </div>
 	    </div>
 	  </fieldset>
 	  <fieldset class='options'>
 	    <legend>
-	    <input type='checkbox' id="queues"><label class="selection" for='queues' msg='queues'>Queues</label>
+	    <input type='checkbox' checked id="queues"><label class="selection">Queues</label>
 	    </legend>
+	      <div class='subOptions'>
+	          <fieldset class='options'>
+		    <legend>
+		      <input type='checkbox' checked><label>Track Personal Queue</label>
+		    </legend>
+		    <div class="subOptions">
+		      <input type='text' placeholder="Enter your GWN username" id='GWNuser'>
+		      <input type='submit' value='Add it!'>
+		    </div>
+		    </fieldset>
+		<span>Additional Queues: </span>
+		<select type='text' id='Queue'>
+		  <option>Product Support Tier 2</option>
+		  <option>PLC-DEV</option>
+		  <option>Project</option>
+		  <option>Platform</option>
+		  <option>Internal Engineering</option>
+		  <option>Linux Admin</option>
+		  <option>Network Engineering</option>
+		</select>
+	      </div>
 	  </fieldset>
 	</div>
        </form>

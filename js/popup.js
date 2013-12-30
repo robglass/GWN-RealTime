@@ -21,7 +21,8 @@ function setupEvents() {
 }
 
 function main() {
-  if (localStorage['GWNRT.NumTickets'] == null || localStorage['GWNRT.NumTickets'] == 'null') {
+  if (localStorage['Queue.Tier2.NumTickets'] == null || localStorage['Queue.Tier2.NumTickets'] == 'null') {
+    console.log(localStorage['Queue.Tier2.NumTickets']);
     buildPopupAfterResponce = true;
     UpdateFeed();
   }
@@ -46,16 +47,16 @@ function setQueueHeader(title) {
       addtitle.innerText = title;
   var addnum = document.createElement('span');
   addnum.className = 'ticketCount';
-  addnum.innerText = '  (' + localStorage['GWNRT.NumTickets'] + ')';
-  if (localStorage['GWNRT.NumTickets'] == 0) {
+  addnum.innerText = '  (' + localStorage['Queue.Tier2.NumTickets'] + ')';
+  if (localStorage['Queue.Tier2.NumTickets'] == 0) {
     $('.collapseArrow').addClass('hidden')
     $(".collapseArrow").toggleClass('collapsed');
     $(".tickets").slideToggle('fast'); 
   }
   headerdiv.appendChild(addtitle);
   headerdiv.appendChild(addnum);
-  if (typeof localStorage['GWNRT.FLastRefresh'] !== 'undefined') {
-    var timeSince = $.timeago(localStorage['GWNRT.FLastRefresh']);
+  if (typeof localStorage['Queue.Tier2.FLastRefresh'] !== 'undefined') {
+    var timeSince = $.timeago(localStorage['Queue.Tier2.FLastRefresh']);
     var addTime = document.createElement('span');
       addTime.className = 'timesince timeTopRight';
       addTime.innerText = 'Updated: '+ timeSince;
@@ -116,9 +117,7 @@ function buildTicketDiv(ticket) {
 
 function buildPopup(tickets) {
   var feed = document.getElementById('feed');
-  
-  setQueueHeader('T2 Queue');
-    
+    setQueueHeader('T2 Queue');  
     for (var i=0; i<tickets.length; i++) {
       feed.appendChild(buildTicketDiv(tickets[i]));
     }

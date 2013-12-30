@@ -1,8 +1,61 @@
 window.onload = function() {
   initOptions();
+  restoreOptions();
+  $('#RefreshRate, #GWNuser, #Queue, #NotificationTimeout').change(function(){
+    saveOptions();
+  });
 }
-// Show/hide suboptions at startup)
 
+function initVariables() {
+  selectRefreshRate = document.getElementById('RefreshRate');
+  selectNotificationTimeout = document.getElementById('NotificationTimeout');
+  inputGWNuser = document.getElementById('GWNuser');
+  selectQueue = document.getElementById('Queue');
+}
+
+function restoreOptions() {
+  initVariables();
+  var currentRefresh = localStorage['Global.Refresh'];
+  for (var i=0; i<selectRefreshRate.children.length; i++) {
+    if (selectRefreshRate[i].value == currentRefresh) {
+      selectRefreshRate[i].selected = 'true';
+      break;
+    }
+  }
+  var currentNotificationTimeout = localStorage['Global.NotificationTimeout'];
+  for (var i=0; i<selectNotificationTimeout.children.length; i++) {
+    if (selectNotificationTimeout[i].value == currentNotificationTimeout) {
+      selectNotificationTimeout[i].selected = 'true';
+      break;
+    }
+  }
+  
+  var currentGWNuser = localStorage['Global.GWNuser'];
+  inputGWNuser.value = currentGWNuser;
+ 
+  var currentQueue = localStorage['Option.QueueName'];
+  for (i=0; i<selectQueue.children.length; i++) {
+    if (selectQueue[i].value == currentQueue) {
+      selectQueue[i].selected = 'true';
+      break;
+    }
+  }
+}
+
+function saveOptions() {
+  var newRefesh = selectRefreshRate.children[selectRefreshRate.selectIndex].value;
+  setOption('Global.Refresh', newRefresh);
+
+  var newNotificationTimeout = selectNotificationTimeout.children[selectNotificationTimeout.selectIndex].value;
+  setOption('Global.NotificationTimeout', newNotificationTimeout);
+
+  var newGWNuser = selectRefreshRate.children[selectRefreshRate.selectIndex].value;
+  setOption('Global.Refresh', newRefresh);
+
+
+}
+
+// Show/hide suboptions at startup)
 function initOptions() {
   var a=1;
   $("input[type='checkbox'], input[type='radio']").each(function(index) {
@@ -23,7 +76,6 @@ function initOptions() {
         }
       });
     } else if ($(this).attr("type") == "radio") {
-      // because the .change AND .blur does not work when "removing" a selected radio - we must instad detect the change in one of the radio in the group and then go through the list to slide/unslide the suboptions
       $(this).change(function() {
         var inputName = $(this).attr("name");
         $("input[name='" + inputName + "']").each(function(index, input) {

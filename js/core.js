@@ -1,19 +1,34 @@
 var buildPopupAfterResponce = false;
 var updateFailed = false;
-var retryMilliseconds = 10000;
 
-function SetInitalOption(key, value) {
+function SetOption(key, value) {
+    localStorage[key] = value;
+}
+function RemoveQueue(key, value) {
     localStorage[key] = value;
 }
 
+function getOptions() {
+  window.retryMilliseconds = localStorage['Global.RetryOnFailure'];
+  window.notifications = localStorage['Global.Notifications'];
+  window.refresh = localStorage['Global.Refresh'];
+}
+
+function setDefaultOptions() {
+  SetOption('Global.Refresh', 60000);
+  SetOption('Global.RetryOnFailure', 10000);
+  SetOption('Global.Notifications', true);
+  SetOption('OptionsSetup', true);
+}
+
 function UpdateIfReady(force) {
-  var lastRefresh = parseFloat(localStorage["GWNRT.LastRefresh"]);
+  var lastRefresh = parseFloat(localStorage["Queue.Tier2.LastRefresh"]);
   
   if (updateFailed) {
     var interval = retryMilliseconds;
   }
   else {
-      var interval = parseFloat(localStorage["GWNRT.RequestInterval"]);
+      var interval = parseFloat(localStorage["Global.Refresh"]);
   }
 
   var nextRefresh = lastRefresh +interval;
@@ -21,7 +36,7 @@ function UpdateIfReady(force) {
   
   console.log('Updating in: ' + parseInt((((parseInt(nextRefresh)) -(parseInt(currTime)))/1000))+" sec.");
   var isReady = (currTime > nextRefresh);
-  var isNull = (localStorage["GWNRT.LastRefresh"] == null);
+  var isNull = (localStorage["Queue.Tier2.LastRefresh"] == null);
   if ((force == true) || isNull) {
     UpdateFeed();
   }
@@ -32,7 +47,8 @@ function UpdateIfReady(force) {
   }
 }
 
-function UpdateFeed() {
+function UpdateFeed() { 
+  getOptions();
   var jiraCon = 'http://services.hq/jira_connector/rest/gwnjc/issues/data?server=http://jira.gwn&query=';
   var jqlQuery = 'assignee = queuetier2 AND status in (Open, "In Progress", Reopened, "Ready to Test", "Need Information", "Escalate to Tier 2", "Escalate to Tier 3", "Escalate to Client Services", Testing, Validated, HOLD, Scheduled, Revalidate, "Pending Review", "In Review", "Possible Future Release", "Assigned To Release", "Development Complete", "Ready to Schedule", "Ready to Launch", "Post-Launch Support", "In Discovery", "Requires PLC Update", "Pending Schedule Approval", Draft, "Ready to Order", "Partially Shipped", "Order Placed", "Fully Shipped", "To Do") ORDER BY cf[10142] ASC'
   $.ajax({ 
@@ -54,11 +70,11 @@ function ConnectionError() {
     buildPopupAfterResponce = false;
   }
   UpdateLastRefreshTime();
-  //localStorage["GWNRT.LastRefresh"] = localStorage["GWNRT.LastRefresh"] + retryMilliseconds;
 }
 
 function CheckTickets(tickets) {
-  if ((localStorage["GWNRT.NumTickets"] != 0) && (typeof localStorage["GWNRT.NumTickets"] !== 'undefined')) {
+  if ((localStorage["Queue.Tier2.NumTickets"] != 0) && (typeof localStorage["Queue.Tier2.NumTickets"] !== 'undefined')) {
+    console.log('Compairing old tickets.');
     var oldTickets = RetrieveTicketsFromLocalStorage();
     for (var i=0; i<tickets.length; i++){
       var ticketExists = false
@@ -67,7 +83,7 @@ function CheckTickets(tickets) {
                   ticketExists = true;
         } 
       }
-        if (!ticketExists)
+        if (!ticketExists && localStorage['Global.Notifications'] == 'true')
           sendNotification(tickets[i]);       
     }
   }
@@ -87,9 +103,9 @@ function ParseJson(json) {
   if (json.length == 0) {
     console.log("get sum.");
   }
-  console.log(json);
+  //console.log(json);
   updateFailed = false;
-  localStorage['GWNRT.error'] = null;
+  localStorage['Queue.Tier2.Error'] = null;
   var tickets = parseTickets(json);
   CheckTickets(tickets);
   SaveTicketsToLocalStorage(tickets);
@@ -173,37 +189,38 @@ function getTime(ticket) {
 }
 
 function ClearTickets() {
-  for (var i=0;i<localStorage['GWNRT.NumTickets']; i++) {
-    delete window.localStorage['GWNRT.Ticket'+ i];
+  for (var i=0;i<localStorage['Queue.Tier2.NumTickets']; i++) {
+    delete window.localStorage['Queue.Tier2.Ticket'+ i];
   } 
-  localStorage['GWNRT.NumTickets'] = null;
+  localStorage['Queue.Tier2.NumTickets'] = null;
 }
-
+  
 function SaveTicketsToLocalStorage(tickets) {
   ClearTickets();
-  localStorage["GWNRT.NumTickets"] = tickets.length;
+  localStorage["Queue.Tier2.NumTickets"] = tickets.length;
   for (var i=0; i<tickets.length; i++) {
-   localStorage["GWNRT.Ticket"+ i] = JSON.stringify(tickets[i]); 
+   localStorage["Queue.Tier2.Ticket"+ i] = JSON.stringify(tickets[i]); 
   }
 }
 
 function RetrieveTicketsFromLocalStorage() {
-  var numTickets = localStorage['GWNRT.NumTickets'];
+  var numTickets = localStorage['Queue.Tier2.NumTickets'];
   if (numTickets == null) {
     return null;
   }
   else {
     var tickets = new Array();
     for (var i=0; i<numTickets; i++) {
-      tickets.push(JSON.parse(localStorage['GWNRT.Ticket'+i]));
+      var storeme = localStorage['Queue.Tier2.Ticket'+ i];
+      tickets.push(JSON.parse(storeme));
     }
     return tickets;
   }
 }
 
 function UpdateLastRefreshTime() {
-  localStorage['GWNRT.LastRefresh'] = (new Date()).getTime();
-  localStorage['GWNRT.FLastRefresh'] = (new Date().toISOString());
+  localStorage['Queue.Tier2.LastRefresh'] = (new Date()).getTime();
+  localStorage['Queue.Tier2.FLastRefresh'] = (new Date().toISOString());
 }
 
 function openOptions() {
@@ -212,7 +229,7 @@ function openOptions() {
 }
 
 function openLink() {
-  openUrl(this.href, (localStorage['GWNRT.BackgroundTabs'] == 'false'));
+  openUrl(this.href, (localStorage['Global.BackgroundTabs'] == 'false'));
 }
 
 function openLinkFront() {

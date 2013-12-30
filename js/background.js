@@ -7,11 +7,10 @@ function startRequest() {
 }
  
 if (firstRequest) {
-  localStorage.clear();
-  SetInitalOption("GWNRT.RequestInterval", 60000);
-  SetInitalOption("GWNRT.BackgroundTabs", false);
-  SetInitalOption("GWNRT.error", null);
+  if (localStorage['OptionsSetup'] != true) {
+    setDefaultOptions();
+  }
 }
 
-
+getOptions();
 startRequest();
