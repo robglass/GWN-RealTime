@@ -63,6 +63,7 @@ function saveOptions() {
 
   var newGWNUser = inputGWNUser.value;
   SetOption('Global.GWNUser', newGWNUser);
+  SetOption('Global.GWNUserJQL', 'assignee = '+ newGWNUser +' and status not in (Closed, Done)');
 
   var newQueue = selectQueue.value;
   SetOption('Global.Queue', newQueue);
