@@ -1,4 +1,5 @@
 window.onload = function() {
+  queueStorage = chrome.extension.getBackgroundPage().queueStorage;
   initOptions();
   restoreOptions();
   buildQueueList();
@@ -10,12 +11,11 @@ window.onload = function() {
 function initVariables() {
   selectRefreshRate = document.getElementById('RefreshRate');
   selectNotificationTimeout = document.getElementById('NotificationTimeout');
-  inputGWNuser = document.getElementById('GWNuser');
+  inputGWNUser = document.getElementById('GWNuser');
   selectQueue = document.getElementById('Queue');
 }
 
 function buildQueueList() {
-  setupStorage();
   for (i=0; i<queueStorage.length; i++) {
     var option = document.createElement('option');
     option.value = i;
@@ -27,6 +27,7 @@ function buildQueueList() {
 function restoreOptions() {
   initVariables();
   var currentRefresh = localStorage['Global.Refresh'];
+  
   for (var i=0; i<selectRefreshRate.children.length; i++) {
     if (selectRefreshRate[i].value == currentRefresh) {
       selectRefreshRate[i].selected = 'true';
@@ -41,8 +42,10 @@ function restoreOptions() {
     }
   }
   
-  var currentGWNuser = localStorage['Global.GWNuser'];
-  inputGWNuser.value = currentGWNuser;
+  if (localStorage['Global.GWNUser'] != undefined) {
+    var currentGWNuser = localStorage['Global.GWNUser'];
+    inputGWNUser.value = currentGWNuser;
+  }
  
   var currentQueue = localStorage['Option.QueueName'];
   for (i=0; i<selectQueue.children.length; i++) {
@@ -54,14 +57,14 @@ function restoreOptions() {
 }
 
 function saveOptions() {
-  var newRefesh = selectRefreshRate.children[selectRefreshRate.selectIndex].value;
-  setOption('Global.Refresh', newRefresh);
+  var newRefresh = selectRefreshRate.children[selectRefreshRate.selectedIndex].value;
+  SetOption('Global.Refresh', newRefresh);
 
-  var newNotificationTimeout = selectNotificationTimeout.children[selectNotificationTimeout.selectIndex].value;
-  setOption('Global.NotificationTimeout', newNotificationTimeout);
+  var newNotificationTimeout = selectNotificationTimeout.children[selectNotificationTimeout.selectedIndex].value;
+  SetOption('Global.NotificationTimeout', newNotificationTimeout);
 
-  var newGWNuser = selectRefreshRate.children[selectRefreshRate.selectIndex].value;
-  setOption('Global.Refresh', newRefresh);
+  var newGWNUser = inputGWNUser.value;
+  SetOption('Global.GWNUser', newGWNUser);
 
 
 }
