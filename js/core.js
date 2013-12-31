@@ -21,6 +21,33 @@ function setDefaultOptions() {
   SetOption('OptionsSetup', true);
 }
 
+function setupStorage() {
+  window.runtimeStorage = new Object;
+
+  window.queueStorage = new Array;
+  window.queueStorage.push(new queue('Implementations', 'assignee = queueimplementations AND status was not in (Closed, Done) AND project = TMPLPRJ'));
+  window.queueStorage.push(new queue('Internal Engineering', 'project = ESM AND assignee = unassigned AND status was not in (Closed, Done)'));
+  window.queueStorage.push(new queue('Internal IT', 'assignee = queue-desktop AND status was not in (Closed, Done) AND project != TMPLPRJ'));
+  window.queueStorage.push(new queue('Linux Admin', 'assignee = queue-linuxadmin AND status was not in (Closed, Done) AND project = TMPLPRJ'));
+  window.queueStorage.push(new queue('Network Engineering', 'assignee = "queue - network engineering" and status was not in (Closed, Done) and project != TMPLPRJ'));
+  window.queueStorage.push(new queue('Plaform', 'assignee = queue-platform AND status was not in (Closed, Done) AND project != TMPLPRJ'));
+  window.queueStorage.push(new queue('PLC Dev.', 'assignee = queueplcdev AND status was not in (Closed, Done) AND project = TMPLPRJ'));
+  window.queueStorage.push(new queue('PLS Core', 'assignee = queuetier3coredev AND status was not in (Closed, Done) AND project != TMPLPRJ'));
+  window.queueStorage.push(new queue('Project', ' assignee = queue-projects AND status was not in (Closed, Done) AND project != TMPLPRJ'));
+  window.queueStorage.push(new queue('Tier 2', 'assignee = queuetier2 AND status was not in (Closed, Done) AND project = TMPLPRJ'));
+}
+
+function queue(name, jql) {
+  this._name= name;
+  this._jql = jql;
+};
+queue.prototype.getName = function() {
+    return this._name;
+};
+queue.prototype.getJQL = function() {
+    return this._jql;
+};
+
 function UpdateIfReady(force) {
   var lastRefresh = parseFloat(localStorage["Queue.Tier2.LastRefresh"]);
   
@@ -101,7 +128,7 @@ function ParseJson(json) {
     return;
   }
   if (json.length == 0) {
-    console.log("get sum.");
+    console.log("Queue is Empty!! Celebrate");
   }
   //console.log(json);
   updateFailed = false;
