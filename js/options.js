@@ -1,6 +1,7 @@
 window.onload = function() {
   initOptions();
   restoreOptions();
+  buildQueueList();
   $('#RefreshRate, #GWNuser, #Queue, #NotificationTimeout').change(function(){
     saveOptions();
   });
@@ -11,6 +12,16 @@ function initVariables() {
   selectNotificationTimeout = document.getElementById('NotificationTimeout');
   inputGWNuser = document.getElementById('GWNuser');
   selectQueue = document.getElementById('Queue');
+}
+
+function buildQueueList() {
+  setupStorage();
+  for (i=0; i<queueStorage.length; i++) {
+    var option = document.createElement('option');
+    option.value = i;
+    option.innerText = queueStorage[i].getName();
+    selectQueue.appendChild(option);
+  }
 }
 
 function restoreOptions() {

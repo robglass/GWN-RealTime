@@ -9,6 +9,7 @@ function startRequest() {
 if (firstRequest) {
   if (localStorage['OptionsSetup'] != true) {
     setDefaultOptions();
+    setupStorage();
   }
 }
 
