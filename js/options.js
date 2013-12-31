@@ -1,8 +1,8 @@
 window.onload = function() {
   queueStorage = chrome.extension.getBackgroundPage().queueStorage;
   initOptions();
-  restoreOptions();
   buildQueueList();
+  restoreOptions();
   $('#RefreshRate, #GWNuser, #Queue, #NotificationTimeout').change(function(){
     saveOptions();
   });
@@ -16,6 +16,7 @@ function initVariables() {
 }
 
 function buildQueueList() {
+  initVariables();
   for (i=0; i<queueStorage.length; i++) {
     var option = document.createElement('option');
     option.value = i;
@@ -47,13 +48,10 @@ function restoreOptions() {
     inputGWNUser.value = currentGWNuser;
   }
  
-  var currentQueue = localStorage['Option.QueueName'];
-  for (i=0; i<selectQueue.children.length; i++) {
-    if (selectQueue[i].value == currentQueue) {
-      selectQueue[i].selected = 'true';
-      break;
-    }
-  }
+  var currentQueue = localStorage['Global.Queue'];
+  selectQueue[currentQueue].selected = 'true';
+
+
 }
 
 function saveOptions() {
@@ -66,7 +64,8 @@ function saveOptions() {
   var newGWNUser = inputGWNUser.value;
   SetOption('Global.GWNUser', newGWNUser);
 
-
+  var newQueue = selectQueue.value;
+  SetOption('Global.Queue', newQueue);
 }
 
 // Show/hide suboptions at startup)
