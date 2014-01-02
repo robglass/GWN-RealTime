@@ -22,20 +22,96 @@ function setDefaultOptions() {
 }
 
 function setupStorage() {
-  window.runtimeStorage = new Object;
+  var rs = window.runtimeStorage = [];
 
-  window.queueStorage = new Array;
-  window.queueStorage.push(new queue('Implementations', 'assignee = queueimplementations AND status was not in (Closed, Done) AND project = TMPLPRJ'));
-  window.queueStorage.push(new queue('Internal Engineering', 'project = ESM AND assignee = unassigned AND status was not in (Closed, Done)'));
-  window.queueStorage.push(new queue('Internal IT', 'assignee = queue-desktop AND status was not in (Closed, Done) AND project != TMPLPRJ'));
-  window.queueStorage.push(new queue('Linux Admin', 'assignee = queue-linuxadmin AND status was not in (Closed, Done) AND project = TMPLPRJ'));
-  window.queueStorage.push(new queue('Network Engineering', 'assignee = "queue - network engineering" and status was not in (Closed, Done) and project != TMPLPRJ'));
-  window.queueStorage.push(new queue('Plaform', 'assignee = queue-platform AND status was not in (Closed, Done) AND project != TMPLPRJ'));
-  window.queueStorage.push(new queue('PLC Dev.', 'assignee = queueplcdev AND status was not in (Closed, Done) AND project = TMPLPRJ'));
-  window.queueStorage.push(new queue('PLS Core', 'assignee = queuetier3coredev AND status was not in (Closed, Done) AND project != TMPLPRJ'));
-  window.queueStorage.push(new queue('Project', ' assignee = queue-projects AND status was not in (Closed, Done) AND project != TMPLPRJ'));
-  window.queueStorage.push(new queue('Tier 2', 'assignee = queuetier2 AND status was not in (Closed, Done) AND project = TMPLPRJ'));
-}
+  var qs = window.queueStorage = new Array;
+  qs.push(new queue('Implementations', 'assignee = queueimplementations AND status not in (Closed, Done)'));
+  qs.push(new queue('Internal Engineering', 'project = ESM AND assignee = unassigned AND status not in (Closed, Done)'));
+  qs.push(new queue('Internal IT', 'assignee = queue-desktop AND status not in (Closed, Done)'));
+  qs.push(new queue('Linux Admin', 'assignee = queue-linuxadmin AND status not in (Closed, Done)'));
+  qs.push(new queue('Network Engineering', 'assignee = "queue - network engineering" and status not in (Closed, Done)'));
+  qs.push(new queue('Plaform', 'assignee = queue-platform AND status not in (Closed, Done)'));
+  qs.push(new queue('PLC Dev.', 'assignee = queueplcdev AND status not in (Closed, Done)'));
+  qs.push(new queue('PLS Core', 'assignee = queuetier3coredev AND status not in (Closed, Done)'));
+  qs.push(new queue('Project', ' assignee = queue-projects AND status not in (Closed, Done)'));
+  qs.push(new queue('Tier 2', 'assignee = queuetier2 AND status not in (Closed, Done)'));
+};
+
+function runningQueue(queueIndex) {
+  this._index = parseInt(queueIndex);
+  this._UpdatedAt = 0;
+  this._UpdateFmt = 0;
+  this._error = null;
+  this.tickets = new Array();
+};
+runningQueue.prototype.setErorr = function(error) {
+  this._error = error;
+};
+  
+runningQueue.prototype.updated = function() {
+  this._UpdatedAt = (new Date()).getTime();
+  this._UpdateFmt = (new Date()).toISOString();
+};
+runningQueue.prototype.addTicket = function(ticket) {
+  this.tickets.push(ticket);
+};
+runningQueue.prototype.removeTicket = function(ticket) {
+  
+};
+runningQueue.prototype.getQueueSize = function() {
+  return this.tickets.length;
+};
+
+runningQueue.prototype.getName = function() {
+  return queueStorage[this._index].getName();
+};
+runningQueue.prototype.getJQL = function() {
+  return queueStorage[this._index].getJQL();
+};
+
+function ticket() {
+  this._key;
+  this._link;
+  this._summary;
+  this._comment;
+  this._time;
+  this._timeAgo;
+};
+ticket.prototype.setLink = function(link) {
+  this._link = link;
+};
+ticket.prototype.setKey = function(key) {
+  this._key = key;
+};
+ticket.prototype.setSummary = function(Summary) {
+  this._summary = summary;
+};
+ticket.prototype.setComment = function(comment) {
+  this._comment = comment;
+};
+ticket.prototype.setTime = function(time) {
+  this._time = time;
+  this._timeAgo = timeago(time);
+};
+ticket.prototype.getKey = function() {
+  return this._key;
+};
+ticket.prototype.getLink = function() {
+  return this._link;
+};
+ticket.prototype.getSummary = function() {
+  return this._summary;
+};
+ticket.prototype.getComment = function() {
+  return this._comment;
+};
+
+ticket.prototype.getTime = function() {
+  return this._time;
+};
+ticket.prototype.getTimeAgo = function() {
+  return this._timeAgo;
+};
 
 function queue(name, jql) {
   this._name= name;
@@ -65,19 +141,20 @@ function UpdateIfReady(force) {
   var isReady = (currTime > nextRefresh);
   var isNull = (localStorage["Queue.Tier2.LastRefresh"] == null);
   if ((force == true) || isNull) {
-    UpdateFeed();
+    UpdateFeed(localStorage['Global.Queue']);
   }
   else {
     if (isReady) {
-      UpdateFeed();    
+      UpdateFeed(localStorage['Global.Queue']);    
     }
   }
 }
 
-function UpdateFeed() { 
+function UpdateFeed(queueIndex) { 
   getOptions();
+  window.currentQueue = queueIndex;
+  jqlQuery = queueStorage[parseInt(queueIndex)].getJQL();;
   var jiraCon = 'http://services.hq/jira_connector/rest/gwnjc/issues/data?server=http://jira.gwn&query=';
-  var jqlQuery = 'assignee = queuetier2 AND status in (Open, "In Progress", Reopened, "Ready to Test", "Need Information", "Escalate to Tier 2", "Escalate to Tier 3", "Escalate to Client Services", Testing, Validated, HOLD, Scheduled, Revalidate, "Pending Review", "In Review", "Possible Future Release", "Assigned To Release", "Development Complete", "Ready to Schedule", "Ready to Launch", "Post-Launch Support", "In Discovery", "Requires PLC Update", "Pending Schedule Approval", Draft, "Ready to Order", "Partially Shipped", "Order Placed", "Fully Shipped", "To Do") ORDER BY cf[10142] ASC'
   $.ajax({ 
     dataType: "json",
          url:  jiraCon + encodeURIComponent(jqlQuery), 
@@ -87,6 +164,8 @@ function UpdateFeed() {
 }
 
 function ConnectionError() {
+  queueIndex = window.currentQueue;
+  console.log('Error retrieving '+queueStorage[queueIndex].getName());
   ClearTickets();
   updateFailed = true;
   console.log('Update Failed!');
@@ -122,6 +201,7 @@ function CheckTickets(tickets) {
 }
 
 function ParseJson(json) {
+  queueIndex = window.currentQueue;
   if (!json) {
     // TODO this.
     console.log("EPIC FAIL");
@@ -130,7 +210,8 @@ function ParseJson(json) {
   if (json.length == 0) {
     console.log("Queue is Empty!! Celebrate");
   }
-  //console.log(json);
+  console.log(json);
+  console.log(queueIndex);
   updateFailed = false;
   localStorage['Queue.Tier2.Error'] = null;
   var tickets = parseTickets(json);
