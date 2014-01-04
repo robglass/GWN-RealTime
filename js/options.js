@@ -1,6 +1,6 @@
 window.onload = function() {
   queueStorage = chrome.extension.getBackgroundPage().queueStorage;
-  initOptions();
+  //initOptions();
   buildQueueList();
   restoreOptions();
   $('#RefreshRate, #GWNuser, #Queue, #NotificationTimeout').change(function(){
@@ -48,8 +48,10 @@ function restoreOptions() {
     inputGWNUser.value = currentGWNuser;
   }
  
-  var currentQueue = localStorage['Global.Queue'];
-  selectQueue[currentQueue].selected = 'true';
+  if (localStorage['Global.Queue'] != undefined) {
+    var currentQueue = localStorage['Global.Queue'];
+    selectQueue[currentQueue].selected = 'true';
+  };
 
 
 }
@@ -70,40 +72,40 @@ function saveOptions() {
 }
 
 // Show/hide suboptions at startup)
-function initOptions() {
-  var a=1;
-  $("input[type='checkbox'], input[type='radio']").each(function(index) {
-    var $fieldset = $(this).parent("legend").parent("fieldset");
-    var $options = $fieldset.children(".subOptions").first();
-    
-    $fieldset.toggleClass("selected", this.checked);        
-    $options.toggle(this.checked);
-
-    // Bind function to show/hide options
-    if ($(this).attr("type") == "checkbox") {
-      $(this).change(function() {
-        $fieldset.toggleClass("selected", this.checked);
-        if (this.checked) {
-          $options.slideDown();
-        } else {
-          $options.slideUp();                   
-        }
-      });
-    } else if ($(this).attr("type") == "radio") {
-      $(this).change(function() {
-        var inputName = $(this).attr("name");
-        $("input[name='" + inputName + "']").each(function(index, input) {
-          $fieldset = $(this).parent("legend").parent("fieldset");
-          $fieldset.toggleClass("selected", this.checked);
-          var $subOptions = $fieldset.children(".subOptions").first();
-          if (this.checked) {
-            $subOptions.slideDown();
-          } else {
-            $subOptions.slideUp();  
-          }
-        });
-      });
-    }
-  });
-}
+//function initOptions() {
+//  var a=1;
+//  $("input[type='checkbox'], input[type='radio']").each(function(index) {
+//    var $fieldset = $(this).parent("legend").parent("fieldset");
+//    var $options = $fieldset.children(".subOptions").first();
+//    
+//    $fieldset.toggleClass("selected", this.checked);        
+//    $options.toggle(this.checked);
+//
+//    // Bind function to show/hide options
+//    if ($(this).attr("type") == "checkbox") {
+//      $(this).change(function() {
+//        $fieldset.toggleClass("selected", this.checked);
+//        if (this.checked) {
+//          $options.slideDown();
+//        } else {
+//          $options.slideUp();                   
+//        }
+//      });
+//    } else if ($(this).attr("type") == "radio") {
+//      $(this).change(function() {
+//        var inputName = $(this).attr("name");
+//        $("input[name='" + inputName + "']").each(function(index, input) {
+//          $fieldset = $(this).parent("legend").parent("fieldset");
+//          $fieldset.toggleClass("selected", this.checked);
+//          var $subOptions = $fieldset.children(".subOptions").first();
+//          if (this.checked) {
+//            $subOptions.slideDown();
+//          } else {
+//            $subOptions.slideUp();  
+//          }
+//        });
+//      });
+//    }
+//  });
+//}
 

@@ -18,10 +18,10 @@
         <div id='contentWrapper'>
 	  <fieldset class='options'>
 	    <legend>
-	      <input type='checkbox' id="refresh"><label class="selection">Refresh Rates</label>
+	      <label class="selection">Global Values</label>
 	    </legend>
 	      <div class='subOptions'>
-		<span>Check for Updates: </span>
+		<span>Update Rate(minutes): </span>
 		<select type='text' id='RefreshRate'>
 		  <option value=  60000>1 minute (defualt)</option>
 		  <option value= 300000>5 mintues</option>
@@ -31,14 +31,8 @@
 		  <option value=0>Never</option>
 		</select>
 	      </div>
-	  </fieldset>
-	  <fieldset class='options'>
-	    <legend>
-	      <input type='checkbox' id="notifications"><label class="selection">Notifications</label>
-	    </legend>
-	    <div class='subOptions'>
 	      <div class=''>
-		<span>Close After: </span>
+		<span>Notification half-life:: </span>
 		<select type='text' id='NotificationTimeout'>
 		  <option value=30000>30 seconds</option>
 		  <option value=20000>20 seconds</option>
@@ -52,15 +46,15 @@
 	  </fieldset>
 	  <fieldset class='options'>
 	    <legend>
-	    <input type='checkbox' checked id="queues"><label class="selection">Queues</label>
+	    <input type='checkbox' id="queues"><label class="selection">Queues</label>
 	    </legend>
 	      <div class='subOptions'>
 	          <fieldset class='options'>
 		    <legend>
-		      <input type='checkbox' checked><label>Track Personal Queue</label>
+		      <input type='checkbox'><label>My Queue:</label>
 		    </legend>
 		    <div class="subOptions">
-		      <input type='text' placeholder="Enter your GWN username" id='GWNuser'>
+		      <input type='text' placeholder="GWN username" id='GWNuser'>
 		      <input type='submit' value='Add it!'>
 		    </div>
 		    </fieldset>

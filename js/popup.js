@@ -151,4 +151,3 @@ function refreshTickets() {
   UpdateFeed();
   UpdateLastRefreshTime();
 }
-

@@ -8,10 +8,12 @@ function RemoveQueue(key, value) {
     localStorage[key] = value;
 }
 
-function getOptions() {
+function setTheTable() {
   window.retryMilliseconds = localStorage['Global.RetryOnFailure'];
   window.notifications = localStorage['Global.Notifications'];
   window.refresh = localStorage['Global.Refresh'];
+
+  
 }
 
 function setDefaultOptions() {
@@ -125,22 +127,32 @@ queue.prototype.getJQL = function() {
 };
 
 function UpdateIfReady(force) {
-  var lastRefresh = parseFloat(localStorage["Queue.Tier2.LastRefresh"]);
+  //get the list of queues
+  //for each queue get lastrefresh
+  //set interval based on if we are online with services.hq
+  //get next refresh/currentTime
+  //
+
+  //enabledQueues = JSON.parse(localStorage['Global.Queue']);
+  var lastRefresh = parseInt(localStorage['Queue.Tier2.LastRefresh']);
   
   if (updateFailed) {
-    var interval = retryMilliseconds;
+      console.log(retryMilliseconds);
+      var interval = retryMilliseconds;
   }
   else {
       var interval = parseFloat(localStorage["Global.Refresh"]);
+      console.log(interval);
   }
 
-  var nextRefresh = lastRefresh +interval;
+  var nextRefresh = parseInt(lastRefresh)+parseInt(interval);
   var currTime = parseFloat((new Date()).getTime());
-  
+  console.log(currTime +"-"+ nextRefresh); 
   console.log('Updating in: ' + parseInt((((parseInt(nextRefresh)) -(parseInt(currTime)))/1000))+" sec.");
-  var isReady = (currTime > nextRefresh);
+  var isReady = (currTime > nextRefresh)
   var isNull = (localStorage["Queue.Tier2.LastRefresh"] == null);
   if ((force == true) || isNull) {
+    setupStorage();
     UpdateFeed(localStorage['Global.Queue']);
   }
   else {
@@ -151,7 +163,7 @@ function UpdateIfReady(force) {
 }
 
 function UpdateFeed() { 
-  getOptions();
+  //getOptions();
   queueIndex = 9;
   console.log(queueIndex);
   window.currentQueue = queueIndex;
@@ -380,5 +392,4 @@ _gaq.push(['_trackPageview']);
       ga.src = 'https://ssl.google-analytics.com/ga.js';
   var s = document.getElementsByTagName('script')[0]; 
       s.parentNode.insertBefore(ga, s); 
- })();
-   
+})();

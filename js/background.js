@@ -1,4 +1,5 @@
 var firstRequest = true;
+
 function startRequest() {
   UpdateIfReady(firstRequest);
   firstRequest = false;
@@ -7,11 +8,13 @@ function startRequest() {
 }
  
 if (firstRequest) {
-  if (localStorage['OptionsSetup'] != true) {
+  if (localStorage['Global.Setup'] != "true") {
     setDefaultOptions();
-    setupStorage();
   }
+
+  setTheTable();
+  // if not set pop options page
+  // // no popup page, clicking badge sends to options.
 }
 
-getOptions();
 startRequest();
