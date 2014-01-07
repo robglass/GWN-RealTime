@@ -115,13 +115,13 @@ function runningQueue(queueIndex) {
     newTickets = [];
     for (i=0; i< ticketCount; i++) {
       item = json[i];
-      ticket= new ticket();
+      thisticket = new ticket;
       // Get ticket#
-      ticket.setKey(item.key);
-      ticket.setLink("http://www.jira.gwn/browse/" + item.key);
-      ticket.setSummary(item.summary);
-      ticket.getDetails();
-      newTickets.push(ticket);
+      thisticket.setKey(item.key);
+      thisticket.setLink("http://www.jira.gwn/browse/" + item.key);
+      thisticket.setSummary(item.summary);
+      thisticket.getDetails();
+      newTickets.push(thisticket);
     }
     this.CheckTickets(newTickets);
     this.tickets = newTickets;
@@ -130,9 +130,7 @@ function runningQueue(queueIndex) {
     if (json.length === 0) {
       console.log("Queue is Empty!! Celebrate");
     }
-    console.log(json);
     this.error = false;
-    console.log(this);
     this.parseTickets(json);
     this.CheckTickets(this.tickets);
     if (this.setBadgeText) {
@@ -145,13 +143,13 @@ function runningQueue(queueIndex) {
     this.updated();
   };  
   
-  this.CheckTickets = function(tickets) {
+  this.CheckTickets = function(newtickets) {
     if (this.tickets.length > 0) {
       console.log('Compairing old tickets.');
-      for (var i=0; i<tickets.length; i++) {
+      for (var i=0; i<newtickets.length; i++) {
         var ticketExists = false;
         for (var j=0; j<this.tickets.length; j++){
-          if (tickets[i].getKey == this.tickets[j].getKey ) {
+          if (newtickets[i].getKey == this.tickets[j].getKey ) {
             ticketExists = true;
           }
         }
@@ -181,7 +179,7 @@ function ticket() {
   this.setKey = function(key) {
     this._key = key;
   };
-  this.setSummary = function(Summary) {
+  this.setSummary = function(summary) {
     this._summary = summary;
   };
   this.setComment = function(comment) {
@@ -220,7 +218,6 @@ function ticket() {
       url: jiraCon + this.getKey(),
       dataType: 'json',
       success: function(json) {
-        console.log(json);
         var numComments = json.comments.length;
         var commentDate = json.comments[numComments-1].date;
         var lastcomment = json.comments[numComments-1].body;
@@ -234,7 +231,7 @@ function ticket() {
           this.setComment = refcomment;
         }
         this._timeago = ticketTime;
-        this._.time = commentDate;
+        this._time = commentDate;
       }
     });
   };
