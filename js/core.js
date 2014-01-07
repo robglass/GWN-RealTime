@@ -2,18 +2,16 @@ var buildPopupAfterResponce = false;
 var updateFailed = false;
 
 function SetOption(key, value) {
-    localStorage[key] = value;
+  localStorage[key] = value;
 }
 function RemoveQueue(key, value) {
-    localStorage[key] = value;
+  localStorage[key] = value;
 }
 
 function setTheTable() {
   window.retryMilliseconds = localStorage['Global.RetryOnFailure'];
   window.notifications = localStorage['Global.Notifications'];
-  window.refresh = localStorage['Global.Refresh'];
-
-  
+  window.refresh = localStorage['Global.Refresh']; 
 }
 
 function setDefaultOptions() {
@@ -23,10 +21,21 @@ function setDefaultOptions() {
   SetOption('OptionsSetup', true);
 }
 
+function queue(name, jql) {
+  this._name= name;
+  this._jql = jql;
+  this.getName = function() {
+    return this._name;
+  };
+    this.getJQL = function() {
+      return this._jql;
+    };
+}
+
 function setupStorage() {
   var rs = window.runtimeStorage = [];
 
-  var qs = window.queueStorage = new Array;
+  var qs = window.queueStorage = new Array();
   qs.push(new queue('Implementations', 'assignee = queueimplementations AND status not in (Closed, Done)'));
   qs.push(new queue('Internal Engineering', 'project = ESM AND assignee = unassigned AND status not in (Closed, Done)'));
   qs.push(new queue('Internal IT', 'assignee = queue-desktop AND status not in (Closed, Done)'));
@@ -37,40 +46,120 @@ function setupStorage() {
   qs.push(new queue('PLS Core', 'assignee = queuetier3coredev AND status not in (Closed, Done)'));
   qs.push(new queue('Project', ' assignee = queue-projects AND status not in (Closed, Done)'));
   qs.push(new queue('Tier 2', 'assignee = queuetier2 AND status not in (Closed, Done)'));
-};
+}
 
 function runningQueue(queueIndex) {
-  this._index = parseInt(queueIndex);
-  this._UpdatedAt = 0;
-  this._UpdateFmt = 0;
-  this._error = null;
+  this.index = queueIndex;
+  this.UpdatedAt = null;
+  this.UpdateFmt = null;
+  this.refreshInterval = null;
+  this.error = null;
+  this.setIconText = null;
+  this.notification = null;
   this.tickets = new Array();
-};
-runningQueue.prototype.setErorr = function(error) {
-  this._error = error;
-};
+  this.setErorr = function(error) {
+    this.error = error;
+  };
   
-runningQueue.prototype.updated = function() {
-  this._UpdatedAt = (new Date()).getTime();
-  this._UpdateFmt = (new Date()).toISOString();
-};
-runningQueue.prototype.addTicket = function(ticket) {
-  this.tickets.push(ticket);
-};
-runningQueue.prototype.removeTicket = function(ticket) {
+  this.updated = function() {
+    this.UpdatedAt = (new Date()).getTime();
+    this.UpdateFmt = (new Date()).toISOString();
+  };
+  this.addTicket = function(ticket) {
+    this.tickets.push(ticket);
+  };
+  this.getQueueSize = function() {
+    return this.tickets.length;
+  };
+    
+  this.getRefresh = function() {
+    return this._refreshInterval;
+  };
+  this.getName = function() {
+    return queueStorage[this.index].getName();
+  };
+  this.getJQL = function() {
+    return queueStorage[this.index].getJQL();
+  };
+  this.Update = function() { 
+    var jiraCon = 'http://services.hq/jira_connector/rest/gwnjc/issues/data?server=http://jira.gwn&query=';
+    $.ajax({ 
+      dataType: "json",
+      context: this,
+      url:  jiraCon + encodeURIComponent(this.getJQL()), 
+      success:  this.ParseJson,
+      error:  this.ConnectionError
+    });
+  };
+  this.getLastRefresh = function() {
+    return this.UpdatedAt;
+  };
+  this.ConnectionError = function() {
+    this.error = true;
+    console.log('Update Failed!');
+    if (this.setIcontext) {
+      chrome.browserAction.setBadgeBackgroundColor({ color: [110, 140, 180, 255] }); 
+      chrome.browserAction.setBadgeText({text: 'X'});
+    }
+    this.updated();
+  };
+  this.parseTickets = function(json) {
+    var ticketCount = json.length;
+    newTickets = [];
+    for (i=0; i< ticketCount; i++) {
+      item = json[i];
+      ticket= new ticket();
+      // Get ticket#
+      ticket.setKey(item.key);
+      ticket.setLink("http://www.jira.gwn/browse/" + item.key);
+      ticket.setSummary(item.summary);
+      ticket.getDetails();
+      newTickets.push(ticket);
+    }
+    this.CheckTickets(newTickets);
+    this.tickets = newTickets;
+  };
+  this.ParseJson = function(json) {
+    if (json.length === 0) {
+      console.log("Queue is Empty!! Celebrate");
+    }
+    console.log(json);
+    this.error = false;
+    console.log(this);
+    this.parseTickets(json);
+    this.CheckTickets(this.tickets);
+    if (this.setBadgeText) {
+      setBadgeText(ticketCount);
+    }
+    if (buildPopupAfterResponce === true) {
+      buildPopup(tickets);
+      buildPopupAfterResponce = false;
+    }
+    this.updated();
+  };  
   
-};
-runningQueue.prototype.getQueueSize = function() {
-  return this.tickets.length;
-};
-
-runningQueue.prototype.getName = function() {
-  return queueStorage[this._index].getName();
-};
-runningQueue.prototype.getJQL = function() {
-  return queueStorage[this._index].getJQL();
-};
-
+  this.CheckTickets = function(tickets) {
+    if (this.tickets.length > 0) {
+      console.log('Compairing old tickets.');
+      for (var i=0; i<tickets.length; i++) {
+        var ticketExists = false;
+        for (var j=0; j<this.tickets.length; j++){
+          if (tickets[i].getKey == this.tickets[j].getKey ) {
+            ticketExists = true;
+          }
+        }
+        if (!ticketExists && this.notifications) {
+          sendNotification(tickets[i]);       
+        }
+      }
+    }
+    else { 
+      for (i=0; i<tickets.length; i++) {
+        sendNotification(tickets[i]);
+      }
+    }
+  };
+}
 function ticket() {
   this._key;
   this._link;
@@ -78,195 +167,102 @@ function ticket() {
   this._comment;
   this._time;
   this._timeAgo;
-};
-ticket.prototype.setLink = function(link) {
-  this._link = link;
-};
-ticket.prototype.setKey = function(key) {
-  this._key = key;
-};
-ticket.prototype.setSummary = function(Summary) {
-  this._summary = summary;
-};
-ticket.prototype.setComment = function(comment) {
-  this._comment = comment;
-};
-ticket.prototype.setTime = function(time) {
-  this._time = time;
-  this._timeAgo = timeago(time);
-};
-ticket.prototype.getKey = function() {
-  return this._key;
-};
-ticket.prototype.getLink = function() {
-  return this._link;
-};
-ticket.prototype.getSummary = function() {
-  return this._summary;
-};
-ticket.prototype.getComment = function() {
-  return this._comment;
-};
 
-ticket.prototype.getTime = function() {
-  return this._time;
-};
-ticket.prototype.getTimeAgo = function() {
-  return this._timeAgo;
-};
+  this.setLink = function(link) {
+    this._link = link;
+  };
+  this.setKey = function(key) {
+    this._key = key;
+  };
+  this.setSummary = function(summary) {
+    this._summary = summary;
+  };
+  this.setComment = function(comment) {
+    this._comment = comment;
+  };
+  this.setTime = function(time) {
+    this._time = time;
+    this._timeAgo = timeago(time);
+  };
+  this.getKey = function() {
+    return this._key;
+  };
+  this.getLink = function() {
+    return this._link;
+  };
+  this.getSummary = function() {
+    return this._summary;
+  };
+  this.getComment = function() {
+    return this._comment;
+  };
 
-function queue(name, jql) {
-  this._name= name;
-  this._jql = jql;
-};
-queue.prototype.getName = function() {
-    return this._name;
-};
-queue.prototype.getJQL = function() {
-    return this._jql;
-};
+  this.getTime = function() {
+    return this._time;
+  };
+  this.getTimeAgo = function() {
+    return this._timeAgo;
+  };
+  this.getError = function() {
+    return this._error;
+  };
+  this.getDetails = function() {
+    var jiraCon = 'http://services.hq/jira_connector/rest/gwnjc/issue/data?server=http://jira.gwn&issue=';
+    console.log(this.getKey());
+    $.ajax({ 
+      url: jiraCon + this.getKey(),
+      dataType: 'json',
+      success: function(json) {
+        console.log(json);
+        var numComments = json.comments.length;
+        var commentDate = json.comments[numComments-1].date;
+        var lastcomment = json.comments[numComments-1].body;
+        var dateFormatted=new Date(commentDate);
+        ticketTime = $.timeago(dateFormatted);
+        refcomment = lastcomment.replace(/[\n\r]/g, '');
+        if (refcomment.length>'120') {
+          this.setComment = refcomment.substring(0,120) + '...';
+        }
+        else {
+          this.setComment = refcomment;
+        }
+        this._timeago = ticketTime;
+        this._time = commentDate;
+      }
+    });
+  };
+}
+
+
+function setBadgeText(ticketCount) {
+    if (ticketCount === 0) {
+      chrome.browserAction.setBadgeBackgroundColor({ color: [200, 0, 0, 255] }); 
+      chrome.browserAction.setBadgeText({text: ''}); 
+    }
+    else {
+      chrome.browserAction.setBadgeBackgroundColor({ color: [200, 0, 0, 255] }); 
+      chrome.browserAction.setBadgeText({text: ticketCount.toString()});
+    }
+}
 
 function UpdateIfReady(force) {
-  //get the list of queues
-  //for each queue get lastrefresh
-  //set interval based on if we are online with services.hq
-  //get next refresh/currentTime
-  //
-
-  //enabledQueues = JSON.parse(localStorage['Global.Queue']);
-  var lastRefresh = parseInt(localStorage['Queue.Tier2.LastRefresh']);
-  
-  if (updateFailed) {
-      console.log(retryMilliseconds);
-      var interval = retryMilliseconds;
-  }
-  else {
-      var interval = parseFloat(localStorage["Global.Refresh"]);
-      console.log(interval);
-  }
-
-  var nextRefresh = parseInt(lastRefresh)+parseInt(interval);
-  var currTime = parseFloat((new Date()).getTime());
-  console.log(currTime +"-"+ nextRefresh); 
-  console.log('Updating in: ' + parseInt((((parseInt(nextRefresh)) -(parseInt(currTime)))/1000))+" sec.");
-  var isReady = (currTime > nextRefresh)
-  var isNull = (localStorage["Queue.Tier2.LastRefresh"] == null);
-  if ((force == true) || isNull) {
+  if (typeof runtimeStorage != 'object') {
     setupStorage();
-    UpdateFeed(localStorage['Global.Queue']);
-  }
-  else {
-    if (isReady) {
-      UpdateFeed(localStorage['Global.Queue']);    
+  };
+  for (i=0;i<runtimeStorage.length; i++) {
+    $queue = runtimeStorage[i];
+    lastRefresh = $queue.getLastRefresh; 
+    interval = ($queue.getError ? retryMilliseconds : $queue.getRefresh);
+    currTime = parseFloat((new Date()).getTime()); 
+    //console.log('Updating in: ' + parseInt((((parseInt(nextRefresh)) -(parseInt(currTime)))/1000))+" sec.");
+    if ((force === true) || (lastRefresh === null)) {
+      setupStorage();
+      $queue.update();
+    }
+    else if(currTime >= lastRefresh+interval) {
+        $queue.update();    
     }
   }
-}
-
-function UpdateFeed() { 
-  //getOptions();
-  queueIndex = 9;
-  console.log(queueIndex);
-  window.currentQueue = queueIndex;
-  jqlQuery = queueStorage[parseInt(queueIndex)].getJQL();
-  var jiraCon = 'http://services.hq/jira_connector/rest/gwnjc/issues/data?server=http://jira.gwn&query=';
-  $.ajax({ 
-    dataType: "json",
-         url:  jiraCon + encodeURIComponent(jqlQuery), 
-     success:  ParseJson,
-       error:  ConnectionError
-  });
-}
-
-function ConnectionError() {
-  queueIndex = window.currentQueue;
-  console.log('Error retrieving '+queueStorage[queueIndex].getName());
-  ClearTickets();
-  updateFailed = true;
-  console.log('Update Failed!');
-  chrome.browserAction.setBadgeBackgroundColor({ color: [110, 140, 180, 255] }); 
-  chrome.browserAction.setBadgeText({text: 'X'});
-  if (buildPopupAfterResponce) {
-    buildPopupE('Connection to ESM failed, please verify connection to services.hq');
-    buildPopupAfterResponce = false;
-  }
-  UpdateLastRefreshTime();
-}
-
-function CheckTickets(tickets) {
-  if ((localStorage["Queue.Tier2.NumTickets"] != 0) && (typeof localStorage["Queue.Tier2.NumTickets"] !== 'undefined')) {
-    console.log('Compairing old tickets.');
-    var oldTickets = RetrieveTicketsFromLocalStorage();
-    for (var i=0; i<tickets.length; i++){
-      var ticketExists = false
-      for (var j=0; j<oldTickets.length; j++){
-        if (tickets[i].key == oldTickets[j].key ) {
-                  ticketExists = true;
-        } 
-      }
-        if (!ticketExists && localStorage['Global.Notifications'] == 'true')
-          sendNotification(tickets[i]);       
-    }
-  }
-  else{
-    for (var i=0; i<tickets.length; i++){
-      sendNotification(tickets[i]);
-    }
-  }
-}
-
-function ParseJson(json) {
-  queueIndex = window.currentQueue;
-  if (!json) {
-    // TODO this.
-    console.log("EPIC FAIL");
-    return;
-  }
-  if (json.length == 0) {
-    console.log("Queue is Empty!! Celebrate");
-  }
-  console.log(json);
-  console.log(queueIndex);
-  updateFailed = false;
-  localStorage['Queue.Tier2.Error'] = null;
-  var tickets = parseTickets(json);
-  CheckTickets(tickets);
-  SaveTicketsToLocalStorage(tickets);
-  if (buildPopupAfterResponce == true) {
-      buildPopup(tickets);
-      buildPopupAfterResponce = false;
-    }
-  UpdateLastRefreshTime();
-}
-
-function parseTickets(json) {
-  // get the number of ticket and update the badge.
-  var ticketCount = json.length;
-  if (ticketCount == 0) {
-    chrome.browserAction.setBadgeBackgroundColor({ color: [200, 0, 0, 255] }); 
-    chrome.browserAction.setBadgeText({text: ''}); 
-  }
-  else {
-    chrome.browserAction.setBadgeBackgroundColor({ color: [200, 0, 0, 255] }); 
-    chrome.browserAction.setBadgeText({text: ticketCount.toString()});
-  }
-  var links = new Array();
-  for (var i=0; i< ticketCount; i++) {
-    item = json[i];
-    ticket= new Object();
-    // Get ticket#
-    ticket.key = item.key;
-    ticket.link = "http://www.jira.gwn/browse/" + item.key;
-    // Get Summary
-    ticket.summary = item.summary;
-    // Get time
-    parseMe = getTime(ticket.key);
-    comment = parseMe.comment;
-    ticket.comment = comment;
-    ticket.time = parseMe.time;
-    ticket.timeago = parseMe.timeago;
-    links.push(ticket);
-  }
-  return links;
 }
 
 function sendNotification(ticket) {
@@ -283,68 +279,6 @@ function sendNotification(ticket) {
   setTimeout(function () { toast.cancel() }, 5000);
 }
 
-function getTime(ticket) {
-  var jiraCon = 'http://services.hq/jira_connector/rest/gwnjc/issue/data?server=http://jira.gwn&issue=';
-  var ticketDetail = new Object();
-  $.ajax({ 
-    url: jiraCon + ticket,
-    async: false,
-    dataType: 'json',
-    success: function(json) {
-    var numComments = json.comments.length;
-    var commentDate = json.comments[numComments-1].date;
-    var lastcomment = json.comments[numComments-1].body;
-    var dateFormatted=new Date(commentDate);
-    ticketTime = $.timeago(dateFormatted);
-    refcomment = lastcomment.replace(/[\n\r]/g, '');
-    if (refcomment.length>'120') {
-    ticketDetail.comment = refcomment.substring(0,120) + '...';
-    }
-    else {
-    ticketDetail.comment = refcomment;
-    }
-    ticketDetail.timeago = ticketTime;
-    ticketDetail.time = commentDate;
-    }
-  });
-  return ticketDetail;
-}
-
-function ClearTickets() {
-  for (var i=0;i<localStorage['Queue.Tier2.NumTickets']; i++) {
-    delete window.localStorage['Queue.Tier2.Ticket'+ i];
-  } 
-  localStorage['Queue.Tier2.NumTickets'] = null;
-}
-  
-function SaveTicketsToLocalStorage(tickets) {
-  ClearTickets();
-  localStorage["Queue.Tier2.NumTickets"] = tickets.length;
-  for (var i=0; i<tickets.length; i++) {
-   localStorage["Queue.Tier2.Ticket"+ i] = JSON.stringify(tickets[i]); 
-  }
-}
-
-function RetrieveTicketsFromLocalStorage() {
-  var numTickets = localStorage['Queue.Tier2.NumTickets'];
-  if (numTickets == null) {
-    return null;
-  }
-  else {
-    var tickets = new Array();
-    for (var i=0; i<numTickets; i++) {
-      var storeme = localStorage['Queue.Tier2.Ticket'+ i];
-      tickets.push(JSON.parse(storeme));
-    }
-    return tickets;
-  }
-}
-
-function UpdateLastRefreshTime() {
-  localStorage['Queue.Tier2.LastRefresh'] = (new Date()).getTime();
-  localStorage['Queue.Tier2.FLastRefresh'] = (new Date().toISOString());
-}
-
 function openOptions() {
   var optionsURL = chrome.extension.getURL('options.html');
   chrome.tabs.create({url: optionsURL});
@@ -359,7 +293,7 @@ function openLinkFront() {
 }
 
 function openUrl(url, take_focus) {
-  if (url.indexOf("http:") != 0 && url.indexOf("https:") != 0) {
+  if (url.indexOf("http:") !== 0 && url.indexOf("https:") !== 0) {
     return;
   }
   chrome.tabs.create({url: url, selected: take_focus});
@@ -374,12 +308,14 @@ function showElement(id){
   var e = document.getElementById(id);
   e.style.display = 'block';
 }
-function toggle(id) {;
+function toggle(id) {
   var e= document.getElementById(id);
-  if(e.style.display == 'block')
+  if(e.style.display == 'block') {
     e.style.display = 'none';
-  else
+  }
+  else {
     e.style.display = 'block';
+  }
 }
 
 var _gaq = _gaq || []; 
