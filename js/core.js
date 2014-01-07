@@ -36,6 +36,7 @@ function setupStorage() {
   var rs = window.runtimeStorage = [];
 
   var qs = window.queueStorage = new Array();
+  qs.push(new queue('Personal', 'status not in (Closed, Done) AND assignee = '));
   qs.push(new queue('Implementations', 'assignee = queueimplementations AND status not in (Closed, Done)'));
   qs.push(new queue('Internal Engineering', 'project = ESM AND assignee = unassigned AND status not in (Closed, Done)'));
   qs.push(new queue('Internal IT', 'assignee = queue-desktop AND status not in (Closed, Done)'));
@@ -81,12 +82,18 @@ function runningQueue(queueIndex) {
   this.getJQL = function() {
     return queueStorage[this.index].getJQL();
   };
-  this.Update = function() { 
+  this.Update = function() {
+    if (this.getName() == "Personal") {
+      var jiraJQL = (this.getJQL())+localStorage['Global.GWNUser'];
+    }
+    else {
+      jiraJQL = this.getJQL();
+    }
     var jiraCon = 'http://services.hq/jira_connector/rest/gwnjc/issues/data?server=http://jira.gwn&query=';
     $.ajax({ 
       dataType: "json",
       context: this,
-      url:  jiraCon + encodeURIComponent(this.getJQL()), 
+      url:  jiraCon + encodeURIComponent(jiraJQL), 
       success:  this.ParseJson,
       error:  this.ConnectionError
     });
@@ -174,7 +181,7 @@ function ticket() {
   this.setKey = function(key) {
     this._key = key;
   };
-  this.setSummary = function(summary) {
+  this.setSummary = function(Summary) {
     this._summary = summary;
   };
   this.setComment = function(comment) {
@@ -227,7 +234,7 @@ function ticket() {
           this.setComment = refcomment;
         }
         this._timeago = ticketTime;
-        this._time = commentDate;
+        this._.time = commentDate;
       }
     });
   };
