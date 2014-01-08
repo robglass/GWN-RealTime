@@ -10,10 +10,11 @@ function RemoveQueue(key, value) {
 
 function setTheTable() {
   window.retryMilliseconds = localStorage['Global.RetryOnFailure'];
+  window.runtimeStorage = [];
+  $queues = JSON.parse(localStorage['Global.Queue']);
+  for (i=0; i<$queues.length; i++) {
+    runtimeStorage.push(new runningQueue($queues[i].queueIndex, $queues[i].updateInterval, $queues[i].notify, $queues[i].useBadgeCounter));
   setupStorage();
-  explodedQueues = JSON.parse(localStorage['Global.Queue']);
-  for (i=0; i<explodedQueues.length; i++) {
-    runtimeStorage.push(new runningQueue(explodedQueues[i].queueIndex, explodedQueues[i].updateInterval, explodedQueues[i].notify, explodedQueues[i].useBadgeCounter));
   }
 }
 
@@ -36,8 +37,6 @@ function queue(name, jql) {
 }
 
 function setupStorage() {
-  var rs = window.runtimeStorage = [];
-
   var qs = window.queueStorage = new Array();
   qs.push(new queue('Personal', 'status not in (Closed, Done) AND assignee = '));
   qs.push(new queue('Implementations', 'assignee = queueimplementations AND status not in (Closed, Done)'));
@@ -110,9 +109,10 @@ function runningQueue(queueIndex, refresh, notify, useBadge) {
   this.ConnectionError = function() {
     this.error = true;
     console.log('Update Failed!');
-    if (this.setIcontext) {
+    if (this.setIconText) {
+      console.log('Clearing Badge');
       chrome.browserAction.setBadgeBackgroundColor({ color: [110, 140, 180, 255] }); 
-      chrome.browserAction.setBadgeText({text: 'R'});
+      chrome.browserAction.setBadgeText({text: 'X'});
     }
     this.updated();
   };
@@ -274,8 +274,8 @@ function UpdateIfReady(force) {
   };
   for (i=0;i<runtimeStorage.length; i++) {
     $queue = runtimeStorage[i];
-    lastRefresh = $queue.getLastRefresh(); 
-    interval = ($queue.getError() ? retryMilliseconds : $queue.getRefresh());
+    lastRefresh = parseInt($queue.getLastRefresh()); 
+    interval = parseInt($queue.getError() ? retryMilliseconds : $queue.getRefresh());
     currTime = parseFloat((new Date()).getTime()); 
     console.log('Updating '+ $queue.getName() + " in: " + parseInt(( (lastRefresh+interval)-(currTime)  )/1000)+" sec.");
     if ((force === true) || (lastRefresh === null)) {
