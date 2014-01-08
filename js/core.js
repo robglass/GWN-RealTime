@@ -159,6 +159,7 @@ function runningQueue(queueIndex, refresh, notify, useBadge) {
             ticketExists = true;
           }
         }
+        newtickets[i].getDetails();
         if (!ticketExists && this.notifications) {
           newtickets[i].getDetails();
           sendNotification(newtickets[i]);       
@@ -213,7 +214,7 @@ function ticket() {
     return this._time;
   };
   this.getTimeAgo = function() {
-    return this._timeAgo;
+    return this._timeago;
   };
   this.getError = function() {
     return this._error;
@@ -237,7 +238,8 @@ function ticket() {
           this.setComment(refcomment.substring(0,120) + '...');
         }
         else {
-          this.setComment =(refcomment);
+          console.log(refcomment);
+          this.setComment(refcomment);
         }
         console.log(this.getKey()+" is updated");
         this._timeago = ticketTime;
