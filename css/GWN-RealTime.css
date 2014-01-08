@@ -55,7 +55,7 @@ img {vertical-align: text-top}
 .ticket .ticketTitle {font-weight:bold}
 .ticketTitle {font-weight:bold;color:#333}
 .ticketTitle {margin:4px 0;display:inline-block}
-.ticketsGroup .collapseArrow, .ticketsGroup {display:inline-block}
+.ticketsGroup .collapseArrow  {display:inline-block}
 .ticket.hideScrollbars .notes::-webkit-scrollbar {border:none}
 .ticket.hideScrollbars .notes::-webkit-scrollbar-thumb {background:none;-webkit-box-shadow:none}
 .ticketDetails {border-radius:3px}

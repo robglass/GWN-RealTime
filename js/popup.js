@@ -17,10 +17,6 @@ function setupEvents() {
   $("#close").click(function() {
     window.close();
   });
-  $(".collapseArrow").click(function() {
-      $(".collapseArrow").toggleClass('collapsed');
-      $(".tickets").slideToggle('fast');
-  });
 }
 
 function main() {
@@ -30,7 +26,8 @@ function main() {
     UpdateIfReady(true);
   }
   else {
-    for (i=0; i<runtimeStorage.length; i++) {
+    for (var i=0; i<runtimeStorage.length; i++) {
+      console.log(i);
       buildPopup(runtimeStorage[i]);
     }
   }
@@ -45,35 +42,7 @@ function buildPopupE(error) {
   showElement('container');
   hideElement('spinner');
 }
-
-function setQueueHeader(title) {
-  var headerdiv = document.getElementById('queuetitle');
-  var addtitle = document.createElement('span');
-      addtitle.innerText = title;
-  var addnum = document.createElement('span');
-  addnum.className = 'ticketCount';
-  addnum.innerText = '  (' + localStorage['Queue.Tier2.NumTickets'] + ')';
-  if (localStorage['Queue.Tier2.NumTickets'] == 0) {
-    $('.collapseArrow').addClass('hidden')
-    $(".collapseArrow").toggleClass('collapsed');
-    $(".tickets").slideToggle('fast'); 
-  }
-  headerdiv.appendChild(addtitle);
-  headerdiv.appendChild(addnum);
-  if (typeof localStorage['Queue.Tier2.FLastRefresh'] !== 'undefined') {
-    var timeSince = $.timeago(localStorage['Queue.Tier2.FLastRefresh']);
-    var addTime = document.createElement('span');
-      addTime.className = 'timesince timeTopRight';
-      addTime.innerText = 'Updated: '+ timeSince;
-    headerdiv.appendChild(addTime);
-         
-    $(headerdiv).click(function() {
-           openUrl('http://jira.gwn/secure/IssueNavigator.jspa?mode=hide&requestId=14027'); 
-         });
-  }
-}
-
-function buildTicketDiv() {
+function buildTicketDiv(ticket) {
       var ticketblock = document.createElement('div');
         ticketblock.className = "ticket vbox hideScrollbars";
       var box = document.createElement('div');
@@ -84,23 +53,23 @@ function buildTicketDiv() {
         details.className = 'ticketDetails vbox wide';
       var ticketNum = document.createElement('span');
         ticketNum.className = 'ticketnumber';
-        ticketNum.innerText = ticket.key;
+        ticketNum.innerText = ticket.getKey();
       var tickettime = document.createElement('div');
         tickettime.className = 'ticketDetailsTopRight';
       var date = document.createElement('div');
         date.className = 'date';
-        date.innerText = ticket.time;
+        date.innerText = ticket.getTime();
       var timeago = document.createElement('span');
         timeago.className = 'timeAgo';
-        timeago.innerText =  ' (' + ticket.timeago + ')';
+        timeago.innerText =  ' (' + ticket.getTimeAgo() + ')';
       var box2 = document.createElement('div');
         box2.className = 'hbox';
       var ticketTitle = document.createElement('div');
         ticketTitle.className = 'ticketTitle';
-        ticketTitle.innerText = ticket.summary;
+        ticketTitle.innerText = ticket.getSummary();
       var notes = document.createElement('div');
         notes.className = 'notes vbox';
-        notes.innerText = ticket.comment;
+        notes.innerText = ticket.getComment();
     
       ticketblock.appendChild(box);
        box.appendChild(img);
@@ -114,7 +83,7 @@ function buildTicketDiv() {
          details.appendChild(notes);
 
          $(ticketblock).click(function() {
-           openUrl(ticket.link); 
+           openUrl(ticket.getLink()); 
          });
 
          return ticketblock;
@@ -129,34 +98,62 @@ function buildPopup(queue) {
   content.appendChild(wrapper);
 
       var qbox = document.createElement('div');
-        qbox.className = "queue vbox";
+          qbox.className = "queue vbox";
       wrapper.appendChild(qbox);
-        var qwapper = document.createElement('div');
+      var qwapper = document.createElement('div');
           qwapper.className = "queueLabelAreaWrapper hbox wide";
-        qbox.appendChild(qwapper);
-          var arrow = document.createElement('div');
-           arrow.className = "hbox collapseArrow";
-          qwapper.appendChild(arrow);
-          var titlebar = document.createElement('div');
-            titlebar.className = "queueLabelArea hbox wide hasTickets"
-          qwapper.appendChild(titlebar);
-            var titletext = document.createElement('span');
-              titletext.id = 'queuetitle';
-              titletext.className = 'queueFor';
-              titletext.innerText= queue.getName();
-            titlebar.appendChild(titletext);
-          var container = document.createElement('div');
-              container.id = 'container';
-              container.className = 'popup-container tickets';
-              container.style.display = 'block';
-          qwapper.appendChild(container);
-              var group = document.createElement('div');
-                group.className = "ticketsGroup";
-                container.appendChild(group)
-                var feed = document.createElement('div');
-                  feed.id = 'feed';
-                  feed.className = 'ticketFeed';
-                  group.appendChild(feed);
+      qbox.appendChild(qwapper);
+      var arrow = document.createElement('div');
+          arrow.className = "hbox collapseArrow";
+      qwapper.appendChild(arrow);
+      var titlebar = document.createElement('div');
+          titlebar.className = "queueLabelArea hbox wide hasTickets"
+      qwapper.appendChild(titlebar);
+      var titletext = document.createElement('span');
+          titletext.id = 'queuetitle';
+          titletext.className = 'queueFor';
+      var addtitle = document.createElement('span');
+          addtitle.innerText = queue.getName();
+      var addnum = document.createElement('span');
+          addnum.className = 'ticketCount';
+          addnum.innerText = '  (' + queue.tickets.length + ')';
+          if (queue.tickets.length == 0) {
+            $('.collapseArrow').addClass('hidden')
+            $(".collapseArrow").toggleClass('collapsed');
+            $(".tickets").slideToggle('fast'); 
+          }
+          titletext.appendChild(addtitle);
+          titletext.appendChild(addnum);
+          if (queue.getLastRefresh() !== null) {
+            var timeSince = $.timeago(queue.getLastRefresh());
+            var addTime = document.createElement('span');
+                addTime.className = 'timesince timeTopRight';
+                addTime.innerText = 'Updated: '+ timeSince;
+            titletext.appendChild(addTime);
+              $(titletext).click(function() {
+                    openUrl('http://jira.gwn/secure/IssueNavigator.jspa?mode=hide&requestId=14027'); 
+                  });
+          }
+           titlebar.appendChild(titletext);
+      var container = document.createElement('div');
+          container.id = 'container';
+          container.className = 'popup-container tickets';
+          container.style.display = 'block';
+      qbox.appendChild(container);
+      var group = document.createElement('div');
+          group.className = "ticketsGroup";
+      container.appendChild(group)
+      var feed = document.createElement('div');
+          feed.id = 'feed';
+          feed.className = 'ticketFeed';
+      group.appendChild(feed);
+      for (i=0; i<queue.tickets.length; i++) {
+        feed.appendChild(buildTicketDiv(queue.tickets[i]));
+      };
+      $(qbox).find(".collapseArrow").click(function  () {
+        $(qbox).find(".collapseArrow").toggleClass('collapsed');
+        $(qbox).find(".tickets").slideToggle('fast');
+      });
 
   hideElement('spinner');
   showElement('container');
