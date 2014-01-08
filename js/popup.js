@@ -1,4 +1,7 @@
 var boxOpen= true;
+runtimeStorage = chrome.extension.getBackgroundPage().runtimeStorage;
+queueStorage = chrome.extension.getBackgroundPage().queueStorage;
+
 
 window.onload = function() {
   main();
@@ -21,13 +24,15 @@ function setupEvents() {
 }
 
 function main() {
-  if (localStorage['Queue.Tier2.NumTickets'] == null || localStorage['Queue.Tier2.NumTickets'] == 'null') {
-    console.log(localStorage['Queue.Tier2.NumTickets']);
+  if (runtimeStorage.length == null || runtimeStorage == 'null') {
+    console.log(runtimeQueue.length);
     buildPopupAfterResponce = true;
-    UpdateFeed();
+    UpdateIfReady(true);
   }
   else {
-    buildPopup(RetrieveTicketsFromLocalStorage());
+    for (i=0; i<runtimeStorage.length; i++) {
+      buildPopup(runtimeStorage[i]);
+    }
   }
 }
 
@@ -68,7 +73,7 @@ function setQueueHeader(title) {
   }
 }
 
-function buildTicketDiv(ticket) {
+function buildTicketDiv() {
       var ticketblock = document.createElement('div');
         ticketblock.className = "ticket vbox hideScrollbars";
       var box = document.createElement('div');
@@ -115,12 +120,43 @@ function buildTicketDiv(ticket) {
          return ticketblock;
 }
 
-function buildPopup(tickets) {
-  var feed = document.getElementById('feed');
-    setQueueHeader('T2 Queue');  
-    for (var i=0; i<tickets.length; i++) {
-      feed.appendChild(buildTicketDiv(tickets[i]));
-    }
+function buildPopup(queue) {
+  var content = document.getElementById('content');
+  
+  var wrapper = document.createElement('div');
+      wrapper.className  = "queuewrapper";
+      wrapper.style.display = "block";
+  content.appendChild(wrapper);
+
+      var qbox = document.createElement('div');
+        qbox.className = "queue vbox";
+      wrapper.appendChild(qbox);
+        var qwapper = document.createElement('div');
+          qwapper.className = "queueLabelAreaWrapper hbox wide";
+        qbox.appendChild(qwapper);
+          var arrow = document.createElement('div');
+           arrow.className = "hbox collapseArrow";
+          qwapper.appendChild(arrow);
+          var titlebar = document.createElement('div');
+            titlebar.className = "queueLabelArea hbox wide hasTickets"
+          qwapper.appendChild(titlebar);
+            var titletext = document.createElement('span');
+              titletext.id = 'queuetitle';
+              titletext.className = 'queueFor';
+              titletext.innerText= queue.getName();
+            titlebar.appendChild(titletext);
+          var container = document.createElement('div');
+              container.id = 'container';
+              container.className = 'popup-container tickets';
+              container.style.display = 'block';
+          qwapper.appendChild(container);
+              var group = document.createElement('div');
+                group.className = "ticketsGroup";
+                container.appendChild(group)
+                var feed = document.createElement('div');
+                  feed.id = 'feed';
+                  feed.className = 'ticketFeed';
+                  group.appendChild(feed);
 
   hideElement('spinner');
   showElement('container');
