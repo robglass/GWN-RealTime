@@ -17,7 +17,7 @@ function initVariables() {
 
 function buildQueueList() {
   initVariables();
-  for (i=0; i<queueStorage.length; i++) {
+  for (i=1; i<queueStorage.length; i++) {
     var option = document.createElement('option');
     option.value = i;
     option.innerText = queueStorage[i].getName();

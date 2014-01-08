@@ -10,8 +10,11 @@ function RemoveQueue(key, value) {
 
 function setTheTable() {
   window.retryMilliseconds = localStorage['Global.RetryOnFailure'];
-  window.notifications = localStorage['Global.Notifications'];
-  window.refresh = localStorage['Global.Refresh']; 
+  setupStorage();
+  explodedQueues = JSON.parse(localStorage['Global.Queue']);
+  for (i=0; i<explodedQueues.length; i++) {
+    runtimeStorage.push(new runningQueue(explodedQueues[i].queueIndex, explodedQueues[i].updateInterval, explodedQueues[i].notify, explodedQueues[i].useBadgeCounter));
+  }
 }
 
 function setDefaultOptions() {
@@ -49,14 +52,14 @@ function setupStorage() {
   qs.push(new queue('Tier 2', 'assignee = queuetier2 AND status not in (Closed, Done)'));
 }
 
-function runningQueue(queueIndex) {
+function runningQueue(queueIndex, refresh, notify, useBadge) {
   this.index = queueIndex;
   this.UpdatedAt = null;
   this.UpdateFmt = null;
-  this.refreshInterval = null;
+  this.refreshInterval = refresh;
   this.error = null;
-  this.setIconText = null;
-  this.notification = null;
+  this.setIconText = useBadge;
+  this.notification = notify;
   this.tickets = new Array();
   this.setErorr = function(error) {
     this.error = error;
@@ -74,7 +77,10 @@ function runningQueue(queueIndex) {
   };
     
   this.getRefresh = function() {
-    return this._refreshInterval;
+    return this.refreshInterval;
+  };
+  this.getError = function() {
+    return this.error;
   };
   this.getName = function() {
     return queueStorage[this.index].getName();
@@ -106,7 +112,7 @@ function runningQueue(queueIndex) {
     console.log('Update Failed!');
     if (this.setIcontext) {
       chrome.browserAction.setBadgeBackgroundColor({ color: [110, 140, 180, 255] }); 
-      chrome.browserAction.setBadgeText({text: 'X'});
+      chrome.browserAction.setBadgeText({text: 'R'});
     }
     this.updated();
   };
@@ -116,11 +122,9 @@ function runningQueue(queueIndex) {
     for (i=0; i< ticketCount; i++) {
       item = json[i];
       thisticket = new ticket;
-      // Get ticket#
       thisticket.setKey(item.key);
       thisticket.setLink("http://www.jira.gwn/browse/" + item.key);
       thisticket.setSummary(item.summary);
-      thisticket.getDetails();
       newTickets.push(thisticket);
     }
     this.CheckTickets(newTickets);
@@ -133,8 +137,9 @@ function runningQueue(queueIndex) {
     this.error = false;
     this.parseTickets(json);
     this.CheckTickets(this.tickets);
-    if (this.setBadgeText) {
-      setBadgeText(ticketCount);
+    if (this.setIconText) {
+      console.log('Setting badge text');
+      setBadgeText(this.tickets.length);
     }
     if (buildPopupAfterResponce === true) {
       buildPopup(tickets);
@@ -145,6 +150,7 @@ function runningQueue(queueIndex) {
   
   this.CheckTickets = function(newtickets) {
     if (this.tickets.length > 0) {
+      console.log(this.tickets.length);
       console.log('Compairing old tickets.');
       for (var i=0; i<newtickets.length; i++) {
         var ticketExists = false;
@@ -154,13 +160,14 @@ function runningQueue(queueIndex) {
           }
         }
         if (!ticketExists && this.notifications) {
-          sendNotification(tickets[i]);       
+          newtickets[i].getDetails();
+          sendNotification(newtickets[i]);       
         }
       }
     }
     else { 
-      for (i=0; i<tickets.length; i++) {
-        sendNotification(tickets[i]);
+      for (i=0; i<newtickets.length; i++) {
+        sendNotification(newtickets[i]);
       }
     }
   };
@@ -212,10 +219,12 @@ function ticket() {
     return this._error;
   };
   this.getDetails = function() {
+    console.log("getting details for "+ this.getKey());
     var jiraCon = 'http://services.hq/jira_connector/rest/gwnjc/issue/data?server=http://jira.gwn&issue=';
     console.log(this.getKey());
     $.ajax({ 
       url: jiraCon + this.getKey(),
+      context: this,
       dataType: 'json',
       success: function(json) {
         var numComments = json.comments.length;
@@ -225,18 +234,28 @@ function ticket() {
         ticketTime = $.timeago(dateFormatted);
         refcomment = lastcomment.replace(/[\n\r]/g, '');
         if (refcomment.length>'120') {
-          this.setComment = refcomment.substring(0,120) + '...';
+          this.setComment(refcomment.substring(0,120) + '...');
         }
         else {
-          this.setComment = refcomment;
+          this.setComment =(refcomment);
         }
+        console.log(this.getKey()+" is updated");
         this._timeago = ticketTime;
         this._time = commentDate;
       }
     });
   };
 }
+function savedQueue() {
+  this.queueIndex = null;
+  this.notify = null;
+  this.useBadgeCounter = null;
+  this.updateInterval = null;
+}
 
+function saveQueueOptions(queue) {
+  localStorage['Global.Queue'];
+}
 
 function setBadgeText(ticketCount) {
     if (ticketCount === 0) {
@@ -255,16 +274,17 @@ function UpdateIfReady(force) {
   };
   for (i=0;i<runtimeStorage.length; i++) {
     $queue = runtimeStorage[i];
-    lastRefresh = $queue.getLastRefresh; 
-    interval = ($queue.getError ? retryMilliseconds : $queue.getRefresh);
+    lastRefresh = $queue.getLastRefresh(); 
+    interval = ($queue.getError() ? retryMilliseconds : $queue.getRefresh());
     currTime = parseFloat((new Date()).getTime()); 
-    //console.log('Updating in: ' + parseInt((((parseInt(nextRefresh)) -(parseInt(currTime)))/1000))+" sec.");
+    console.log('Updating '+ $queue.getName() + " in: " + parseInt(( (lastRefresh+interval)-(currTime)  )/1000)+" sec.");
     if ((force === true) || (lastRefresh === null)) {
-      setupStorage();
-      $queue.update();
+      console.log("Forcing update to " + $queue.getName());
+      $queue.Update();
     }
     else if(currTime >= lastRefresh+interval) {
-        $queue.update();    
+        console.log("Time to update "+ $queue.getName());
+        $queue.Update();    
     }
   }
 }
@@ -273,11 +293,11 @@ function sendNotification(ticket) {
   var toast = webkitNotifications.createNotification(
     'images/icon.png',
     "New Ticket",
-    ticket.key + " " + ticket.summary
+    ticket.getKey() + " " + ticket.getSummary()
     );
   toast.addEventListener('click', function() {
     toast.cancel();
-    window.open(ticket.link);
+    window.open(ticket.getLink());
   });
   toast.show();
   setTimeout(function () { toast.cancel() }, 5000);

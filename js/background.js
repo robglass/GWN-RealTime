@@ -8,13 +8,10 @@ function startRequest() {
 }
  
 if (firstRequest) {
-  if (localStorage['Global.Setup'] != "true") {
+  if (localStorage['OptionsSetup'] != true) {
     setDefaultOptions();
   }
-
   setTheTable();
-  // if not set pop options page
-  // // no popup page, clicking badge sends to options.
 }
 
 startRequest();
