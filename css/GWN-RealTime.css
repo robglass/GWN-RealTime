@@ -31,7 +31,7 @@ img {vertical-align: text-top}
 .icon:hover {opacity:1;cursor:pointer}
 .imageArea {margin-right: 8px}
 .inline-block {display:inline-block}
-.loading {opacity:0.7;background-image: url('/images/ajax-loader.gif');background-position: center center;background-repeat: no-repeat;background-size:34px;}
+.loading {opacity:0.7;background-image: url('/images/ajax-loader.gif');background-position: center center;background-repeat: no-repeat;background-size:34px; width: inherit; height: 50px}
 .margin {margin-bottom: 5px !important}
 .notes::-webkit-scrollbar {border:1px solid #ccc}
 .notes {opacity:0.55;xxxcolor:#777;cursor:pointer;white-space:normal;overflow-x:hidden;overflow-y:auto;xxoverflow:hidden;xxoverflow-x:hidden;xxoverflow-y:auto}
@@ -42,7 +42,7 @@ img {vertical-align: text-top}
 .queue, .queueLabelAreaWrapper {border-radius:6px 0 0 0}
 .queueLabelArea, .ticketDetails {overflow:hidden;white-space:nowrap;margin-right:3px;margin-top:3px}
 .queueLabelAreaWrapper {background-image: -webkit-gradient(linear, left top, left bottom, from(#fafafa), to(#f3f3f3));xxbackground:#f7f7f7}		
-.queueLabelArea, .ha.tickets {font-weight:bold}
+.queueLabelArea, .hastickets {font-weight:bold}
 .queueLabelAreaWrapper:hover, .queueFor {text-shadow:1px 1px 3px #ccc}		
 .queueLabelAreaWrapper:hover {cursor:pointer;background-image: -webkit-gradient(linear, left top, left bottom, from(#f3f3f3), to(#fafafa));}
 .queuewrapper {margin-right:2px}

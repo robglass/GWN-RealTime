@@ -1,5 +1,13 @@
 var buildPopupAfterResponce = false;
 var updateFailed = false;
+var _DEBUG_ = true;
+
+function ifdebug(text){
+  (_DEBUG_) ? console.log(text) : "";
+}
+function dbg() {
+  (_DEBUG_) ? _DEBUG_ = false : _DEBUG_ = true;
+}
 
 function SetOption(key, value) {
   localStorage[key] = value;
@@ -9,6 +17,7 @@ function RemoveQueue(key, value) {
 }
 
 function setTheTable() {
+  ifdebug("I have set up us the bomb!")
   window.retryMilliseconds = localStorage['Global.RetryOnFailure'];
   window.runtimeStorage = [];
   $queues = JSON.parse(localStorage['Global.Queue']);
@@ -19,10 +28,28 @@ function setTheTable() {
 }
 
 function setDefaultOptions() {
+  ifdebug("Setting options to default")
   SetOption('Global.Refresh', 60000);
   SetOption('Global.RetryOnFailure', 10000);
   SetOption('Global.Notifications', true);
   SetOption('OptionsSetup', true);
+  SetOption('Options_Version', chrome.runtime.getManifest().version);
+  
+  // TODO temp till options starts working
+  var queueBuilder = [];
+    var queue = new Object;
+    queue.queueIndex = 0;
+    queue.updateInterval = 120000;
+    queue.notify = true;
+    queue.useBadgeCounter = false;
+  queueBuilder.push(queue);
+    var queue = new Object;
+    queue.queueIndex = 10;
+    queue.updateInterval = 60000;
+    queue.notify = true;
+    queue.useBadgeCounter = true;
+  queueBuilder.push(queue);
+  localStorage['Global.Queue'] = JSON.stringify(queueBuilder);
 }
 
 function queue(name, jql) {
@@ -37,6 +64,7 @@ function queue(name, jql) {
 }
 
 function setupStorage() {
+  ifdebug("Building Array");
   var qs = window.queueStorage = new Array();
   qs.push(new queue('Personal', 'status not in (Closed, Done) AND assignee = '));
   qs.push(new queue('Implementations', 'assignee = queueimplementations AND status not in (Closed, Done)'));
@@ -88,6 +116,7 @@ function runningQueue(queueIndex, refresh, notify, useBadge) {
     return queueStorage[this.index].getJQL();
   };
   this.Update = function() {
+    ifdebug("Updating "+this.getName());
     if (this.getName() == "Personal") {
       var jiraJQL = (this.getJQL())+localStorage['Global.GWNUser'];
     }
@@ -108,15 +137,16 @@ function runningQueue(queueIndex, refresh, notify, useBadge) {
   };
   this.ConnectionError = function() {
     this.error = true;
-    console.log('Update Failed!');
+    ifdebug('Update Failed for '+ this.getName());
     if (this.setIconText) {
-      console.log('Clearing Badge');
+      ifdebug('Clearing Badge');
       chrome.browserAction.setBadgeBackgroundColor({ color: [110, 140, 180, 255] }); 
       chrome.browserAction.setBadgeText({text: 'X'});
     }
     this.updated();
   };
   this.parseTickets = function(json) {
+    ifdebug("Got the goods unpacking!")
     var ticketCount = json.length;
     newTickets = [];
     for (i=0; i< ticketCount; i++) {
@@ -132,26 +162,21 @@ function runningQueue(queueIndex, refresh, notify, useBadge) {
   };
   this.ParseJson = function(json) {
     if (json.length === 0) {
-      console.log("Queue is Empty!! Celebrate");
+      ifdebug("Queue is Empty!! Celebrate");
     }
     this.error = false;
     this.parseTickets(json);
     this.CheckTickets(this.tickets);
     if (this.setIconText) {
-      console.log('Setting badge text');
+      ifdebug('Setting badge text');
       setBadgeText(this.tickets.length);
-    }
-    if (buildPopupAfterResponce === true) {
-      buildPopup(tickets);
-      buildPopupAfterResponce = false;
     }
     this.updated();
   };  
   
   this.CheckTickets = function(newtickets) {
     if (this.tickets.length > 0) {
-      console.log(this.tickets.length);
-      console.log('Compairing old tickets.');
+      ifdebug('Compairing old tickets.');
       for (var i=0; i<newtickets.length; i++) {
         var ticketExists = false;
         for (var j=0; j<this.tickets.length; j++){
@@ -220,9 +245,8 @@ function ticket() {
     return this._error;
   };
   this.getDetails = function() {
-    console.log("getting details for "+ this.getKey());
+    ifdebug("getting details for "+ this.getKey());
     var jiraCon = 'http://services.hq/jira_connector/rest/gwnjc/issue/data?server=http://jira.gwn&issue=';
-    console.log(this.getKey());
     $.ajax({ 
       url: jiraCon + this.getKey(),
       context: this,
@@ -238,10 +262,8 @@ function ticket() {
           this.setComment(refcomment.substring(0,120) + '...');
         }
         else {
-          console.log(refcomment);
           this.setComment(refcomment);
         }
-        console.log(this.getKey()+" is updated");
         this._timeago = ticketTime;
         this._time = commentDate;
       }
@@ -253,10 +275,6 @@ function savedQueue() {
   this.notify = null;
   this.useBadgeCounter = null;
   this.updateInterval = null;
-}
-
-function saveQueueOptions(queue) {
-  localStorage['Global.Queue'];
 }
 
 function setBadgeText(ticketCount) {
@@ -271,7 +289,8 @@ function setBadgeText(ticketCount) {
 }
 
 function UpdateIfReady(force) {
-  if (typeof runtimeStorage != 'object') {
+  ifdebug("Stirring the pot...")
+  if (typeof queueStorage != 'object') {
     setupStorage();
   };
   for (i=0;i<runtimeStorage.length; i++) {
@@ -279,19 +298,20 @@ function UpdateIfReady(force) {
     lastRefresh = parseInt($queue.getLastRefresh()); 
     interval = parseInt($queue.getError() ? retryMilliseconds : $queue.getRefresh());
     currTime = parseFloat((new Date()).getTime()); 
-    console.log('Updating '+ $queue.getName() + " in: " + parseInt(( (lastRefresh+interval)-(currTime)  )/1000)+" sec.");
+    ifdebug('Updating '+ $queue.getName() + " in: " + parseInt(( (lastRefresh+interval)-(currTime)  )/1000)+" sec.");
     if ((force === true) || (lastRefresh === null)) {
-      console.log("Forcing update to " + $queue.getName());
+      ifdebug("Forcing update to " + $queue.getName());
       $queue.Update();
     }
     else if(currTime >= lastRefresh+interval) {
-        console.log("Time to update "+ $queue.getName());
+        ifdebug("Time to update "+ $queue.getName());
         $queue.Update();    
     }
   }
 }
 
 function sendNotification(ticket) {
+  ifdebug("Toasting for "+ticket.getKey());
   var toast = webkitNotifications.createNotification(
     'images/icon.png',
     "New Ticket",
@@ -326,26 +346,33 @@ function openUrl(url, take_focus) {
 }
 
 function hideElement(id){
-  var e = document.getElementById(id);
-  e.style.display = 'none';
+  var e = document.getElementsByClassName(id);
+  for (var i=0;i<e.length;i++) {
+    e[i].style.display = 'none';
+  }
 }
 
 function showElement(id){
-  var e = document.getElementById(id);
-  e.style.display = 'block';
-}
-function toggle(id) {
-  var e= document.getElementById(id);
-  if(e.style.display == 'block') {
-    e.style.display = 'none';
+  var e = document.getElementsByClassName(id);
+  for (var i=0;i<e.length;i++) {
+    e[i].style.display = 'block';
   }
-  else {
-    e.style.display = 'block';
+}
+
+function toggle(myclass) {
+  var e= document.getElementsByClassName(myclass);
+  for (var i=0; i<e.length;i++){
+    if(e[i].style.display == 'block') {
+      e[i].style.display = 'none';
+    }
+    else {
+      e[i].style.display = 'block';
+    }
   }
 }
 
 var _gaq = _gaq || []; 
-_gaq.push(['_setAccount', 'UA-46802132-2']);
+_gaq.push(['_setAccount', 'UA-46802132-3']);
 _gaq.push(['_trackPageview']);
  
 (function() {

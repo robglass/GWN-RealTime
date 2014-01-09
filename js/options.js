@@ -1,3 +1,5 @@
+runtimeStorage = chrome.extension.getBackgroundPage().runtimeStorage;
+queueStorage =  chrome.extension.getBackgroundPage().queueStorage; 
 window.onload = function() {
   queueStorage = chrome.extension.getBackgroundPage().queueStorage;
   //initOptions();
@@ -47,11 +49,6 @@ function restoreOptions() {
     var currentGWNuser = localStorage['Global.GWNUser'];
     inputGWNUser.value = currentGWNuser;
   }
- 
-  if (localStorage['Global.Queue'] != undefined) {
-    var currentQueue = localStorage['Global.Queue'];
-    selectQueue[currentQueue].selected = 'true';
-  };
 
 
 }
@@ -67,8 +64,8 @@ function saveOptions() {
   SetOption('Global.GWNUser', newGWNUser);
   SetOption('Global.GWNUserJQL', 'assignee = '+ newGWNUser +' and status not in (Closed, Done)');
 
-  var newQueue = selectQueue.value;
-  SetOption('Global.Queue', newQueue);
+
+  UpdateIfReady(true);
 }
 
 // Show/hide suboptions at startup)

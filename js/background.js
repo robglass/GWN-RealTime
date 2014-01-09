@@ -8,7 +8,12 @@ function startRequest() {
 }
  
 if (firstRequest) {
-  if (localStorage['OptionsSetup'] != true) {
+  if (localStorage['OptionsSetup'] != 'true') {
+    localStorage.clear();
+    setDefaultOptions();
+  }
+  else if (localStorage['Options_Version'] != chrome.runtime.getManifest().version) {
+    localStorage.clear();
     setDefaultOptions();
   }
   setTheTable();
