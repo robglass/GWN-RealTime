@@ -1,8 +1,8 @@
 {
     "manifest_version": 2,
-    "name": "GWN RealTime LR Beta",
+    "name": "GWN RealTime",
     "description": "A Jira notification and auto-updater.",
-    "version": "1.2.5.4",
+    "version": "1.2.5",
     "icons": {  "16": "images/icon.png",
                 "48": "images/icon.png",
                "128": "images/icon.png"
