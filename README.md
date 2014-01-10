@@ -6,6 +6,7 @@ A Jira notification and auto-updater.
 Revision History:
 -----------------
 
+* 1.2.5.7 - Test
 * 1.2.5.7 - Versioning Fix
 * 1.2.5.6.1 - Cleaned up old Files
 * 1.2.5.6 - Testing
