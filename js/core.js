@@ -187,13 +187,13 @@ function runningQueue(queueIndex, refresh, notify, useBadge) {
         newtickets[i].getDetails();
         if (!ticketExists && this.notifications) {
           newtickets[i].getDetails();
-          sendNotification(newtickets[i]);       
+          sendNotification(newtickets[i, this]);       
         }
       }
     }
     else { 
       for (i=0; i<newtickets.length; i++) {
-        sendNotification(newtickets[i]);
+        sendNotification(newtickets[i], this);
       }
     }
   };
@@ -310,11 +310,11 @@ function UpdateIfReady(force) {
   }
 }
 
-function sendNotification(ticket) {
+function sendNotification(ticket, queue) {
   ifdebug("Toasting for "+ticket.getKey());
   var toast = webkitNotifications.createNotification(
     'images/icon.png',
-    "New Ticket",
+    "New Ticket in " + queue.getName(),
     ticket.getKey() + " " + ticket.getSummary()
     );
   toast.addEventListener('click', function() {

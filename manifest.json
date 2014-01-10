@@ -2,7 +2,7 @@
     "manifest_version": 2,
     "name": "GWN RealTime LR Beta",
     "description": "A Jira notification and auto-updater.",
-    "version": "1.2.5.4",
+    "version": "1.2.5.5",
     "icons": {  "16": "images/icon.png",
                 "48": "images/icon.png",
                "128": "images/icon.png"
@@ -11,7 +11,7 @@
         "images/icon.png"
     ],
     "options_page":"options.html",
-    "update_url": "http://shewlayce.com/dev/T2Labs/updates.xml",
+    "update_url": "https://raw2.github.com/shewlayce/GWN-RealTime/builds/updates.xml",
     "background": {
         "page": "background.html"
     },
