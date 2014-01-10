@@ -1,9 +1,9 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <gupdate xmlns='http://www.google.com/update2/response' protocol='2.0'>
     <app appid='hifblcghlfpiheoeabgdlleahlejanfd'>
-        <updatecheck codebase='http://shewlayce.com/dev/T2Labs/GWN-RealTime_v1.2.1.crx' version='1.2.1' />
+        <updatecheck codebase='https://github.com/shewlayce/GWN-RealTime/raw/builds/GWN-RealTime.crx' version='1.2.2' />
     </app>
     <app appid='dpcagdimmhmfhhghoehlmmmhjaneckef'>
-        <updatecheck codebase='http://shewlayce.com/dev/T2Labs/GWN-RealTime_LR.crx' version='1.2.5.4' />
+        <updatecheck codebase='https://github.com/shewlayce/GWN-RealTime/raw/builds/GWN-RealTime_LR.crx' version='1.2.5.5' />
     </app>
 </gupdate>
