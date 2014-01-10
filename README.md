@@ -6,6 +6,7 @@ A Jira notification and auto-updater.
 Revision History:
 -----------------
 
+* 1.2.5.6.1 - Cleaned up old Files
 * 1.2.5.6 - Testing
 * 1.2.5.6 - Testing
 * 1.1     - Fixed null vs "null" error after reestablishing a broken session
