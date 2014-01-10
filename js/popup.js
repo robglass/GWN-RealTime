@@ -140,7 +140,7 @@ function buildPopup(queue) {
               addTime.innerText = 'Updated: '+ timeSince;
               titletext.appendChild(addTime);
               $(titletext).click(function() {
-                    openUrl('http://jira.gwn/secure/IssueNavigator.jspa?mode=hide&requestId=14027'); 
+                    openUrl('http://jira.gwn/secure/Dashboard.jspa'); 
                   });
       }
       titlebar.appendChild(titletext);
@@ -159,7 +159,7 @@ function buildPopup(queue) {
   for (i=0; i<queue.tickets.length; i++) {
         feed.appendChild(buildTicketDiv(queue.tickets[i]));
   };
-  $(qbox).find(".collapseArrow").click(function  () {
+  $(qbox).find(".queueLabelAreaWrapper").click(function  () {
         $(qbox).find(".collapseArrow").toggleClass('collapsed');
         $(qbox).find(".tickets").slideToggle('fast');
   });
