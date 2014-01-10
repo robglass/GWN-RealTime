@@ -7,6 +7,8 @@ Revision History:
 -----------------
 
 * 1.2.5.6 - Cleaned up old files. Added options.css
+* 1.2.5.1 - Popup rebuild for Multi
+* 1.2.5.0 - Backend redesign, Allows for mutlipule queues
 * 1.1     - Fixed null vs "null" error after reestablishing a broken session
 * 1.0     - Major Release: updated fixes and CSS cleanup
 * 0.9.9   - Fixed date format bug. Began Code cleanup.
