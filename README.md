@@ -6,8 +6,8 @@ A Jira notification and auto-updater.
 Revision History:
 -----------------
 
+* 1.2.5.6 - Testing
 * 1.1     - Fixed null vs "null" error after reestablishing a broken session
-* 1.2.5.6 - Testing AutoDeployment
 * 1.0     - Major Release: updated fixes and CSS cleanup
 * 0.9.9   - Fixed date format bug. Began Code cleanup.
 * 0.9.5   - Butification update !!! 
