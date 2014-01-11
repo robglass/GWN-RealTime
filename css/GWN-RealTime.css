@@ -41,7 +41,7 @@ img {vertical-align: text-top}
 .queue {border: 1px solid #ddd}
 .queue, .queueLabelAreaWrapper {border-radius:6px 0 0 0}
 .queueLabelArea, .ticketDetails {overflow:hidden;white-space:nowrap;margin-right:3px;margin-top:3px}
-.queueLabelAreaWrapper {background-color: #332a86; color: #FFF}		
+.queueLabelAreaWrapper {background-color: #593E7F; color: #FFF}		
 .queueLabelArea, .hastickets {font-weight:bold}
 .queueLabelAreaWrapper:hover, .queueFor {text-shadow:1px 1px 3px #555}		
 .queueLabelAreaWrapper:hover {cursor:pointer;}

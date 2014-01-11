@@ -9,63 +9,76 @@
   </head>
   <body>
    <div id='pageWrapper'>
-     <div id='optionsWrapper' class='main'>
+    <div id='optionsWrapper' class='main'>
       <div id='header'>
-	 <img id="logo" src=/images/icon.png style="display:inline">
-	 <a id='title' target="_blank" href="http://getsmart.gwn/display/SUP/GWN+RealTime">GWN RealTime</a>
-     </div>
-       <form>
-        <div id='contentWrapper'>
-	  <fieldset class='options'>
-	    <legend>
-	      <label class="selection">Global Values</label>
-	    </legend>
-	      <div class='subOptions'>
-		<span>Update Rate(minutes): </span>
-		<select type='text' id='RefreshRate'>
-		  <option value=  60000>1 minute (defualt)</option>
-		  <option value= 300000>5 mintues</option>
-		  <option value= 600000>10 mintues</option>
-		  <option value= 900000>15 minutes</option>
-		  <option value=1800000>30 minutes</option>
-		  <option value=0>Never</option>
-		</select>
-	      </div>
-	      <div class=''>
-		<span>Notification half-life:: </span>
-		<select type='text' id='NotificationTimeout'>
-		  <option value=30000>30 seconds</option>
-		  <option value=20000>20 seconds</option>
-		  <option value=15000>15 seconds</option>
-		  <option value=10000>10 seconds (defualt)</option>
-		  <option value=5000>5 seconds</option>
-		  <option value=0>Never</option>
-		</select>
-	      </div>
+	<img id="logo" src=/images/icon.png style="display:inline">
+	<a id='title' target="_blank" href="http://getsmart.gwn/display/SUP/GWN+RealTime">GWN RealTime</a>
+      </div>
+      <div class="contentWrapper">
+	<div class="topbar">
+	  <div class="placeholder">
+	    <div class="top-crumb">
+	     <div>Queues</div>
 	    </div>
-	  </fieldset>
-	  <fieldset class='options'>
-	    <legend>
-	    <input type='checkbox' id="queues"><label class="selection">Queues</label>
-	    </legend>
-	      <div class='subOptions'>
-	          <fieldset class='options'>
-		    <legend>
-		      <input type='checkbox'><label>My Queue:</label>
-		    </legend>
-		    <div class="subOptions">
-		      <input type='text' placeholder="GWN username" id='GWNuser'>
-		      <input type='submit' value='Add it!'>
-		    </div>
-		    </fieldset>
-		<span>Additional Queues: </span>
-		<select type='text' id='Queue'>
-		</select>
-	      </div>
-	  </fieldset>
+	  </div>
+	  <div class="button add">
+	    <span class="icon plus"></span>
+	  </div>
 	</div>
-       </form>
-     </div>
-   </div>
- </body>
+	<div class="main-content">
+	  <div class='queue-list'>
+	    <div class="placeholder">
+	    </div> 
+	  </div>
+	</div>
+	<div class="queue add">
+	<form>
+	  <fieldset class='options'>
+	      <span>Queue: </span>
+		<select type='text' id='Queue'></select>
+		  <input type='text' placeholder="GWN username" id='GWNuser'>
+		<div class='subOptions'>
+		  <div class='column left'>
+		    <div>
+		      <span>Enable notificaions</span>
+		      <input type='checkbox' />
+		    </div>
+		    <div>
+		      <span>Close notification after:</span>
+		      <select type='text' id='NotificationTimeout'>
+			<option value=30000>30 seconds</option>
+			<option value=20000>20 seconds</option>
+			<option value=15000>15 seconds</option>
+			<option value=10000>10 seconds (defualt)</option>
+			<option value=5000>5 seconds</option>
+			<option value=0>Never</option>
+		      </select>
+		    </div>
+		  </div>
+		  <div class="column right">
+		    <div>
+		      <span>Update Rate: </span>
+		      <select type='text' id='RefreshRate'>
+			<option value=  60000>1 minute (defualt)</option>
+		        <option value= 300000>5 mintues</option>
+		        <option value= 600000>10 mintues</option>
+		        <option value= 900000>15 minutes</option>
+		       <option value=1800000>30 minutes</option>
+		       <option value=0>Never</option>
+		      </select>
+		    </div>
+		    <div>
+		      <button>Cancel</button>
+		      <button>Add</button>
+		    </div>
+		  </div>
+	  </fieldset>
+      </form>
+      </div>
+    </div>
+
+
+    </div>
+  </div>
+</body>
 </html>
