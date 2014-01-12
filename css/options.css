@@ -41,6 +41,7 @@ body {
 }
 .queue-add {
     display: none;
+    position: relative;
 }
 #pageWrapper {
     text-align: center;
@@ -114,6 +115,12 @@ body {
     border: 1px solid rgba(0,0,0,0.2);
     -webkit-mask-image: -webkit-gradient(linear, left top, right bottom, from(transparent), color-stop(0.5,transparent), color-stop(0.5, #000000), to(#000000));
 }
+#clear-add, #save-add {
+    float: left;
+}
+buttonDiv {
+    position: relative;
+}
 .button {
     width: 34px;
     height: 32px;
@@ -145,6 +152,13 @@ body {
     position: absolute;
     top: 0;
 }
+.button.select{
+    right: 0;
+    position: absolute;
+}
+.button.select:first-child {
+    right: 40px;
+}
 .icon {
     display: inline-block;
     width: 16px;
@@ -162,6 +176,9 @@ body {
 }
 .icon.cross {
     background-position: -224px 0;
+}
+.icon.check {
+    background-position: -64px -32px;
 }
 .main-content {
     margin-top: -1px;

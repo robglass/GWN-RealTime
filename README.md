@@ -6,6 +6,7 @@ A Jira notification and auto-updater.
 Revision History:
 -----------------
 
+* 1.2.6.0 - Options buttons now properly work
 * 1.2.5.9 - Options functionality completed.
 * 1.2.5.8 - CSS: Darkened Queue Headers; Popup.js: Queue Headers now collapse
 * 1.2.5.6 - Cleaned up old files. Added options.css

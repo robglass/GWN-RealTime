@@ -33,42 +33,40 @@
 	  </div>
 	</div>
 	<div class="queue-add">
-	<form>
-	  <fieldset class='options'>
-	      <span>Queue: </span>
-		<select type='text' id='Queue'></select>
-		  <input type='text' placeholder="GWN username" id='GWNuser'>
-		<div class='subOptions'>
-		  <div class='column left'>
-		    <div>
-		      <span>Enable notificaions</span>
-		      <input type='checkbox' id="notify" />
-		    </div>
-		  </div>
-		  <div class="column right">
-		    <div>
-		      <span>Update Rate: </span>
-		      <select type=text id='RefreshRate'>
-			<option value="60000">1 minute (defualt)</option>
-		        <option value="300000">5 mintues</option>
-		        <option value="600000">10 mintues</option>
-		        <option value="900000">15 minutes</option>
-		       <option value="1800000">30 minutes</option>
-		       <option value=0>Never</option>
-		      </select>
-		    </div>
-		    <div>
-		      <button id="clear-add">Cancel</button>
-		      <div id="save-add">Add</div>
-		    </div>
-		  </div>
-	  </fieldset>
-      </form>
+	  <span>Queue: </span>
+	  <select type='text' id='Queue'></select>
+	  <input type='text' placeholder="GWN username" id='GWNuser'>
+	  <div class='subOptions'>
+	    <div class='column left'>
+	      <div>
+		<span>Enable notificaions</span>
+		<input type='checkbox' id="notify" />
+	      </div>
+	    </div>
+	    <div class="column right">
+	      <div>
+		<span>Update Rate: </span>
+		<select type=text id='RefreshRate'>
+		  <option value="60000">1 minute (defualt)</option>
+		  <option value="300000">5 mintues</option>
+		  <option value="600000">10 mintues</option>
+		  <option value="900000">15 minutes</option>
+		  <option value="1800000">30 minutes</option>
+		  <option value=0>Never</option>
+		</select>
+	      </div>
+	    </div>
+	    <div class="buttonDiv">
+	      <div class="button select" id="clear-add">
+		<span class="icon cross"></span>
+	      </div>
+	      <div class='button select' id="save-add">
+	        <span class="icon check"></span>
+	      </div>
+	    </div>
+	  </div>
+	</div>
       </div>
     </div>
-
-
-    </div>
-  </div>
-</body>
+  </body>
 </html>

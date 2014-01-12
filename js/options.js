@@ -14,6 +14,10 @@ function setupEventListeners() {
     $('.queue-add').slideToggle('fast');
   });
   
+  $('#clear-add').click(function() {
+    $('.main-content').slideToggle('fast');
+    $('.queue-add').slideToggle('fast');
+  })
   // Saves new queue
   $('#save-add').click(function() {
     queue = new Object; 
@@ -91,7 +95,7 @@ function setupEventListeners() {
 function buildQueueList() {
   var i=0;  
   for (x=0;x<savedOptions.length;x++){
-    if (savedOptions[i].queueIndex == '0') {
+    if (savedOptions[x].queueIndex == '0') {
       i = 1;
       document.getElementById('GWNuser').style.display = 'none';
       break;
