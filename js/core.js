@@ -16,14 +16,35 @@ function RemoveQueue(key, value) {
   localStorage[key] = value;
 }
 
+function refreshRuntime() {
+    savedOptions = JSON.parse(localStorage['Global.Queue']);
+    if (runtimeStorage.length != savedOptions.length) {
+      for (var i=0;i<savedOptions.length;i++) {
+        if (runtimeStorage[i] == undefined) {
+          runtimeStorage.push(new runningQueue(savedOptions[i].queueIndex, savedOptions[i].updateInterval, savedOptions[i].notify, savedOptions[i].useBadgeCounter));
+        }
+      }
+      UpdateIfReady(true);  
+    }
+    for (var i=0;i<savedOptions.length;i++) {
+      if (savedOptions[i].queueIndex == runtimeStorage[i].index) {
+        console.log('Updating'+ runtimeStorage[i].getName());
+        runtimeStorage[i].useIconText = savedOptions[i].useBadgeCounter;
+        runtimeStorage[i].notification = savedOptions[i].notify;
+        runtimeStorage[i].refreshInterval = savedOptions[i].updateInterval;
+      }
+    }
+}
+
+
 function setTheTable() {
   ifdebug("I have set up us the bomb!")
   window.retryMilliseconds = localStorage['Global.RetryOnFailure'];
   window.runtimeStorage = [];
-  $queues = JSON.parse(localStorage['Global.Queue']);
-  for (i=0; i<$queues.length; i++) {
-    runtimeStorage.push(new runningQueue($queues[i].queueIndex, $queues[i].updateInterval, $queues[i].notify, $queues[i].useBadgeCounter));
   setupStorage();
+  $queues = JSON.parse(localStorage['Global.Queue']);
+  for (i=0; i<$queues.length; i++) {  
+    runtimeStorage.push(new runningQueue($queues[i].queueIndex, $queues[i].updateInterval, $queues[i].notify, $queues[i].useBadgeCounter));
   }
 }
 
@@ -36,20 +57,6 @@ function setDefaultOptions() {
   SetOption('Options_Version', chrome.runtime.getManifest().version);
   
   // TODO temp till options starts working
-  var queueBuilder = [];
-    var queue = new Object;
-    queue.queueIndex = 0;
-    queue.updateInterval = 120000;
-    queue.notify = true;
-    queue.useBadgeCounter = false;
-  queueBuilder.push(queue);
-    var queue = new Object;
-    queue.queueIndex = 10;
-    queue.updateInterval = 60000;
-    queue.notify = true;
-    queue.useBadgeCounter = true;
-  queueBuilder.push(queue);
-  localStorage['Global.Queue'] = JSON.stringify(queueBuilder);
 }
 
 function queue(name, jql) {
@@ -72,7 +79,7 @@ function setupStorage() {
   qs.push(new queue('Internal IT', 'assignee = queue-desktop AND status not in (Closed, Done)'));
   qs.push(new queue('Linux Admin', 'assignee = queue-linuxadmin AND status not in (Closed, Done)'));
   qs.push(new queue('Network Engineering', 'assignee = "queue - network engineering" and status not in (Closed, Done)'));
-  qs.push(new queue('Plaform', 'assignee = queue-platform AND status not in (Closed, Done)'));
+  qs.push(new queue('Platform', 'assignee = queue-platform AND status not in (Closed, Done)'));
   qs.push(new queue('PLC Dev.', 'assignee = queueplcdev AND status not in (Closed, Done)'));
   qs.push(new queue('PLS Core', 'assignee = queuetier3coredev AND status not in (Closed, Done)'));
   qs.push(new queue('Project', ' assignee = queue-projects AND status not in (Closed, Done)'));
@@ -81,7 +88,7 @@ function setupStorage() {
 
 function runningQueue(queueIndex, refresh, notify, useBadge) {
   this.index = queueIndex;
-  this.UpdatedAt = null;
+  this.UpdatedAt = 0;
   this.UpdateFmt = null;
   this.refreshInterval = refresh;
   this.error = null;
@@ -270,6 +277,7 @@ function ticket() {
     });
   };
 }
+
 function savedQueue() {
   this.queueIndex = null;
   this.notify = null;
@@ -295,7 +303,7 @@ function UpdateIfReady(force) {
   };
   for (i=0;i<runtimeStorage.length; i++) {
     $queue = runtimeStorage[i];
-    lastRefresh = parseInt($queue.getLastRefresh()); 
+    lastRefresh = parseInt($queue.getLastRefresh());
     interval = parseInt($queue.getError() ? retryMilliseconds : $queue.getRefresh());
     currTime = parseFloat((new Date()).getTime()); 
     ifdebug('Updating '+ $queue.getName() + " in: " + parseInt(( (lastRefresh+interval)-(currTime)  )/1000)+" sec.");

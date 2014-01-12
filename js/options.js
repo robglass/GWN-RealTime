@@ -3,21 +3,114 @@ queueStorage =  chrome.extension.getBackgroundPage().queueStorage;
 savedOptions = JSON.parse(localStorage['Global.Queue']);
 
 window.onload = function() {
-  //initOptions();
   buildQueueList();
   restoreOptions();
-  $('#RefreshRate, #GWNuser, #Queue, #NotificationTimeout').change(function(){
+  setupEventListeners();
+}
+function setupEventListeners() {
+  // Flips Queuelist and Add divs when the Add button is pressed
+  $('.add').click(function() { 
+    $('.main-content').slideToggle('fast');
+    $('.queue-add').slideToggle('fast');
+  });
+  
+  // Saves new queue
+  $('#save-add').click(function() {
+    queue = new Object; 
+    queue.queueIndex = parseInt(document.getElementById('Queue').value);
+    if (queue.queueIndex == 0) {
+        localStorage['Global.GWNUser'] = document.getElementById('GWNuser').value;
+    }
+    queue.notify = document.getElementById('notify').checked;
+    queue.updateInterval = parseInt(document.getElementById('RefreshRate').value);
+    queue.useBadgeCounter = false;
+    savedOptions.push(queue);
+    //runtimeStorage.push(new runningQueue(queue.queueIndex, queue.updateInterval, queue.notify, queue.useBadgeCounter)); 
     saveOptions();
+    chrome.extension.getBackgroundPage().resetRequest = true;
+    resetQueueList();
+    $('.main-content').slideToggle('fast');
+    $('.queue-add').slideToggle('fast');
+  })
+  
+  // Saves notification Flag
+  $('#GWNUser').change(function() {
+    localStorage['Global.GWNUser'] = this.value;  
+    for (var i=0; i<runtimeStorage.length;i++){
+      if (runtimeStorage[i].index == 0) {
+        console.log(runtimeStorage[i].getName());
+        runtimeStorage[i].UpdatedAt = 0;
+        break;
+      }   
+    }  
+  })
+  $('.notify').change(function() {
+      ifdebug("Changing "+ queueStorage[this.id].getName()+ " to " + this.checked);
+      for (var i=0; i<savedOptions.length;i++){
+           if (this.id == savedOptions[i].queueIndex) {
+              queue = savedOptions[i];
+              break;
+          }   
+      }  
+      if (this.checked) {
+        queue.notify = true;
+      }
+      else {
+          queue.notify = false;
+      }
+      saveOptions();
+      chrome.extension.getBackgroundPage().resetRequest = true;
+  });
+  
+  $('.updateInterval').change(function() {
+    console.log(this);
+    for (var i=0; i<savedOptions.length;i++){
+      if (this.id == savedOptions[i].queueIndex) {
+        queue = savedOptions[i];
+      }   
+    }  
+    console.log('Saving '+queueStorage[queue.queueIndex].getName());
+    queue.updateInterval = this.value;
+    saveOptions();
+    chrome.extension.getBackgroundPage().resetRequest = true;
+  });
+
+  // Flips GWNuser box when Personal is selected
+  $('#Queue').change(function() {
+    if (this.value == '0') {
+      //document.getElementById('GWNuser').style.display = 'inline';
+      $('#GWNuser').slideDown('fast');
+    }
+    else {
+      $('#GWNuser').slideUp('fast');
+    }
   });
 }
 
+
 function buildQueueList() {
-  for (i=1; i<queueStorage.length; i++) {
+  var i=0;  
+  for (x=0;x<savedOptions.length;x++){
+    if (savedOptions[i].queueIndex == '0') {
+      i = 1;
+      document.getElementById('GWNuser').style.display = 'none';
+      break;
+    } 
+  }
+  for (i; i<queueStorage.length; i++) {
     var option = document.createElement('option');
     option.value = i;
     option.innerText = queueStorage[i].getName();
-    //selectQueue.appendChild(option);
+    document.getElementById('Queue').appendChild(option);
   }
+}
+function resetQueueList() {
+  list = $('.queue-item');
+  for (var i=0;i<list.length; i++) {
+    console.log('Removing queue');
+    list[i].remove();
+  }
+  restoreOptions();
 }
 
 function restoreOptions() {
@@ -53,10 +146,16 @@ function queueList(queue) {
         if (queue.queueIndex == savedOptions[i].queueIndex) {
             console.log('Removing '+ i);
             savedOptions.splice(i,1);
+            runtimeStorage.splice(i,1);
             break;
         }
       }
       saveOptions();
+      selectNode = document.getElementById('Queue')
+      while (selectNode.hasChildNodes()) {
+        selectNode.removeChild(selectNode.firstChild);
+      }
+      buildQueueList();
   });
   var queueOptions = document.createElement('div');
       queueOptions.className = 'queueOptions';
@@ -65,15 +164,19 @@ function queueList(queue) {
       opt1text.innerText = 'Enable Notifications';
   var notify = document.createElement('input');
       notify.type = 'checkbox';
+      notify.className = 'notify';
+      notify.id =  queue.queueIndex;
       if (queue.notify) {
-      notify.checked = true;
+        ifdebug("checking notify for "+ queueStorage[queue.queueIndex].getName());
+        notify.checked = true;
       };
   var divWrapper2 = document.createElement('div');
   var opt2text = document.createElement('span');
       opt2text.innerText = 'Refresh rate:';
   var refreshRate = document.createElement('select');
       refreshRate.type = 'text';
-      refreshRate.id = 'RefreshRate';
+      refreshRate.className = 'updateInterval';
+      refreshRate.id = queue.queueIndex;
   var option1 = document.createElement('option')
       option1.value = '60000';
       option1.innerText = '1 minute';
@@ -146,8 +249,10 @@ function queueList(queue) {
 }
 
 
-function saveOptions() {
+function saveOptions(restart) {
   localStorage['Global.Queue'] = JSON.stringify(savedOptions);
-  chrome.extensions.getBackgroundPage().setTheTable();
+  if (restart) {
+    chrome.extension.getBackgroundPage().resetRequest = true;
+  }
 }
 

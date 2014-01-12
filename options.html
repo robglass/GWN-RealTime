@@ -4,7 +4,8 @@
     <title>GWN RealTime - Setting</title>
     <script src='js/jquery.js'></script>
     <script src='js/core.js'></script>
-    <script src='js/options.js'></script>
+    <script src='js/options.js'>
+</script>
     <link rel="stylesheet" href="/css/options.css">
   </head>
   <body>
@@ -31,7 +32,7 @@
 	    </div> 
 	  </div>
 	</div>
-	<div class="queue add">
+	<div class="queue-add">
 	<form>
 	  <fieldset class='options'>
 	      <span>Queue: </span>
@@ -41,35 +42,24 @@
 		  <div class='column left'>
 		    <div>
 		      <span>Enable notificaions</span>
-		      <input type='checkbox' />
-		    </div>
-		    <div>
-		      <span>Close notification after:</span>
-		      <select type='text' id='NotificationTimeout'>
-			<option value=30000>30 seconds</option>
-			<option value=20000>20 seconds</option>
-			<option value=15000>15 seconds</option>
-			<option value=10000>10 seconds (defualt)</option>
-			<option value=5000>5 seconds</option>
-			<option value=0>Never</option>
-		      </select>
+		      <input type='checkbox' id="notify" />
 		    </div>
 		  </div>
 		  <div class="column right">
 		    <div>
 		      <span>Update Rate: </span>
-		      <select type='text' id='RefreshRate'>
-			<option value=  60000>1 minute (defualt)</option>
-		        <option value= 300000>5 mintues</option>
-		        <option value= 600000>10 mintues</option>
-		        <option value= 900000>15 minutes</option>
-		       <option value=1800000>30 minutes</option>
+		      <select type=text id='RefreshRate'>
+			<option value="60000">1 minute (defualt)</option>
+		        <option value="300000">5 mintues</option>
+		        <option value="600000">10 mintues</option>
+		        <option value="900000">15 minutes</option>
+		       <option value="1800000">30 minutes</option>
 		       <option value=0>Never</option>
 		      </select>
 		    </div>
 		    <div>
-		      <button>Cancel</button>
-		      <button>Add</button>
+		      <button id="clear-add">Cancel</button>
+		      <div id="save-add">Add</div>
 		    </div>
 		  </div>
 	  </fieldset>
