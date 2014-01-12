@@ -18,6 +18,29 @@ function setupEventListeners() {
     $('.main-content').slideToggle('fast');
     $('.queue-add').slideToggle('fast');
   })
+  $('#useBadge').change(function() {
+    if (this.value == 'none') {
+      setBadgeText(0);
+      for (var i=0;i<savedOptions.length;i++) {
+          savedOptions[i].useBadgeCounter = false;
+      }
+    }
+    else {
+      for (var i=0;i<savedOptions.length;i++) {
+        if (this.value == savedOptions[i].queueIndex) {
+           savedOptions[i].useBadgeCounter = true;
+          setBadgeText(runtimeStorage[i].tickets.length);
+        }
+        else {
+          savedOptions[i].useBadgeCounter = false;
+        }
+      }
+    } 
+      saveOptions();
+      chrome.extension.getBackgroundPage().resetRequest = true;
+  })
+
+
   // Saves new queue
   $('#save-add').click(function() {
     queue = new Object; 
@@ -119,6 +142,13 @@ function resetQueueList() {
 
 function restoreOptions() {
   for (var i=0;i<savedOptions.length;i++) {
+    var option = document.createElement('option');
+    option.value = savedOptions[i].queueIndex;
+    option.innerText = queueStorage[savedOptions[i].queueIndex].getName();
+    document.getElementById('useBadge').appendChild(option);
+    if (savedOptions[i].useBadgeCounter) {
+      document.getElementById('useBadge').value = option.value; 
+    }
     var list = document.getElementsByClassName('placeholder')[1];
     list.appendChild(queueList(savedOptions[i]));
   }
