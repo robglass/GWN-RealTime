@@ -50,9 +50,8 @@ function setTheTable() {
 
 function setDefaultOptions() {
   ifdebug("Setting options to default")
-  SetOption('Global.Refresh', 60000);
   SetOption('Global.RetryOnFailure', 10000);
-  SetOption('Global.Notifications', true);
+  SetOption('Global.Queue', JSON.stringify([]));
   SetOption('OptionsSetup', true);
   SetOption('Options_Version', chrome.runtime.getManifest().version);
   
@@ -175,7 +174,7 @@ function runningQueue(queueIndex, refresh, notify, useBadge) {
     this.parseTickets(json);
     this.CheckTickets(this.tickets);
     if (this.setIconText) {
-      ifdebug('Setting badge text');
+      ifdebug('Setting badge text for '+this.getName());
       setBadgeText(this.tickets.length);
     }
     this.updated();

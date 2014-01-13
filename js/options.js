@@ -178,6 +178,19 @@ function queueList(queue) {
       $(queueItem).slideToggle('fast');
       for (var i=0;i<savedOptions.length;i++){
         if (queue.queueIndex == savedOptions[i].queueIndex) {
+            if (runtimeStorage[i].useIconText) {
+              //set badge counter to null
+              chrome.browserAction.setBadgeText({text: ''});
+              //set Selection dropdown to none;
+              document.getElementById('useBadge').value = 'none'; 
+            }
+            //remove from Selection dropdown
+            for (var j=0;j<document.getElementById('useBadge').children.length;j++) {
+              if (queue.queueIndex == document.getElementById('useBadge').children[j].value) {
+                document.getElementById('useBadge').children[j].remove();
+                break;
+              }
+            }
             console.log('Removing '+ i);
             savedOptions.splice(i,1);
             runtimeStorage.splice(i,1);

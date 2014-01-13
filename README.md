@@ -6,6 +6,7 @@ A Jira notification and auto-updater.
 Revision History:
 -----------------
 
+* 1.2.6.2 - Error messaging, Options bug fixes
 * 1.2.6.1 - BadgeText is now configurable in options
 * 1.2.6.0 - Options buttons now properly work
 * 1.2.5.9 - Options functionality completed.

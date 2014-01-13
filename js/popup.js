@@ -26,8 +26,19 @@ function main() {
     UpdateIfReady(true);
   }
   else {
+    if (runtimeStorage.length === 0) {
+      showElement('info');
+      hideElement('loading');
+    }
     for (var i=0; i<runtimeStorage.length; i++) {
-      buildPopup(runtimeStorage[i]);
+      if (runtimeStorage[i].error) {
+        hideElement('loading');
+        hideElement('queueWrapper');
+        showElement('error');
+      }
+      else {
+        buildPopup(runtimeStorage[i]);
+      }
     }
   }
 }
@@ -165,6 +176,8 @@ function buildPopup(queue) {
   });
 
   hideElement('loading');
+  hideElement('error');
+  hideElement('info');
   showElement('queuewrapper');
 }
 
