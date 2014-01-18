@@ -17,6 +17,9 @@ function setupEvents() {
   $("#close").click(function() {
     window.close();
   });
+  $('.info').click(function() {
+    chrome.tabs.create({url: "options.html"});
+  })
 }
 
 function main() {
@@ -43,15 +46,6 @@ function main() {
   }
 }
 
-function buildPopupE(error) {
-  var feed = document.getElementById('feed');
-  var span = document.createElement('span');
-    span.className = 'error';
-    span.innerText = error;
-  feed.appendChild(span);
-  showElement('queuewrapper');
-  hideElement('loading');
-}
 function buildTicketDiv(ticket) {
   ifdebug("Building Ticket Div");    
   var ticketblock = document.createElement('div');

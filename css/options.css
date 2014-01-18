@@ -8,19 +8,69 @@ body {
     margin: 10px;
     text-align: left;
 }
+input[type=text]{
+    background: linear-gradient(to bottom, #f7f7f8 0%,#ffffff 100%);
+    border-radius: 3px;
+    border: none;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.2) inset, 0 -1px 0 rgba(0,0,0,0.05) inset;
+    transition: all 0.2s linear;
+    font-family: "Helvetica Neue", sans-serif;
+    font-size: 13px;
+    color: #222222;
+    position: relative;
+    height: 24px;
+    width: 150px;
+    padding-left: 15px;
+    
+    &:focus{
+        box-shadow: 0 1px 0 #2392F3 inset, 0 -1px 0 #2392F3 inset, 1px 0 0 #2392F3 inset, -1px 0 0 #2392F3 inset, 0 0 4px rgba(35,146,243,0.5);
+        outline: none;
+    }
+}
+.content img {
+    border-radius: 50em;
+}
+.help-box {;
+    text-align: center;
+    color: #000;
+    background: rgba(0,0,0,0.07);
+    margin: 3em auto 0em;
+    padding-bottom: 2em;
+    border-radius: 10px;
+    box-shadow: 0 1px 0 rgba(255, 255, 255, 0.5), inset 0 0 1px rgba(0,0,0,0.8), inset 0 1px 3px rgba(0,0,0,0.2);
+    overflow: hidden;
+    display: none;
+    width: 715px;
 
+}
+#help-button {
+    color: blue;
+    text-decoration: underline;
+    position: absolute;
+    right:10px;
+    bottom: -13px;
+    cursor: pointer;
+}
 .main {
     text-align: center;
     background: white;
-    margin: 3em 5em 0em;
+    margin: 3em auto 0em;
     padding-bottom: 2em;
     -webkit-box-shadow: 0 0 130px #000;
     box-shadow: 0 0 130px #000;
     border-radius: 10px;
     overflow: hidden;
-    display: inline-block;
+    display: block;
+    width: 715px;
+    position: relative
 }
-
+.content {
+    text-align: left;
+    padding: 15px;
+}
+.content h3 {
+    text-align: center;
+}
 #header {
     text-align: center;
     vertical-align: middle;
@@ -62,6 +112,13 @@ body {
 }
 .queueOptions{
     display: none;
+    padding: 24px;
+    position: relative;
+}
+
+.iconCounter {
+    text-align: right;
+    padding-right: 50px;
 }
 .topbar {
     border: 1px solid rgba(0,0,0,0.2);
@@ -118,8 +175,8 @@ body {
 #clear-add, #save-add {
     float: left;
 }
-buttonDiv {
-    position: relative;
+.option {
+    padding-bottom: 7px;
 }
 .button {
     width: 34px;
@@ -152,8 +209,14 @@ buttonDiv {
     position: absolute;
     top: 0;
 }
+.button.placebo {
+    right: 10px;
+    bottom: 20px;
+    position: absolute;
+}
 .button.select{
     right: 0;
+    bottom: 5px;
     position: absolute;
 }
 .button.select:first-child {
@@ -182,6 +245,10 @@ buttonDiv {
 }
 .main-content {
     margin-top: -1px;
+    border: 1px solid rgba(0,0,0,0.3);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    border-radius: 4px;
+    background: #f7f7f7;
 }
 .queue-list {
     position: relative;
@@ -263,12 +330,20 @@ buttonDiv {
     margin: -1px 0 0 0;
     
 }
-.queue:nth-child(odd) {
+.queue-item:nth-child(odd) {
     background: #f7f7f7;
+}
+.queue:last-child {
+    border-bottom-left-radius: 4px;
+    border-bottom-right-radius: 4px;
 }
 .queue:first-child {
     border-top-left-radius: 0;
     border-top right-radius: 0;
+}
+.queue-add {
+    padding: 10px;
+    position: relative;
 }
 fieldset.options {
     border: 1px solid transparent;

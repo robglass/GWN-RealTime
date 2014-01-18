@@ -92,6 +92,7 @@ img {vertical-align: text-top}
          text-shadow: 0 1px 0 rgba(0,0,0,.5);
 }
 .info{
+        cursor: pointer;
          background-color: #4ea5cd;
          border-color: #3b8eb5;
 }

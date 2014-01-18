@@ -8,14 +8,25 @@ function startRequest() {
   window.setTimeout(startRequest, 5000);
 }
  
+
+function getVersion() {
+  var details = chrome.app.getDetails();
+  return details.version;
+}
 if (firstRequest) {
-  if (localStorage['OptionsSetup'] != 'true') {
-    localStorage.clear();
-    setDefaultOptions();
-  }
-  else if (localStorage['Options_Version'] == true) {
-    localStorage.clear();
-    setDefaultOptions();
+  var currVersion = getVersion();
+  var prevVersion = localStorage['version'];
+  if (currVersion != prevVersion) {
+    if (typeof prevVersion == 'undefined') {
+      // New Install
+      setDefaultOptions();
+      chrome.tabs.create({url: "options.html"});
+    } else {
+       localStorage.clear();
+       setDefaultOptions();
+      chrome.tabs.create({url: "options.html"});
+    }
+    localStorage['version'] = currVersion;
   }
   setTheTable();
 }

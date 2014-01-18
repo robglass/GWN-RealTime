@@ -1,6 +1,6 @@
 var buildPopupAfterResponce = false;
 var updateFailed = false;
-var _DEBUG_ = true;
+var _DEBUG_ = false;
 
 function ifdebug(text){
   (_DEBUG_) ? console.log(text) : "";
@@ -52,10 +52,6 @@ function setDefaultOptions() {
   ifdebug("Setting options to default")
   SetOption('Global.RetryOnFailure', 10000);
   SetOption('Global.Queue', JSON.stringify([]));
-  SetOption('OptionsSetup', true);
-  SetOption('Options_Version', chrome.runtime.getManifest().version);
-  
-  // TODO temp till options starts working
 }
 
 function queue(name, jql) {
@@ -72,7 +68,7 @@ function queue(name, jql) {
 function setupStorage() {
   ifdebug("Building Array");
   var qs = window.queueStorage = new Array();
-  qs.push(new queue('Personal', 'status not in (Closed, Done) AND assignee = '));
+  qs.push(new queue('My Queue', 'status not in (Closed, Done) AND assignee = '));
   qs.push(new queue('Implementations', 'assignee = queueimplementations AND status not in (Closed, Done)'));
   qs.push(new queue('Internal Engineering', 'project = ESM AND assignee = unassigned AND status not in (Closed, Done)'));
   qs.push(new queue('Internal IT', 'assignee = queue-desktop AND status not in (Closed, Done)'));

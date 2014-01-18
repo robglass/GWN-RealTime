@@ -6,16 +6,29 @@ window.onload = function() {
   buildQueueList();
   restoreOptions();
   setupEventListeners();
+  showHelp();
+}
+
+function showHelp() {
+  var optionsRan = localStorage['options.setup'];
+  if (!optionsRan) {
+    $('.help-box').slideDown('fast');
+    localStorage['options.setup'] = true;
+  }
 }
 function setupEventListeners() {
+  $('#help-button').click(function() {
+    $('.help-box').slideToggle('fast');
+  });
+  
   // Flips Queuelist and Add divs when the Add button is pressed
   $('.add').click(function() { 
-    $('.main-content').slideToggle('fast');
+    $('.queue-list').slideToggle('fast');
     $('.queue-add').slideToggle('fast');
   });
   
   $('#clear-add').click(function() {
-    $('.main-content').slideToggle('fast');
+    $('.queue-list').slideToggle('fast');
     $('.queue-add').slideToggle('fast');
   })
   $('#useBadge').change(function() {
@@ -39,8 +52,8 @@ function setupEventListeners() {
       saveOptions();
       chrome.extension.getBackgroundPage().resetRequest = true;
   })
-
-
+  $( "#sortable" ).sortable();
+  $( "#sortable" ).disableSelection();
   // Saves new queue
   $('#save-add').click(function() {
     queue = new Object; 
@@ -56,7 +69,7 @@ function setupEventListeners() {
     saveOptions();
     chrome.extension.getBackgroundPage().resetRequest = true;
     resetQueueList();
-    $('.main-content').slideToggle('fast');
+    $('.queue-list').slideToggle('fast');
     $('.queue-add').slideToggle('fast');
   })
   
@@ -155,8 +168,10 @@ function restoreOptions() {
 }
 
 function queueList(queue) {
+  var listItem = document.createElement('li');
   var queueItem = document.createElement('div');
       queueItem.className = 'queue-item';
+      //queueItem.id = 'sortable';
   var queueC= document.createElement('div');
       queueC.className = 'queue';
   var cover= document.createElement('div');
@@ -206,18 +221,22 @@ function queueList(queue) {
   });
   var queueOptions = document.createElement('div');
       queueOptions.className = 'queueOptions';
-  var divWrapper = document.createElement('div')
+  var divWrapper = document.createElement('div');
+      divWrapper.className = "option";
   var opt1text = document.createElement('span');
-      opt1text.innerText = 'Enable Notifications';
+      opt1text.innerText = 'Enable Alerts';
   var notify = document.createElement('input');
       notify.type = 'checkbox';
       notify.className = 'notify';
       notify.id =  queue.queueIndex;
+ // var checkLabel = document.createElement('label');
+   //   checkLabel.htmlFor = "slideSwitch"
       if (queue.notify) {
         ifdebug("checking notify for "+ queueStorage[queue.queueIndex].getName());
         notify.checked = true;
       };
   var divWrapper2 = document.createElement('div');
+      divWrapper2.className= "option";
   var opt2text = document.createElement('span');
       opt2text.innerText = 'Refresh rate:';
   var refreshRate = document.createElement('select');
@@ -243,9 +262,10 @@ function queueList(queue) {
       option6.value = '0';
       option6.innerText = 'Never';
   var divWrapper3 = document.createElement('div');
-  var changeButton = document.createElement('button');
-      changeButton.innerText = 'Change';
-  
+      divWrapper3.className = "button placebo"
+  var changeButton = document.createElement('div');
+      changeButton.className = 'icon check';
+
   queueItem.appendChild(queueC);
     queueC.appendChild(cover);
     queueC.appendChild(queueMove);
@@ -257,18 +277,25 @@ function queueList(queue) {
   queueItem.appendChild(queueOptions);
     if (queue.queueIndex === 0) {
       var divW = document.createElement('div');
+      //var labelBox = document.createElement('label');
+        //  labelBox.innerText = "Jira account name: "
       var nameBox = document.createElement('input');
           nameBox.type = "text";
           nameBox.id = 'GWNUser';
+          nameBox.placeholder = 'Jira Account Name';
           nameBox.value = localStorage['Global.GWNUser'];
       queueOptions.appendChild(divW);
+        //divW.appendChild(labelBox);
         divW.appendChild(nameBox);
     };
+    $(changeButton).click(function() {
+      $(queueOptions).slideToggle('fast');
+    });
     queueOptions.appendChild(divWrapper);
-    queueOptions.appendChild(divWrapper2);
-    queueOptions.appendChild(divWrapper3);
       divWrapper.appendChild(opt1text);
-      divWrapper.appendChild(notify)
+      divWrapper.appendChild(notify);
+     // divWrapper.appendChild(checkLabel)
+    queueOptions.appendChild(divWrapper2);
       divWrapper2.appendChild(opt2text);
       divWrapper2.appendChild(refreshRate);
         refreshRate.appendChild(option1);
@@ -277,6 +304,8 @@ function queueList(queue) {
         refreshRate.appendChild(option4);
         refreshRate.appendChild(option5);
         refreshRate.appendChild(option6); 
+    queueOptions.appendChild(divWrapper3);
+      divWrapper3.appendChild(changeButton);
 
   for (var i=0;i<refreshRate.children.length;i++){
     if (queue.updateInterval == refreshRate.children[i].value) {
