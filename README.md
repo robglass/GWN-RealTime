@@ -6,6 +6,7 @@ A Jira notification and auto-updater.
 Revision History:
 -----------------
 
+* 2.1 - added missing files, removed references to removed files
 * 2.0 - Woot 2.0
 * 1.3.0 - CSS completed, ready for merge
 * 1.2.6.2 - Error messaging, Options bug fixes

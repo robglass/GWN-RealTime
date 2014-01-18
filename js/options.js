@@ -52,8 +52,6 @@ function setupEventListeners() {
       saveOptions();
       chrome.extension.getBackgroundPage().resetRequest = true;
   })
-  $( "#sortable" ).sortable();
-  $( "#sortable" ).disableSelection();
   // Saves new queue
   $('#save-add').click(function() {
     queue = new Object; 
