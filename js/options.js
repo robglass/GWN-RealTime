@@ -63,7 +63,6 @@ function setupEventListeners() {
     queue.updateInterval = parseInt(document.getElementById('RefreshRate').value);
     queue.useBadgeCounter = false;
     savedOptions.push(queue);
-    //runtimeStorage.push(new runningQueue(queue.queueIndex, queue.updateInterval, queue.notify, queue.useBadgeCounter)); 
     saveOptions();
     chrome.extension.getBackgroundPage().resetRequest = true;
     resetQueueList();
@@ -152,13 +151,17 @@ function resetQueueList() {
 }
 
 function restoreOptions() {
+  $ub = document.getElementById('useBadge')
+    while ($ub.childElementCount > 1) {
+      $ub.removeChild($ub.lastChild);
+  }; 
   for (var i=0;i<savedOptions.length;i++) {
     var option = document.createElement('option');
-    option.value = savedOptions[i].queueIndex;
-    option.innerText = queueStorage[savedOptions[i].queueIndex].getName();
-    document.getElementById('useBadge').appendChild(option);
+        option.value = savedOptions[i].queueIndex;
+        option.innerText = queueStorage[savedOptions[i].queueIndex].getName();
+    $ub.appendChild(option);
     if (savedOptions[i].useBadgeCounter) {
-      document.getElementById('useBadge').value = option.value; 
+      $ub.value = option.value; 
     }
     var list = document.getElementsByClassName('placeholder')[1];
     list.appendChild(queueList(savedOptions[i]));

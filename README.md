@@ -6,6 +6,7 @@ A Jira notification and auto-updater.
 Revision History:
 -----------------
 
+* 2.1.2 - Fixed Notification Drop down dupliction bug
 * 2.1.1 - Fix Myqueue api issue
 * 2.1 - added missing files, removed references to removed files
 * 2.0 - Woot 2.0
