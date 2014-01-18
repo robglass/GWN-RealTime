@@ -119,7 +119,7 @@ function runningQueue(queueIndex, refresh, notify, useBadge) {
   };
   this.Update = function() {
     ifdebug("Updating "+this.getName());
-    if (this.getName() == "Personal") {
+    if (this.index == 0) {
       var jiraJQL = (this.getJQL())+localStorage['Global.GWNUser'];
     }
     else {
@@ -148,7 +148,7 @@ function runningQueue(queueIndex, refresh, notify, useBadge) {
     this.updated();
   };
   this.parseTickets = function(json) {
-    ifdebug("Got the goods unpacking!")
+    ifdebug(json)
     var ticketCount = json.length;
     newTickets = [];
     for (i=0; i< ticketCount; i++) {
