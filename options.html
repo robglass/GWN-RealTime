@@ -2,70 +2,88 @@
 <html>
   <head>
     <title>GWN RealTime - Setting</title>
+    <link href="css/smoothness/jquery-ui-1.10.3.custom.css" rel="stylesheet">
     <script src='js/jquery.js'></script>
+    <script src="js/jquery-ui-1.10.3.custom.js"></script>
     <script src='js/core.js'></script>
-    <script src='js/options.js'></script>
+    <script src='js/options.js'>
+</script>
     <link rel="stylesheet" href="/css/options.css">
   </head>
   <body>
    <div id='pageWrapper'>
-     <div id='optionsWrapper' class='main'>
+    <div id='optionsWrapper' class='main'>
       <div id='header'>
-	 <img id="logo" src=/images/icon.png style="display:inline">
-	 <a id='title' target="_blank" href="http://getsmart.gwn/display/SUP/GWN+RealTime">GWN RealTime</a>
-     </div>
-       <form>
-        <div id='contentWrapper'>
-	  <fieldset class='options'>
-	    <legend>
-	      <label class="selection">Global Values</label>
-	    </legend>
-	      <div class='subOptions'>
-		<span>Update Rate(minutes): </span>
-		<select type='text' id='RefreshRate'>
-		  <option value=  60000>1 minute (defualt)</option>
-		  <option value= 300000>5 mintues</option>
-		  <option value= 600000>10 mintues</option>
-		  <option value= 900000>15 minutes</option>
-		  <option value=1800000>30 minutes</option>
-		  <option value=0>Never</option>
-		</select>
+	<img id="logo" src=/images/icon.png style="display:inline">
+	<a id='title' target="_blank" href="http://getsmart.gwn/display/SUP/GWN+RealTime">GWN RealTime</a>
+      </div>
+      <div class="contentWrapper">
+	<div class="topbar">
+	  <div class="placeholder">
+	    <div class="top-crumb">
+	     <div>Queues</div>
+	    </div>
+	  </div>
+	  <div class="iconCounter">
+	      <span>Notification Counter:</span>
+	      <select id="useBadge">
+		<option value="none">Disabled</option>
+	      </select>
+	  </div>
+	  <div class="button add">
+	    <span class="icon plus"></span>
+	  </div>
+	</div>
+	<div class="main-content">
+	  <div class='queue-list'>
+	    <div class="placeholder">
+	    </div> 
+	  </div>
+	  <div class="queue-add">
+	    <div class="option">
+	      <span>Queue: </span>
+	      <select type='text' id='Queue'></select>
+	      <input type='text' placeholder="GWN username" id='GWNuser'>
+	    </div>
+	    <div class='subOptions'>
+	      <div class="option">
+		  <span>Enable Alerts</span>
+		  <input type='checkbox' id="notify" />
 	      </div>
-	      <div class=''>
-		<span>Notification half-life:: </span>
-		<select type='text' id='NotificationTimeout'>
-		  <option value=30000>30 seconds</option>
-		  <option value=20000>20 seconds</option>
-		  <option value=15000>15 seconds</option>
-		  <option value=10000>10 seconds (defualt)</option>
-		  <option value=5000>5 seconds</option>
-		  <option value=0>Never</option>
-		</select>
+	      <div class="option">
+		<span>Update Rate: </span>
+		  <select type=text id='RefreshRate'>
+		    <option value="60000">1 minute (defualt)</option>
+		    <option value="300000">5 mintues</option>
+		    <option value="600000">10 mintues</option>
+		    <option value="900000">15 minutes</option>
+		    <option value="1800000">30 minutes</option>
+		    <option value=0>Never</option>
+		  </select>
+		</div>
+	      </div>
+	      <div class="buttonDiv">
+		<div class="button select" id="clear-add">
+		  <span class="icon cross"></span>
+		</div>
+		<div class='button select' id="save-add">
+		  <span class="icon check"></span>
+		</div>
 	      </div>
 	    </div>
-	  </fieldset>
-	  <fieldset class='options'>
-	    <legend>
-	    <input type='checkbox' id="queues"><label class="selection">Queues</label>
-	    </legend>
-	      <div class='subOptions'>
-	          <fieldset class='options'>
-		    <legend>
-		      <input type='checkbox'><label>My Queue:</label>
-		    </legend>
-		    <div class="subOptions">
-		      <input type='text' placeholder="GWN username" id='GWNuser'>
-		      <input type='submit' value='Add it!'>
-		    </div>
-		    </fieldset>
-		<span>Additional Queues: </span>
-		<select type='text' id='Queue'>
-		</select>
-	      </div>
-	  </fieldset>
+	  </div>
 	</div>
-       </form>
-     </div>
-   </div>
- </body>
+	<div id="help-button">
+	    <p>Help?</p>
+	</div>
+      </div>
+      <div class="help-box">
+	<div class="content">
+	  <h3>Setup GWN RealTime</h3>
+	  <p>To add a new queue click the <img src="/images/button.png"> in the upper right</p>
+	  <p>To show the notification count for a specific queue <img src="/images/count.png">, select that queue from the notification counter drop down.<img src="/images/note.png"></p>
+	</div>
+      </div>
+    </div>
+  </body>
 </html>

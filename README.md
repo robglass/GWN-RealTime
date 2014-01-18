@@ -6,6 +6,15 @@ A Jira notification and auto-updater.
 Revision History:
 -----------------
 
+* 1.3.0 - CSS completed, ready for merge
+* 1.2.6.2 - Error messaging, Options bug fixes
+* 1.2.6.1 - BadgeText is now configurable in options
+* 1.2.6.0 - Options buttons now properly work
+* 1.2.5.9 - Options functionality completed.
+* 1.2.5.8 - CSS: Darkened Queue Headers; Popup.js: Queue Headers now collapse
+* 1.2.5.6 - Cleaned up old files. Added options.css
+* 1.2.5.1 - Popup rebuild for Multi
+* 1.2.5.0 - Backend redesign, Allows for mutlipule queues
 * 1.1     - Fixed null vs "null" error after reestablishing a broken session
 * 1.0     - Major Release: updated fixes and CSS cleanup
 * 0.9.9   - Fixed date format bug. Began Code cleanup.

@@ -17,6 +17,9 @@ function setupEvents() {
   $("#close").click(function() {
     window.close();
   });
+  $('.info').click(function() {
+    chrome.tabs.create({url: "options.html"});
+  })
 }
 
 function main() {
@@ -26,21 +29,23 @@ function main() {
     UpdateIfReady(true);
   }
   else {
+    if (runtimeStorage.length === 0) {
+      showElement('info');
+      hideElement('loading');
+    }
     for (var i=0; i<runtimeStorage.length; i++) {
-      buildPopup(runtimeStorage[i]);
+      if (runtimeStorage[i].error) {
+        hideElement('loading');
+        hideElement('queueWrapper');
+        showElement('error');
+      }
+      else {
+        buildPopup(runtimeStorage[i]);
+      }
     }
   }
 }
 
-function buildPopupE(error) {
-  var feed = document.getElementById('feed');
-  var span = document.createElement('span');
-    span.className = 'error';
-    span.innerText = error;
-  feed.appendChild(span);
-  showElement('queuewrapper');
-  hideElement('loading');
-}
 function buildTicketDiv(ticket) {
   ifdebug("Building Ticket Div");    
   var ticketblock = document.createElement('div');
@@ -140,7 +145,7 @@ function buildPopup(queue) {
               addTime.innerText = 'Updated: '+ timeSince;
               titletext.appendChild(addTime);
               $(titletext).click(function() {
-                    openUrl('http://jira.gwn/secure/IssueNavigator.jspa?mode=hide&requestId=14027'); 
+                    openUrl('http://jira.gwn/secure/Dashboard.jspa'); 
                   });
       }
       titlebar.appendChild(titletext);
@@ -159,12 +164,14 @@ function buildPopup(queue) {
   for (i=0; i<queue.tickets.length; i++) {
         feed.appendChild(buildTicketDiv(queue.tickets[i]));
   };
-  $(qbox).find(".collapseArrow").click(function  () {
+  $(qbox).find(".queueLabelAreaWrapper").click(function  () {
         $(qbox).find(".collapseArrow").toggleClass('collapsed');
         $(qbox).find(".tickets").slideToggle('fast');
   });
 
   hideElement('loading');
+  hideElement('error');
+  hideElement('info');
   showElement('queuewrapper');
 }
 
