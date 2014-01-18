@@ -4,6 +4,6 @@
         <updatecheck codebase='https://github.com/shewlayce/GWN-RealTime/raw/builds/GWN-RealTime.crx' version='1.2.2' />
     </app>
     <app appid='dpcagdimmhmfhhghoehlmmmhjaneckef'>
-        <updatecheck codebase='https://github.com/shewlayce/GWN-RealTime/raw/builds/GWN-RealTime_LR.crx' version='1.2.6.2' />
+        <updatecheck codebase='https://github.com/shewlayce/GWN-RealTime/raw/builds/GWN-RealTime_LR.crx' version='1.3.0' />
     </app>
 </gupdate>
