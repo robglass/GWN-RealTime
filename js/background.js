@@ -21,10 +21,6 @@ if (firstRequest) {
       // New Install
       setDefaultOptions();
       chrome.tabs.create({url: "options.html"});
-    } else {
-       localStorage.clear();
-       setDefaultOptions();
-      chrome.tabs.create({url: "options.html"});
     }
     localStorage['version'] = currVersion;
   }
