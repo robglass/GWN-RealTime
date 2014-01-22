@@ -141,7 +141,7 @@ function runningQueue(queueIndex, refresh, notify, useBadge) {
     this.error = true;
     ifdebug('Update Failed for '+ this.getName());
     if (this.setIconText) {
-      ifdebug('Clearing Badge');
+      ifdebug('Setting badge to "X"');
       chrome.browserAction.setBadgeBackgroundColor({ color: [110, 140, 180, 255] }); 
       chrome.browserAction.setBadgeText({text: 'X'});
     }
@@ -282,17 +282,19 @@ function savedQueue() {
 
 function setBadgeText(ticketCount) {
     if (ticketCount === 0) {
+      ifdebug('Clearing Badge');
       chrome.browserAction.setBadgeBackgroundColor({ color: [200, 0, 0, 255] }); 
       chrome.browserAction.setBadgeText({text: ''}); 
     }
     else {
+      ifdebug('Setting badge to ' + ticketCount.toString());
       chrome.browserAction.setBadgeBackgroundColor({ color: [200, 0, 0, 255] }); 
       chrome.browserAction.setBadgeText({text: ticketCount.toString()});
     }
 }
 
 function UpdateIfReady(force) {
-  ifdebug("Stirring the pot...")
+  ifdebug("Checking timers.")
   if (typeof queueStorage != 'object') {
     setupStorage();
   };
@@ -301,7 +303,7 @@ function UpdateIfReady(force) {
     lastRefresh = parseInt($queue.getLastRefresh());
     interval = parseInt($queue.getError() ? retryMilliseconds : $queue.getRefresh());
     currTime = parseFloat((new Date()).getTime()); 
-    ifdebug('Updating '+ $queue.getName() + " in: " + parseInt(( (lastRefresh+interval)-(currTime)  )/1000)+" sec.");
+    ifdebug($queue.getName() + " will update in: " + parseInt(( (lastRefresh+interval)-(currTime)  )/1000)+" sec.");
     if ((force === true) || (lastRefresh === null)) {
       ifdebug("Forcing update to " + $queue.getName());
       $queue.Update();

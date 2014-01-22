@@ -1,4 +1,4 @@
-var boxOpen= true;
+// Grab our structs from the background page
 runtimeStorage = chrome.extension.getBackgroundPage().runtimeStorage;
 queueStorage = chrome.extension.getBackgroundPage().queueStorage;
 
@@ -6,9 +6,11 @@ queueStorage = chrome.extension.getBackgroundPage().queueStorage;
 window.onload = function() {
   main();
   setupEvents();
-
-  //window.setTimeout(refreshTickets, 30000);
 }
+
+
+// Sets our Event Listners
+// Called By: window.onload
 function setupEvents() {
   $('#refresh').click(refreshTickets);
   $('#options').click(function() {
@@ -119,7 +121,7 @@ function buildPopup(queue) {
       titlebar.className = "queueLabelArea hbox wide hasTickets"
   qwapper.appendChild(titlebar);
   
-  var titletext = document.createElement('span');
+  var titletext = document.createElement('div');
       titletext.id = 'queuetitle';
       titletext.className = 'queueFor';
   
@@ -129,26 +131,23 @@ function buildPopup(queue) {
       addnum.className = 'ticketCount';
       addnum.innerText = '  (' + queue.tickets.length + ')';
       if (queue.tickets.length == 0) {
-          $('.collapseArrow').addClass('hidden')
-          $(".collapseArrow").toggleClass('collapsed');
-          $(".tickets").slideToggle('fast'); 
+          $(arrow).addClass('hidden')
+          $(arrow).toggleClass('collapsed');
+          $(container).slideToggle('fast'); 
       }
       else {
-        $('.collapseArrow').removeClass('hidden');
+        $(arrow).removeClass('hidden');
       }
       titletext.appendChild(addtitle);
       titletext.appendChild(addnum);
+      titlebar.appendChild(titletext);
       if (queue.getLastRefresh() !== null) {
           var timeSince = $.timeago(queue.getLastRefresh());
-          var addTime = document.createElement('span');
+          var addTime = document.createElement('div');
               addTime.className = 'timesince timeTopRight';
               addTime.innerText = 'Updated: '+ timeSince;
-              titletext.appendChild(addTime);
-              $(titletext).click(function() {
-                    openUrl('http://jira.gwn/secure/Dashboard.jspa'); 
-                  });
+              titlebar.appendChild(addTime);
       }
-      titlebar.appendChild(titletext);
   var container = document.createElement('div');
       container.id = 'container';
       container.className = 'popup-container tickets';
