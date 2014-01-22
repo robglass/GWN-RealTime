@@ -124,6 +124,7 @@ function runningQueue(queueIndex, refresh, notify, useBadge) {
         this.missingUser = true;
         return null;
       } else {
+        this.missingUser = false;
         var jiraJQL = (this.getJQL())+localStorage['Global.GWNUser'];
       }
     } else {
