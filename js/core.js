@@ -120,11 +120,17 @@ function runningQueue(queueIndex, refresh, notify, useBadge) {
   this.Update = function() {
     ifdebug("Updating "+this.getName());
     if (this.index == 0) {
-      var jiraJQL = (this.getJQL())+localStorage['Global.GWNUser'];
-    }
-    else {
+      if (typeof localStorage['Global.GWNUser'] == undefined || localStorage['Global.GWNUser'] == "") {
+        this.missingUser = true;
+        return null;
+      } else {
+        var jiraJQL = (this.getJQL())+localStorage['Global.GWNUser'];
+      }
+    } else {
       jiraJQL = this.getJQL();
     }
+
+
     var jiraCon = 'http://services.hq/jira_connector/rest/gwnjc/issues/data?server=http://jira.gwn&query=';
     $.ajax({ 
       dataType: "json",
@@ -156,7 +162,11 @@ function runningQueue(queueIndex, refresh, notify, useBadge) {
       thisticket = new ticket;
       thisticket.setKey(item.key);
       thisticket.setLink("http://www.jira.gwn/browse/" + item.key);
-      thisticket.setSummary(item.summary);
+      if (item.summary.length >= 80){ 
+        thisticket.setSummary(item.summary.substring(0,80) + " (cont.)");
+      } else {
+        thisticket.setSummary(item.summary);
+      }
       newTickets.push(thisticket);
     }
     this.CheckTickets(newTickets);

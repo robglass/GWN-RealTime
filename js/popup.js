@@ -32,14 +32,14 @@ function main() {
   }
   else {
     if (runtimeStorage.length === 0) {
-      showElement('info');
+      document.getElementById('no-queues').style.display = "block";
       hideElement('loading');
     }
     for (var i=0; i<runtimeStorage.length; i++) {
       if (runtimeStorage[i].error) {
         hideElement('loading');
         hideElement('queueWrapper');
-        showElement('error');
+        document.getElementById('connection-error').style.display = "block";
       }
       else {
         buildPopup(runtimeStorage[i]);
@@ -130,14 +130,6 @@ function buildPopup(queue) {
   var addnum = document.createElement('span');
       addnum.className = 'ticketCount';
       addnum.innerText = '  (' + queue.tickets.length + ')';
-      if (queue.tickets.length == 0) {
-          $(arrow).addClass('hidden')
-          $(arrow).toggleClass('collapsed');
-          $(container).slideToggle('fast'); 
-      }
-      else {
-        $(arrow).removeClass('hidden');
-      }
       titletext.appendChild(addtitle);
       titletext.appendChild(addnum);
       titlebar.appendChild(titletext);
@@ -160,17 +152,55 @@ function buildPopup(queue) {
       feed.id = 'feed';
       feed.className = 'ticketFeed';
   group.appendChild(feed);
-  for (i=0; i<queue.tickets.length; i++) {
+  
+  if (queue.missingUser) {
+      var boxxy = document.createElement('div');
+          boxxy.className = "error message";
+          boxxy.id = "no-user";
+      var title = document.createElement('h3');
+          title.innerText = "Missing account name :("
+      var message = document.createElement('p');
+          message.innerText = "Please set it up in options."
+        boxxy.appendChild(title);
+        boxxy.appendChild(message);
+        $(boxxy).click(function() {
+          openOptions();
+        });
+        feed.appendChild(boxxy);
+        
+        $(arrow).addClass('hidden');
+        $(arrow).toggleClass('collapsed');
+        $(container).show();
+  } else if (queue.tickets.length == 0) {
+      var boxxy = document.createElement('div');
+          boxxy.className = "success message";
+      var title = document.createElement('h3');
+          title.innerText = "This Queue is empty."
+      var message = document.createElement('p');
+          message.innerText = "Your pretty awesome, keep that shit up."
+      boxxy.appendChild(title);
+      boxxy.appendChild(message);
+      feed.appendChild(boxxy);  
+      
+      $(arrow).addClass('hidden')
+      $(arrow).toggleClass('collapsed');
+      $(container).hide(); 
+
+  } else {
+    for (i=0; i<queue.tickets.length; i++) {
         feed.appendChild(buildTicketDiv(queue.tickets[i]));
-  };
+    }
+    $(arrow).removeClass('hidden');
+  }
+  
   $(qbox).find(".queueLabelAreaWrapper").click(function  () {
         $(qbox).find(".collapseArrow").toggleClass('collapsed');
         $(qbox).find(".tickets").slideToggle('fast');
   });
 
   hideElement('loading');
-  hideElement('error');
-  hideElement('info');
+  document.getElementById('no-queues').style.display = "none";
+  document.getElementById('connection-error').style.display = "none";
   showElement('queuewrapper');
 }
 

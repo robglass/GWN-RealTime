@@ -6,6 +6,7 @@ A Jira notification and auto-updater.
 Revision History:
 -----------------
 
+* 2.1.4 - Added error and status messages, fixed popup scrolling, minor bug fixes
 * 2.1.3.1 - Options no persist through version updates
 * 2.1.3.1 - Options persist through version changes
 * 2.1.3 - Fixed Popup updateTime CSS, empty queues collapsing all queues.
