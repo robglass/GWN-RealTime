@@ -177,7 +177,7 @@ function buildPopup(queue) {
       var title = document.createElement('h3');
           title.innerText = "This Queue is empty."
       var message = document.createElement('p');
-          message.innerText = "Your pretty awesome, keep that shit up."
+          message.innerText = getQuote();
       boxxy.appendChild(title);
       boxxy.appendChild(message);
       feed.appendChild(boxxy);  
@@ -214,6 +214,15 @@ function refreshTickets() {
       buildPopup(runtimeStorage[i]);
     }
   }, 2300);
+}
+
+function getQuote() {
+  quotes = [
+      "'GGWWWWRGGH' -- Chewbacca",
+      "'Wuup Woop WeepWooppWub, Waaaaargh' -- R2-D2",
+      ]
+    quote = quotes[Math.floor(Math.random()*quotes.length)];
+  return quote;
 }
 
 function clearPopup()  {
