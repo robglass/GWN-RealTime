@@ -84,7 +84,9 @@ function buildTicketDiv(ticket) {
          details.appendChild(ticketNum);
          details.appendChild(tickettime);
           tickettime.appendChild(date);
-           date.appendChild(timeago);
+           if (ticket.getTimeAgo() != '') {
+            date.appendChild(timeago);
+           }
          details.appendChild(box2);
           box2.appendChild(ticketTitle);
          details.appendChild(notes);

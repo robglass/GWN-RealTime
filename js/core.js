@@ -191,20 +191,20 @@ function runningQueue(queueIndex, refresh, notify, useBadge) {
     if (this.tickets.length > 0) {
       ifdebug('Compairing old tickets.');
       for (var i=0; i<newtickets.length; i++) {
-        var ticketExists = false;
+        var newticket = true;
         for (var j=0; j<this.tickets.length; j++){
-          if (newtickets[i].getKey == this.tickets[j].getKey ) {
-            ticketExists = true;
+          if (newtickets[i].getKey() == this.tickets[j].getKey() ) {
+            newticket = false;
           }
         }
         newtickets[i].getDetails();
-        if (!ticketExists && this.notifications) {
-          newtickets[i].getDetails();
-          sendNotification(newtickets[i, this]);       
+        if (newticket && this.notification) {
+          sendNotification(newtickets[i], this);       
         }
       }
     }
-    else { 
+    else if (this.notification){ 
+      ifdebug("Sending Notificaions for all");
       for (i=0; i<newtickets.length; i++) {
         sendNotification(newtickets[i], this);
       }
@@ -215,9 +215,9 @@ function ticket() {
   this._key;
   this._link;
   this._summary;
-  this._comment;
-  this._time;
-  this._timeAgo;
+  this._comment = "No Comments";
+  this._time = "Time not available";
+  this._timeago = "";
 
   this.setLink = function(link) {
     this._link = link;
@@ -266,19 +266,21 @@ function ticket() {
       dataType: 'json',
       success: function(json) {
         var numComments = json.comments.length;
-        var commentDate = json.comments[numComments-1].date;
-        var lastcomment = json.comments[numComments-1].body;
-        var dateFormatted=new Date(commentDate);
-        ticketTime = $.timeago(dateFormatted);
-        refcomment = lastcomment.replace(/[\n\r]/g, '');
-        if (refcomment.length>'120') {
-          this.setComment(refcomment.substring(0,120) + '...');
+        if (numComments > 0) { 
+          var commentDate = json.comments[numComments-1].date;
+          var lastcomment = json.comments[numComments-1].body;
+          var dateFormatted=new Date(commentDate);
+          ticketTime = $.timeago(dateFormatted);
+          refcomment = lastcomment.replace(/[\n\r]/g, '');
+          if (refcomment.length>'120') {
+            this.setComment(refcomment.substring(0,120) + '...');
+          }
+          else {
+            this.setComment(refcomment);
+          }
+          this._timeago = ticketTime;
+          this._time = commentDate;
         }
-        else {
-          this.setComment(refcomment);
-        }
-        this._timeago = ticketTime;
-        this._time = commentDate;
       }
     });
   };
@@ -327,7 +329,7 @@ function UpdateIfReady(force) {
 }
 
 function sendNotification(ticket, queue) {
-  ifdebug("Toasting for "+ticket.getKey());
+  ifdebug("Toasting for "+ ticket.getKey());
   var toast = webkitNotifications.createNotification(
     'images/icon.png',
     "New Ticket in " + queue.getName(),
